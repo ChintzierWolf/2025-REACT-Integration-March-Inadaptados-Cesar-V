@@ -1,0 +1,380 @@
+[
+  {
+    "_id": "68b0d4189b825d20ce1e57aa",
+    "name": "Xbox Series X",
+    "price": 11999,
+    "stock": 10,
+    "description": "La Xbox más rápida y potente de la historia. Juega miles de títulos de cuatro generaciones de consolas.",
+    "image": "https://th.bing.com/th/id/OIP.qJb8thSypxe875d1AXGI-QHaEn?w=287&h=180&c=7&r=0&o=7&pid=1.7&rm=3",
+    "category":{
+      "_id": "68b0d4189b825d20ce1e574a",
+      "name": "Consolas Xbox",
+      "description": "Consolas Xbox",
+      "imageURL": "https://placehold.co/800x600.png",
+      "parentCategory":{
+        "_id": "68b0d4189b825d20ce1e5740",
+        "name": "Consolas",
+        "description": "Modelos de Consolas",
+        "imageURL": "https://placehold.co/800x600.png",
+        "parentCategory":null
+      }    
+    }
+  },
+  {
+    "_id": "68b0d4189b825d20ce1e57bb",
+    "name": "Nintendo Switch OLED",
+    "price": 7999,
+    "stock": 15,
+    "description": "Pantalla OLED de 7 pulgadas, soporte ajustable amplio, base con puerto LAN.",
+    "image": "https://th.bing.com/th/id/R.45df9274e5ccbceb6d9fae4d9c6f47df?rik=VhcDycADsmctlA&pid=ImgRaw&r=0",
+    "category": {
+      "_id": "68b0d4189b825d20ce1e574c",
+      "name": "Nintendo",
+      "description": "Consolas Nintendo",
+      "imageURL": "https://placehold.co/800x600.jpg",
+      "parentCategory":{
+      "_id": "68b0d4189b825d20ce1e5740",
+      "name": "Consolas",
+      "description": "Modelos de consolas",
+      "imageURL": "https://placehold.co/800x600.jpg",
+      "parentCategory":null 
+      }
+    }
+  },
+  {
+    "_id": "68b0d4189b825d20ce1e57cc",
+    "name": "Halo Infinite",
+    "price": 1299,
+    "stock": 50,
+    "description": "La legendaria serie Halo regresa con la campaña de Master Chief más amplia hasta la fecha.",
+    "image": "https://upload.wikimedia.org/wikipedia/en/1/14/Halo_Infinite.png",
+    "category": {
+      "_id": "68b0d4189b825d20ce1e575a",
+      "name": "Videojuegos Xbox",
+      "description": "Videojuegos Xbox",
+      "imageURL": "https://placehold.co/800x600.jpg",
+      "parentCategory":{
+      "_id": "68b0d4189b825d20ce1e5750",
+      "name": "Videojuegos",
+      "description": "Videojuegos Xbox",
+      "imageURL": "https://placehold.co/800x600.jpg",
+      "parentCategory":null
+      }
+    }
+  },
+  {
+    "_id": "68b0d4189b825d20ce1e57dd",
+    "name": "Mario Kart 8 Deluxe",
+    "price": 1199,
+    "stock": 40,
+    "description": "Compite con tus amigos en la versión definitiva de Mario Kart 8.",
+    "image": "https://i5.walmartimages.com/asr/5ffa21b5-3010-44a8-89c5-8159a67dc418.7480493ec6a83a4f32618bd776592b66.jpeg?odnHeight=612&odnWidth=612&odnBg=FFFFFF",
+    "category": {
+      "_id": "68b0d4189b825d20ce1e575c",
+      "name": "Videojuegos Nintendo",
+      "description": "Videojuegos Nintendo",
+      "imageURL": "https://placehold.co/800x600.jpg",
+      "parentCategory":{
+      "_id": "68b0d4189b825d20ce1e5750",
+      "name": "Videojuegos",
+      "description": "Modelos de videojuegos",
+      "imageURL": "https://placehold.co/800x600.jpg",
+      "parentCategory":null 
+      }
+    }
+  },
+  {
+    "_id": "68b0d4189b825d20ce1e57ff",
+    "name": "Control Inalámbrico Xbox - Carbon Black",
+    "price": 1399,
+    "stock": 25,
+    "description": "Diseño modernizado con superficies esculpidas y geometría refinada.",
+    "image": "https://i5.walmartimages.com/asr/3f4cb670-0eee-4315-a70b-a9a2bdf6784a.cd1528b901bf708780557a8d41afd625.jpeg?odnHeight=612&odnWidth=612&odnBg=FFFFFF",
+    "category": {
+      "_id": "68b0d4189b825d20ce1e576a",
+      "name": "Accesorios Xbox",
+      "description": "Accesorios Xbox",
+      "imageURL": "https://placehold.co/800x600.jpg",
+      "parentCategory":{
+      "_id": "68b0d4189b825d20ce1e5760",
+      "name": "Accesorios",
+      "description": "Accesorios Xbox",
+      "imageURL": "https://placehold.co/800x600.jpg",
+      "parentCategory":null
+      }
+    }
+  },
+  {
+    "_id": "68b0d4189b825d20ce1e57gg",
+    "name": "The Legend of Zelda: Tears of the Kingdom",
+    "price": 1399,
+    "stock": 30,
+    "description": "Una aventura épica a través de la tierra y los cielos de Hyrule.",
+    "image": "https://upload.wikimedia.org/wikipedia/en/f/fb/The_Legend_of_Zelda_Tears_of_the_Kingdom_cover.jpg",
+    "category": {
+      "_id": "68b0d4189b825d20ce1e575c",
+      "name": "Videojuegos Nintendo",
+      "description": "Videojuegos Nintendo",
+      "imageURL": "https://placehold.co/800x600.jpg",
+      "parentCategory":{
+      "_id": "68b0d4189b825d20ce1e5750",
+      "name": "Videojuegos",
+      "description": "Modelos de videojuegos",
+      "imageURL": "https://placehold.co/800x600.jpg",
+      "parentCategory":null 
+      }
+    }
+  },
+  {
+    "_id": "68b0d4189b825d20ce1e57hh",
+    "name": "PlayStation 5",
+    "price": 11999,
+    "stock": 12,
+    "description": "La consola de nueva generación de Sony con gráficos 4K y SSD ultrarrápido.",
+    "image": "https://i5.walmartimages.com/asr/5f5624e0-e81f-4768-be71-b2f7f3a4eb8d.4050afa31df79b1defb0e746b006b40f.jpeg?odnHeight=612&odnWidth=612&odnBg=FFFFFF",
+    "category": {
+      "_id": "68b0d4189b825d20ce1e574b",
+      "name": "Consolas PlayStation",
+      "description": "Consolas PlayStation",
+      "imageURL": "https://placehold.co/800x600.jpg",
+      "parentCategory":{
+      "_id": "68b0d4189b825d20ce1e5740",
+      "name": "Consolas",
+      "description": "Modelos de consolas",
+      "imageURL": "https://placehold.co/800x600.jpg",
+      "parentCategory":null
+      }
+    }
+  },
+  {
+    "_id": "68b0d4189b825d20ce1e57ii",
+    "name": "Steam Deck",
+    "price": 9999,
+    "stock": 8,
+    "description": "Consola portátil de Valve que permite jugar tu biblioteca de Steam en cualquier lugar.",
+    "image": "https://assets.kmart.com.au/transform/1f657eab-b1ee-428c-85a4-6feae0c65193/110062983-1?io=transform:extend,width:1100,height:1100&quality=90",
+    "category": {
+      "_id": "68b0d4189b825d20ce1e574d",
+      "name": "Consolas Portátiles",
+      "description": "Consolas Portátiles",
+      "imageURL": "https://placehold.co/800x600.jpg",
+      "parentCategory":{
+      "_id": "68b0d4189b825d20ce1e5740",
+      "name": "Consolas",
+      "description": "Modelos de consolas",
+      "imageURL": "https://placehold.co/800x600.jpg",
+      "parentCategory":null 
+      }
+    }
+  },
+  {
+    "_id": "68b0d4189b825d20ce1e57jj",
+    "name": "DualSense Wireless Controller",
+    "price": 1499,
+    "stock": 20,
+    "description": "Control de PlayStation 5 con retroalimentación háptica y gatillos adaptativos.",
+    "image": "https://m.media-amazon.com/images/I/51PmeLGEkML._AC_SX342_SY445_QL70_ML2_.jpg",
+    "category": {
+      "_id": "68b0d4189b825d20ce1e576b",
+      "name": "Accesorios PlayStation",
+      "description": "Accesorios PlayStation",
+      "imageURL": "https://placehold.co/800x600.jpg",
+      "parentCategory":{
+      "_id": "68b0d4189b825d20ce1e5760",
+      "name": "Accesorios",
+      "description": "Accesorios PlayStation",
+      "imageURL": "https://placehold.co/800x600.jpg",
+      "parentCategory":null
+      }
+    }
+  },
+  {
+    "_id": "68b0d4189b825d20ce1e57kk",
+    "name": "Metroid Dread",
+    "price": 1299,
+    "stock": 35,
+    "description": "La última entrega de la saga Metroid con acción intensa y exploración en 2D.",
+    "image": "https://i5.walmartimages.com/asr/b4fc6ab8-2d43-4c7d-87c0-f2f63e91a704.c7903b05643ffbfbf2196cf981d8dd12.jpeg?odnHeight=612&odnWidth=612&odnBg=FFFFFF",
+    "category": {
+      "_id": "68b0d4189b825d20ce1e575c",
+      "name": "Videojuegos Nintendo",
+      "description": "Videojuegos Nintendo",
+      "imageURL": "https://placehold.co/800x600.jpg",
+      "parentCategory":{
+      "_id": "68b0d4189b825d20ce1e5750",
+      "name": "Videojuegos",
+      "description": "Modelos de videojuegos",
+      "imageURL": "https://placehold.co/800x600.jpg",
+      "parentCategory":null  
+      }
+    }
+  },
+  {
+    "_id": "68b0d4189b825d20ce1e57ll",
+    "name": "Elden Ring",
+    "price": 1599,
+    "stock": 25,
+    "description": "Un mundo abierto épico creado por FromSoftware y George R. R. Martin.",
+    "image": "https://store-images.s-microsoft.com/image/apps.30323.14537704372270848.6ecb6038-5426-409a-8660-158d1eb64fb0.08703491-f5dc-4b00-bca6-486b7b293c17?q=90&w=336&h=200",
+    "category": {
+      "_id": "68b0d4189b825d20ce1e575a",
+      "name": "Videojuegos Xbox",
+      "description": "Videojuegos Xbox",
+      "imageURL": "https://placehold.co/800x600.jpg",
+      "parentCategory":{
+      "_id": "68b0d4189b825d20ce1e5750",
+      "name": "Videojuegos",
+      "description": "Videojuegos Xbox",
+      "imageURL": "https://placehold.co/800x600.jpg",
+      "parentCategory":null
+      }
+    }
+  },
+  {
+    "_id": "68b0d4189b825d20ce1e57mm",
+    "name": "Super Smash Bros. Ultimate",
+    "price": 1399,
+    "stock": 40,
+    "description": "El crossover definitivo con más de 70 personajes jugables.",
+    "image": "https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/bbb8c090-a52c-441e-a990-28c8f978d1e6/dcfecu6-8231e1f1-6ac8-44aa-bb49-1a17f3c1d867.jpg/v1/fill/w_1044,h_765,q_70,strp/super_smash_bros__ultimate_official_key_art__wide__by_leafpenguins_dcfecu6-pre.jpg?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7ImhlaWdodCI6Ijw9MTAwNjUiLCJwYXRoIjoiL2YvYmJiOGMwOTAtYTUyYy00NDFlLWE5OTAtMjhjOGY5NzhkMWU2L2RjZmVjdTYtODIzMWUxZjEtNmFjOC00NGFhLWJiNDktMWExN2YzYzFkODY3LmpwZyIsIndpZHRoIjoiPD0xMzcyNSJ9XV0sImF1ZCI6WyJ1cm46c2VydmljZTppbWFnZS5vcGVyYXRpb25zIl19._sTYaRMpnrMt17dHm-rj_tN6MvphgdVxQG2tYxH-AzU",
+    "category": {
+      "_id": "68b0d4189b825d20ce1e575c",
+      "name": "Videojuegos Nintendo",
+      "description": "Videojuegos Nintendo",
+      "imageURL": "https://placehold.co/800x600.jpg",
+      "parentCategory":{
+      "_id": "68b0d4189b825d20ce1e5750",
+      "name": "Videojuegos",
+      "description": "Modelos de videojuegos",
+      "imageURL": "https://placehold.co/800x600.jpg",
+      "parentCategory":null 
+      }
+    }
+  },
+  {
+    "_id": "68b0d4189b825d20ce1e57nn",
+    "name": "Auriculares Gaming HyperX Cloud II",
+    "price": 1999,
+    "stock": 18,
+    "description": "Sonido envolvente 7.1 y comodidad para largas sesiones de juego.",
+    "image": "https://ae-pic-a1.aliexpress-media.com/kf/S1989f5d1dd4047a2b2425ea7a2b19d5ak.jpg_640x640q75.jpg_.avif",
+    "category": {
+      "_id": "68b0d4189b825d20ce1e577a",
+      "name": "Más Accesorios",
+      "description": "Más Accesorios",
+      "imageURL": "https://placehold.co/800x600.jpg",
+      "parentCategory":{
+      "_id": "68b0d4189b825d20ce1e5770",
+      "name": "Más",
+      "description": "Más",
+      "imageURL": "https://placehold.co/800x600.jpg",
+      "parentCategory":null
+      }
+    }
+  },
+  {
+    "_id": "68b0d4189b825d20ce1e57oo",
+    "name": "Ratón Gaming Logitech G502 HERO",
+    "price": 1299,
+    "stock": 22,
+    "description": "Sensor HERO 25K y 11 botones programables para máxima precisión.",
+    "image": "https://m.media-amazon.com/images/I/61mpMH5TzkL._AC_SL1500_.jpg",
+    "category": {
+      "_id": "68b0d4189b825d20ce1e577a",
+      "name": "Más Accesorios",
+      "description": "Más Accesorios",
+      "imageURL": "https://placehold.co/800x600.jpg",
+      "parentCategory":{
+      "_id": "68b0d4189b825d20ce1e5770",
+      "name": "Más",
+      "description": "Más",
+      "imageURL": "https://placehold.co/800x600.jpg",
+      "parentCategory":null
+      }
+    }
+  },
+  {
+    "_id": "68b0d4189b825d20ce1e57pp",
+    "name": "Resident Evil 4 Remake",
+    "price": 1499,
+    "stock": 28,
+    "description": "Revive el clásico de survival horror con gráficos modernos y jugabilidad mejorada.",
+    "image": "https://imgproxy.eneba.games/fE9QmAF3SQ5XZn5nxnNxuL49WfSpN8Tp54b244BkmP0/rs:fit:350/ar:1/czM6Ly9wcm9kdWN0/cy5lbmViYS5nYW1l/cy9wcm9kdWN0cy9t/YmR6VmpoeGxKZkcy/V3FSZjdjdHRrSmtp/aTdvUWNqM2NnYWR0/VktMS3NNLmpwZw",
+    "category": {
+      "_id": "68b0d4189b825d20ce1e575b",
+      "name": "Videojuegos PlayStation",
+      "description": "Videojuegos PlayStation",
+      "imageURL": "https://placehold.co/800x600.jpg",
+      "parentCategory":{
+      "_id": "68b0d4189b825d20ce1e5750",
+      "name": "Videojuegos",
+      "description": "Videojuegos PlayStation",
+      "imageURL": "https://placehold.co/800x600.jpg",
+      "parentCategory":null
+      }
+    }
+  },
+  {
+    "_id": "68b0d4189b825d20ce1e57qq",
+    "name": "FIFA 25",
+    "price": 1299,
+    "stock": 45,
+    "description": "La experiencia de fútbol más realista con licencias oficiales y modos online.",
+    "image": "https://imgproxy.eneba.games/CnBNxP0p937ylI3-iKadf5kT9vfF-otbQrKCeB-Lvu8/rs:fit:350/ar:1/czM6Ly9wcm9kdWN0/cy5lbmViYS5nYW1l/cy9wcm9kdWN0cy9X/OG9zRVJ2R0R3WUEt/NnNpT0NiWUhPTXhJ/ZklpckVCS0NLMnFY/dnppYTRBLmpwZw",
+    "category": {
+      "_id": "68b0d4189b825d20ce1e575a",
+      "name": "Videojuegos Xbox",
+      "description": "Videojuegos Xbox",
+      "imageURL": "https://placehold.co/800x600.jpg",
+      "parentCategory":{
+      "_id": "68b0d4189b825d20ce1e5750",
+      "name": "Videojuegos",
+      "description": "Videojuegos Xbox",
+      "imageURL": "https://placehold.co/800x600.jpg",
+      "parentCategory":null
+      }
+    }
+  },
+  {
+    "_id": "68b0d4189b825d20ce1e57rr",
+    "name": "Monitor Gaming ASUS TUF 27''",
+    "price": 5999,
+    "stock": 10,
+    "description": "Pantalla Full HD con 165Hz y tecnología FreeSync para una experiencia fluida.",
+    "image": "https://placehold.co/800x600.png",
+    "category": {
+      "_id": "68b0d4189b825d20ce1e577a",
+      "name": "Más Accesorios",
+      "description": "Más Accesorios",
+      "imageURL": "https://placehold.co/800x600.jpg",
+      "parentCategory":{
+      "_id": "68b0d4189b825d20ce1e5770",
+      "name": "Más",
+      "description": "Más",
+      "imageURL": "https://placehold.co/800x600.jpg",
+      "parentCategory":null
+      }
+    }
+  },
+  {
+    "_id": "68b0d4189b825d20ce1e57ss",
+    "name": "Teclado Mecánico Razer BlackWidow V3",
+    "price": 2499,
+    "stock": 15,
+    "description": "Switches mecánicos Razer Green y retroiluminación RGB personalizable.",
+    "image": "https://m.media-amazon.com/images/I/71OAwYenQUL._AC_SL1500_.jpg",
+    "category": {
+      "_id": "68b0d4189b825d20ce1e577a",
+      "name": "Más Accesorios",
+      "description": "Más Accesorios",
+      "imageURL": "https://placehold.co/800x600.jpg",
+      "parentCategory":{
+      "_id": "68b0d4189b825d20ce1e5770",
+      "name": "Más",
+      "description": "Más",
+      "imageURL": "https://placehold.co/800x600.jpg",
+      "parentCategory":null
+      }
+    }
+  }
+]
