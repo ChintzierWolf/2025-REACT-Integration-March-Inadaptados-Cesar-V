@@ -14,15 +14,12 @@ const Pokedex = () => {
     // 4. Llama a fetch con la URL correcta
     fetch('https://pokeapi.co/api/v2/pokemon?limit=10')
       // 5. Primer .then(): recibe response y convierte a JSON
-      .then(response => {
-        const data = response.json()
-        setPokemons(data)
-      })
+      .then(response => response.json())
       // 6. Segundo .then(): recibe data y actualiza el estado
       .then(data => {
         console.log(data); // Observa la estructura
         // Extrae data.results y actualiza el estado
-        console.log(data.results);
+        console.log(data);
         setPokemons(data.results);
       });
   }, []);
