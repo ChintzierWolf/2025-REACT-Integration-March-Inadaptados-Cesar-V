@@ -6,7 +6,7 @@ import ErrorMessage from "../common/ErrorMessage/ErrorMessage";
 import Input from "../common/Input";
 import "./LoginForm.css";
 
-export default function LoginForm({ onSuccess }) {
+export default function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -18,9 +18,8 @@ export default function LoginForm({ onSuccess }) {
     setLoading(true);
     setError("");
     try {
-      debugger;
       const result = await login(email, password);
-      onSuccess();
+      navigate("/");
       window.location.reload();
     } catch (err) {
       setError(err.message);
