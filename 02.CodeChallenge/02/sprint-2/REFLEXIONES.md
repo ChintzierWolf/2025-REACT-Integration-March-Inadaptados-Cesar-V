@@ -1,0 +1,2 @@
+- Escribe 2–3 frases en tu README: ¿qué aprendiste sobre la "memoria del componente" y los efectos?
+- ¿Qué fallo curioso encontraste?
