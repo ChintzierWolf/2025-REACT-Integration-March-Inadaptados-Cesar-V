@@ -15,6 +15,7 @@ import SearchResults from "../../pages/SearchResults";
 import Settings from "../../pages/Setttings";
 import WishList from "../../pages/WishList";
 import GuestOnly from "../../pages/GuestOnly";
+import Register from "../../pages/Register";
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/cart" element={<Cart />} />
+            <Route path="/register" element={<Register />} />
             <Route
               path="/login"
               element={

@@ -53,7 +53,7 @@ export function CartProvider({ children }) {
       getTotalItems,
       getTotalPrice,
     }),
-    [state.items]
+    [state.items],
   );
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;

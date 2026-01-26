@@ -21,9 +21,11 @@ export function cartReducer(state, action) {
       const p = action.payload; //{id,name,price,image,}
       const exists = state.items.find((i) => i._id === p._id);
       const items = exists
-        ? state.items.map((i) => i._id === p._id ?
-          { ...i, quantity: i.quantity + (p.quantity || 1) }
-          : i)
+        ? state.items.map((i) =>
+            i._id === p._id
+              ? { ...i, quantity: i.quantity + (p.quantity || 1) }
+              : i,
+          )
         : [...state.items, { ...p, quantity: p.quantity || 1 }];
       return { ...state, items };
     }
@@ -36,7 +38,9 @@ export function cartReducer(state, action) {
       const q = Math.max(1, quantity);
       return {
         ...state,
-        items: state.items.map((i) => (i._id === _id ? { ...i, quantity: q } : i)),
+        items: state.items.map((i) =>
+          i._id === _id ? { ...i, quantity: q } : i,
+        ),
       };
     }
     case CART_ACTIONS.CLEAR: {
