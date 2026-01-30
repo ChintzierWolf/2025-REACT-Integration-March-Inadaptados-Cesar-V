@@ -127,7 +127,6 @@ export default function RegisterForm({ onSuccess }) {
     setLoading(true);
 
     try {
-      debugger;
       const result = await register({ displayName, email, password });
       console.log(result);
       navigate("/login");

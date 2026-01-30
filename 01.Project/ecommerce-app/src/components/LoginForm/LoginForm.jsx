@@ -18,10 +18,11 @@ export default function LoginForm({ onSuccess }) {
     setLoading(true);
     setError("");
     try {
-      debugger;
       const result = await login(email, password);
-      onSuccess();
-      window.location.reload();
+      if (result) {
+        onSuccess();
+        window.location.reload();
+      }
     } catch (err) {
       setError(err.message);
     } finally {
