@@ -26,7 +26,8 @@ export default function UserDetail() {
 
   return (
     <div>
-      <h1>{user.name}</h1>
+      {user && <h1>{user.name}</h1>}
+      {!user && <p>Usuario no encontrado</p>}
     </div>
   );
 }
