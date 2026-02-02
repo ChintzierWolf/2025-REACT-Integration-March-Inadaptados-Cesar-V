@@ -1,6 +1,13 @@
 import axios from "axios";
+import { useAuth } from "../context/AuthContext";
 
 const APP_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+
+let logoutCallback = null;
+
+export const setLogoutCallback = (callback) => {
+  logoutCallback = callback;
+};
 
 export const http = axios.create({
   baseURL: APP_BASE_URL,
@@ -31,8 +38,7 @@ http.interceptors.response.use(
   },
   (error) => {
     if (error.response?.status === 401) {
-      localStorage.removeItem("authToken");
-      window.location.href = "/login";
+      logoutCallback();
     }
     return Promise.reject(error);
   },
