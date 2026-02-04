@@ -1,6 +1,6 @@
 import { Navigate, useLocation } from "react-router-dom";
-import Loading from "../components/common/Loading/Loading";
 import { useAuth } from "../context/AuthContext";
+import Loading from "../components/common/Loading/Loading";
 
 export default function ProtectedRoute({
   children,
@@ -10,10 +10,13 @@ export default function ProtectedRoute({
   const location = useLocation();
   const { user, isAuth, loading } = useAuth();
 
-  if (loading) return <Loading />;
+  if (loading) {
+    return <Loading />;
+  }
 
-  if (!isAuth)
+  if (!isAuth) {
     return <Navigate to={redirectTo} replace state={{ from: location }} />;
+  }
 
   if (allowedRoles && user && !allowedRoles.includes(user.role)) {
     return (
@@ -23,6 +26,5 @@ export default function ProtectedRoute({
       </div>
     );
   }
-
   return children;
 }

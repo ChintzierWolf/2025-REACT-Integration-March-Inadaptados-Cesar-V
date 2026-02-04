@@ -1,6 +1,6 @@
 import express from "express";
 import { body, query } from "express-validator";
-import { checkEmail, login, register } from "../controllers/authController.js";
+import { checkEmail, login, register, refreshToken } from "../controllers/authController.js";
 import validate from "../middlewares/validation.js";
 import { authLimiter } from "../middlewares/rateLimiter.js";
 import {
@@ -34,6 +34,8 @@ router.post(
 );
 
 router.post("/login", [emailValidation(), passwordLoginValidation()], validate, login);
+
+router.post("/refresh-token", refreshToken);
 
 router.get("/check-email", [queryEmailValidation()], validate, checkEmail);
 

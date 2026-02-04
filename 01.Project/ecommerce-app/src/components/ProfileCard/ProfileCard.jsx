@@ -1,3 +1,4 @@
+//import { getCurrentUser } from "../../utils/auth";
 import { useAuth } from "../../context/AuthContext";
 import Button from "../common/Button";
 import "./ProfileCard.css";
@@ -21,10 +22,11 @@ const ROLE_ACTIONS = {
   ],
 };
 
-export default function ProfileCard() {
+export default function ProfileCard({ user }) {
   const { user } = useAuth();
-  const currentUser = user;
-  const role = currentUser.role || "guest";
+  
+  // const currentUser = user || getCurrentUser();
+  const role = user?.role || "guest";
   const actions = ROLE_ACTIONS[role] || [];
 
   return (
@@ -32,9 +34,9 @@ export default function ProfileCard() {
       <div className="profile-card">
         <div className="profile-header">
           <img
-            src={currentUser.avatar || "/img/user-placeholder.png"}
+            src={user.avatar || "/img/user-placeholder.png"}
             alt={
-              currentUser.displayName || currentUser.name || currentUser.email
+              user.displayName || user.name || user.email
             }
             className="profile-avatar"
           />
