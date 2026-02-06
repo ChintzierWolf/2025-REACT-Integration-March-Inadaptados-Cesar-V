@@ -34,28 +34,23 @@ export const login = async (email, password) => {
   }
 };
 
-export const refreshToken = async () => {
+export const refresh = async () => {
   try {
-    // Ahora en la app se está generando un nuevo refreshToken cada vez que se inicia sesión
-    // y se está guardando en localStorage, por lo que no es necesario guardarlo de nuevo.
-    // Solo hay que recuperar el refreshToken de localStorage y enviarlo al backend.
-    // Si no se recupera el refreshToken de localStorage, no se podrá generar un nuevo token.
     const refreshToken = localStorage.getItem("refreshToken");
     if (!refreshToken) return null;
 
-    const response = await http.post("auth/refresh-token", { refreshToken });
+    const response = await http.post("auth/refresh", { refreshToken });
+
     const { token, refreshToken: newRefreshToken } = response.data;
-    
-    if (token && newRefreshToken) {
+
+    if (token) {
       localStorage.setItem("authToken", token);
       localStorage.setItem("refreshToken", newRefreshToken);
-
       return token;
-    } else {
-      return null;
     }
+    return null;
   } catch (error) {
-    console.error("Error al refrescar el token", error.message);
+    console.error("Error al refrescar el token", error);
     return null;
   }
 };

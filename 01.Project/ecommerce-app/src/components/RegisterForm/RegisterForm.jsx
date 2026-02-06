@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
-import { checkEmail, /*register */ } from "../../services/auth";
+import { checkEmail } from "../../services/auth";
 import Button from "../common/Button";
 import ErrorMessage from "../common/ErrorMessage/ErrorMessage";
 import Input from "../common/Input";
@@ -17,7 +17,6 @@ export default function RegisterForm({ onSuccess }) {
   const [verifyPassword, setverifyPassword] = useState("");
 
   // UX state
-  //const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [emailCheck, setEmailCheck] = useState({ status: "idle", message: "" });
 
@@ -126,35 +125,22 @@ export default function RegisterForm({ onSuccess }) {
 
     if (!validateForm()) return;
 
-    //setLoading(true);
-
-    const userData = { 
-      displayName: displayName.trim(), 
-      email: email.trim().toLowerCase(), 
+    const userData = {
+      displayName: displayName.trim(),
+      email: email.trim().toLowerCase(),
       password,
     };
 
-    //try {
-    //  const result = await register(userData);
-    //  console.log(result);
-    //  navigate("/login");
-    //} catch (err) {
-    //  setError(err.message);
-    //} finally {
-    //  setLoading(false);
-    //}
+    const result = await register(userData);
 
-    if (result.success){
-      navigate('/login', {
+    if (result.success) {
+      navigate("/login", {
         state: {
-          // el state es un objeto que se pasa como segundo argumento a navigate
-          // muestra un mensaje de exito, y el email del usuario que se registro
-          // aparece en la pantalla de login
-          message: 'Usuario registrado correctamente. Inicia sesión',
+          message: "Registro exitoso. Por favor inicia sesión.",
           email: userData.email,
         },
       });
-    }else{
+    } else {
       setError(result.message);
     }
   };
