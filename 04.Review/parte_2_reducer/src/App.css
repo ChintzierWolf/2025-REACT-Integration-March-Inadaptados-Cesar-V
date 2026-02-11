@@ -1,0 +1,116 @@
+#root {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.app {
+  text-align: center;
+}
+
+.budget-form,
+.expense-form {
+  margin: 2rem 0;
+  padding: 1.5rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+}
+
+.budget-form form,
+.expense-form form {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+input {
+  padding: 0.5rem;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  min-width: 200px;
+}
+
+button {
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  background-color: #646cff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #535bf2;
+}
+
+.budget-summary {
+  display: flex;
+  justify-content: space-around;
+  gap: 1rem;
+  margin: 2rem 0;
+  flex-wrap: wrap;
+}
+
+.budget-item {
+  padding: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  min-width: 150px;
+}
+
+.budget-item h3 {
+  margin: 0 0 0.5rem 0;
+  font-size: 0.9rem;
+  color: #888;
+}
+
+.budget-item p {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.negative {
+  color: #ff4444;
+}
+
+.expense-list {
+  margin: 2rem 0;
+}
+
+.expenses {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.expense-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #f9f9f9;
+}
+
+.expense-name {
+  font-weight: 500;
+}
+
+.expense-amount {
+  font-weight: bold;
+  color: #646cff;
+}
+
+.reset-button {
+  margin-top: 2rem;
+  background-color: #ff4444;
+}
+
+.reset-button:hover {
+  background-color: #cc0000;
+}
