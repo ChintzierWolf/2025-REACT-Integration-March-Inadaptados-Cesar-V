@@ -1,0 +1,128 @@
+/* Home Page Styles - Gamer Edition */
+:root {
+  --neon-green: #39ff14;
+  --neon-purple: #bc13fe;
+  --dark-bg: #0a0a0a;
+  --card-bg: rgba(20, 20, 20, 0.9);
+}
+
+.home-container {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding-bottom: 60px;
+}
+
+/* Hero / Welcome Section */
+.hero-section {
+  text-align: center;
+  padding: 80px 20px;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0) 100%),
+    url("https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=2070&auto=format&fit=crop");
+  background-size: cover;
+  background-position: center;
+  border-bottom: 2px solid var(--primary-color);
+  margin-bottom: 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-section::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(10, 10, 10, 0.7);
+  z-index: 1;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.welcome-title {
+  font-size: 3.5rem;
+  font-weight: 900;
+  margin-bottom: 16px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: #fff;
+  text-shadow: 0 0 20px rgba(57, 255, 20, 0.6);
+  background: -webkit-linear-gradient(#fff, #ccc);
+  -webkit-background-clip: text;
+}
+
+.welcome-title span {
+  color: var(--primary-color);
+}
+
+.welcome-subtitle {
+  font-size: 1.5rem;
+  color: #e0e0e0;
+  font-weight: 300;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+/* Sections Containers */
+.home-section {
+  position: relative;
+  padding: 0 20px;
+}
+
+.section-title-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 32px;
+  padding-left: 20px;
+  border-left: 4px solid var(--accent-color);
+}
+
+.section-title {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #fff;
+  text-transform: uppercase;
+  margin: 0;
+  letter-spacing: 1px;
+}
+
+/* Banner Wrappers */
+.banner-wrapper {
+  margin: 20px 0;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.banner-wrapper:hover {
+  transform: scale(1.01);
+  border-color: var(--primary-color);
+}
+
+/* List/Grid overrides if needed */
+.list-container {
+  background: transparent !important;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .welcome-title {
+    font-size: 2rem;
+  }
+  .welcome-subtitle {
+    font-size: 1.1rem;
+  }
+  .hero-section {
+    padding: 60px 20px;
+  }
+}
