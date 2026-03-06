@@ -7,6 +7,9 @@ import notificationRoutes from './notificationRoutes.js';
 import orderRoutes from './orderRoutes.js';
 import paymentMethodRoutes from './paymentMethodRoutes.js';
 import productRoutes from './productRoutes.js';
+import reviewRoutes from './reviewRoutes.js';
+import shippingAddressRoutes from './shippingAddressRoutes.js';
+import wishListRoutes from './wishListRoutes.js';
 
 const router = express.Router();
 
@@ -26,5 +29,14 @@ router.use('/notifications', notificationRoutes);
 // 📑 Pedidos y pagos
 router.use('/orders', orderRoutes);
 router.use('/payment-methods', paymentMethodRoutes);
+
+// 🚚 Direcciones de Envío
+router.use('/shipping-addresses', shippingAddressRoutes);
+
+// ⭐ Reseñas de Productos
+router.use('/reviews', reviewRoutes);
+
+// ❤️ Lista de Deseos
+router.use('/wishlists', wishListRoutes);
 
 export default router;

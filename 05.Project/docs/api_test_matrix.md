@@ -60,3 +60,14 @@ Esta matriz detalla los escenarios exactos que deben automatizarse para asegurar
 1.  **Payloads excesivos**: Enviar un JSON de 10MB en `/auth/register` (Debe cortar Express limiter).
 2.  **Inyección NoSQL**: Enviar `{ "$gt": "" }` en el input de `email` del Login (Vitest debe verificar sanitización).
 3.  **Race Conditions de Stock** (Para Test de Carga/E2E Avanzado): Dos usuarios comprando simultáneamente el último producto disponible (Difícil con Supertest, requiere pruebas concurrentes `Promise.all()`).
+
+---
+
+## 🆕 5. Módulos Adicionales (Pendientes de Cobertura Completa)
+
+Tras revisar el código fuente, se detectaron los siguientes módulos que requieren inclusión en la suite de automatización:
+
+- **Cart**: Validación de adición/eliminación de items, cálculo en tiempo real.
+- **Categories**: Creación por Admin, asignación a productos.
+- **Reviews**: Flujo de calificación de 1-5, validación de compra previa.
+- **Notifications & Payment Methods**: CRUD de métodos de pago y despacho de notificaciones de éxito/falla.

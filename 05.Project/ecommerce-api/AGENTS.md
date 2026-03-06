@@ -17,30 +17,36 @@ src/
 
 Todas las rutas están prefijadas por `/api`.
 
-| Recurso      | Método | Path                             | Auth | Admin |
-| :----------- | :----- | :------------------------------- | :--: | :---: |
-| **Auth**     | POST   | `/auth/register`                 |  ❌  |  ❌   |
-|              | POST   | `/auth/login`                    |  ❌  |  ❌   |
-| **Users**    | GET    | `/users/profile`                 |  ✅  |  ❌   |
-|              | GET    | `/users/`                        |  ✅  |  ✅   |
-|              | GET    | `/users/:userId`                 |  ✅  |  ✅   |
-|              | PUT    | `/users/profile`                 |  ✅  |  ❌   |
-|              | PUT    | `/users/change-password`         |  ✅  |  ❌   |
-|              | PUT    | `/users/:userId`                 |  ✅  |  ✅   |
-|              | PATCH  | `/users/deactivate`              |  ✅  |  ❌   |
-|              | PATCH  | `/users/:userId/toggle-status`   |  ✅  |  ✅   |
-|              | DELETE | `/users/:userId`                 |  ✅  |  ✅   |
-| **Products** | GET    | `/products/`                     |  ❌  |  ❌   |
-|              | GET    | `/products/category/:idCategory` |  ❌  |  ❌   |
-|              | POST   | `/products/`                     |  ❌  |  ❌   |
-|              | PUT    | `/products/:id`                  |  ❌  |  ❌   |
-|              | DELETE | `/products/:id`                  |  ❌  |  ❌   |
-| **Orders**   | GET    | `/orders/`                       |  ✅  |  ✅   |
-|              | GET    | `/orders/:id`                    |  ✅  |  ❌   |
-|              | GET    | `/orders/user/:userId`           |  ✅  |  ❌   |
-|              | POST   | `/orders/`                       |  ✅  |  ❌   |
-|              | PATCH  | `/orders/:id/cancel`             |  ✅  |  ❌   |
-|              | DELETE | `/orders/:id`                    |  ✅  |  ✅   |
+| Recurso        | Método | Path                             | Auth | Admin |
+| :------------- | :----- | :------------------------------- | :--: | :---: |
+| **Auth**       | POST   | `/auth/register`                 |  ❌  |  ❌   |
+|                | POST   | `/auth/login`                    |  ❌  |  ❌   |
+| **Users**      | GET    | `/users/profile`                 |  ✅  |  ❌   |
+|                | GET    | `/users/`                        |  ✅  |  ✅   |
+|                | GET    | `/users/:userId`                 |  ✅  |  ✅   |
+|                | PUT    | `/users/profile`                 |  ✅  |  ❌   |
+|                | PUT    | `/users/change-password`         |  ✅  |  ❌   |
+|                | PUT    | `/users/:userId`                 |  ✅  |  ✅   |
+|                | PATCH  | `/users/deactivate`              |  ✅  |  ❌   |
+|                | PATCH  | `/users/:userId/toggle-status`   |  ✅  |  ✅   |
+|                | DELETE | `/users/:userId`                 |  ✅  |  ✅   |
+| **Products**   | GET    | `/products/`                     |  ❌  |  ❌   |
+|                | GET    | `/products/category/:idCategory` |  ❌  |  ❌   |
+|                | POST   | `/products/`                     |  ❌  |  ❌   |
+|                | PUT    | `/products/:id`                  |  ❌  |  ❌   |
+|                | DELETE | `/products/:id`                  |  ❌  |  ❌   |
+| **Orders**     | GET    | `/orders/`                       |  ✅  |  ✅   |
+|                | GET    | `/orders/:id`                    |  ✅  |  ❌   |
+|                | GET    | `/orders/user/:userId`           |  ✅  |  ❌   |
+|                | POST   | `/orders/`                       |  ✅  |  ❌   |
+|                | PATCH  | `/orders/:id/cancel`             |  ✅  |  ❌   |
+|                | DELETE | `/orders/:id`                    |  ✅  |  ✅   |
+| **Cart**       | GET    | `/cart/`                         |  ✅  |  ❌   |
+|                | POST   | `/cart/`                         |  ✅  |  ❌   |
+| **Categories** | GET    | `/categories/`                   |  ❌  |  ❌   |
+|                | POST   | `/categories/`                   |  ✅  |  ✅   |
+| **Notifs**     | GET    | `/notifications/`                |  ✅  |  ❌   |
+| **Payments**   | GET    | `/payment-methods/`              |  ✅  |  ❌   |
 
 ## 🏗️ Modelos Mongoose (Principales)
 
@@ -68,6 +74,23 @@ Todas las rutas están prefijadas por `/api`.
 - `products` (Array of {productId, quantity, price})
 - `totalPrice` (Number)
 - `status` (enum: ['pending', 'processing', 'shipped', 'delivered', 'cancelled'])
+
+### Cart
+
+- `user` (ObjectId -> User)
+- `products` (Array of {product: ObjectId, quantity: Number})
+
+### Category
+
+- `name` (String, Required)
+- `description` (String)
+
+### Review
+
+- `user` (ObjectId -> User)
+- `product` (ObjectId -> Product)
+- `rating` (Number, 1 to 5)
+- `comment` (String)
 
 ## ✅ Validaciones
 
