@@ -3,7 +3,7 @@ import { defineConfig } from 'vitest/config';
 export default defineConfig({
   test: {
     environment: 'node',
-    globals: false, // We import functions explicitly
+    globals: true, // Enable globals for setupFiles and convenience
     setupFiles: ['./tests/setup.js'], // Global setup like MongoDB memory server
     clearMocks: true, // Automatycally clears mock calls before every test
     coverage: {

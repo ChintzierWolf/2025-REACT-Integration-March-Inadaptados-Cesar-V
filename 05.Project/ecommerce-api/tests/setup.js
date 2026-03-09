@@ -1,4 +1,4 @@
-import { beforeAll, afterAll, afterEach } from 'vitest';
+// No explicit imports needed with globals: true
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import mongoose from 'mongoose';
 
