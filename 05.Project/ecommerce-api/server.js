@@ -3,7 +3,7 @@ import dbConnection from './src/config/database.js';
 import chalk from 'chalk';
 import app from './app.js';
 
-dotenv.config();
+dotenv.config({ path: './.env.production' });
 
 dbConnection(); // Conecta a la base de datos MongoDB
 
