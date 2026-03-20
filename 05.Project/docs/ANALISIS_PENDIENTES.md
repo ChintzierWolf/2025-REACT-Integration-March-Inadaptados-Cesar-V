@@ -40,13 +40,19 @@
 - Refleja estado post-integración
 - Elimina referencias a patrones mock obsoletos
 
+### G3: Wishlist Frontend ✅
+- `wishlistService.js` creado con `getWishlist()` y `toggleWishlistItem()`
+- `WishList.jsx` implementado con listado de productos
+- Botón de corazón agregado a `ProductCard.jsx`
+- Bug corregido: `product.id` → `product._id`
+- Estilos CSS agregados para wishlist
+
 ---
 
 ## 📋 Gaps pendientes
 
 | # | Gap | Prioridad | Estado |
 |---|-----|-----------|--------|
-| G3 | Wishlist frontend | 🟡 Media | No existe |
 | G4 | Reviews frontend | 🟡 Media | No existe |
 | G6 | Seed ShippingAddress/PaymentMethod | 🟡 Media | No existe |
 | G7 | Tests Vitest | 🟡 Media | Con problemas |
@@ -60,11 +66,12 @@ src/services/
 ├── addressService.js    ✅ API real
 ├── cartService.js       ✅ API real
 ├── categoryService.js   ✅ API real
-├── orderService.js      ✅ API real (NUEVO)
+├── orderService.js      ✅ API real
 ├── paymentService.js    ✅ API real
 ├── productService.js    ✅ API real
 ├── shippingService.js   ✅ API real
-└── userService.js       ✅ API real (REFACTORIZADO)
+├── userService.js       ✅ API real
+└── wishlistService.js   ✅ API real (NUEVO)
 ```
 
 ---
@@ -79,10 +86,16 @@ src/services/
 
 ## 🔄 Próximos pasos recomendados
 
-1. **G3/G4**: Implementar Wishlist y Reviews en frontend
+1. **G4**: Implementar Reviews en frontend
 2. **G6**: Crear seed para ShippingAddress y PaymentMethod
 3. **G7**: Reparar suite de tests Vitest
 4. **Docs**: Archivar BACKLOG_MVP.md y PRODUCT_SPECS.md
+
+---
+
+## ⚠️ Bugs detectados en backend
+
+- **wishListController.js**: El modelo `WishList` usa array de objetos `{product, addedAt}`, pero el controlador usa `findIndex(p => p.toString())` que asume array de ObjectIds directos. Verificar compatibilidad.
 
 ---
 

@@ -1,12 +1,18 @@
 import { Link } from "react-router-dom";
+import { useState } from "react";
 import { useCart } from "../../context/CartContext";
+import { useAuth } from "../../context/AuthContext";
 import Badge from "../common/Badge";
 import Button from "../common/Button";
+import Icon from "../common/Icon/Icon";
+import { toggleWishlistItem } from "../../services/wishlistService";
 import "./ProductCard.css";
 
 export default function ProductCard({ product, orientation = "vertical" }) {
   const { addToCart } = useCart();
-  const { name, price, stock, imagesUrl, description } = product || {};
+  const { isAuthenticated } = useAuth();
+  const [wishlistLoading, setWishlistLoading] = useState(false);
+  const { name, price, stock, image, description } = product || {};
 
   if (!product) {
     return (
@@ -25,14 +31,33 @@ export default function ProductCard({ product, orientation = "vertical" }) {
       : { text: "Agotado", variant: "error" };
   const hasDiscount = product.discount && product.discount > 0;
   const handleAddToCart = () => addToCart(product, 1);
-  const productLink = `/product/${product.id}`;
+  const productLink = `/product/${product._id}`;
   const cardClass = `product-card product-card--${orientation}`;
+
+  const handleToggleWishlist = async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    if (!isAuthenticated()) {
+      alert("Inicia sesión para agregar a tu lista de deseos");
+      return;
+    }
+    
+    setWishlistLoading(true);
+    try {
+      await toggleWishlistItem(product._id);
+    } catch (error) {
+      console.error("Error toggling wishlist:", error);
+    } finally {
+      setWishlistLoading(false);
+    }
+  };
 
   return (
     <div className={cardClass}>
       <Link to={productLink} className="product-card-image-link">
         <img
-          src={product.image || "/img/products/placeholder.svg"}
+          src={image || "/img/products/placeholder.svg"}
           alt={name}
           className="product-card-image"
           onError={(event) => {
@@ -40,6 +65,18 @@ export default function ProductCard({ product, orientation = "vertical" }) {
           }}
         />
       </Link>
+      <button
+        className="product-card-wishlist-btn"
+        onClick={handleToggleWishlist}
+        disabled={wishlistLoading}
+        title={isAuthenticated() ? "Agregar a favoritos" : "Inicia sesión para guardar en favoritos"}
+      >
+        <Icon 
+          name={product.isInWishlist ? "heart" : "heart"} 
+          size={20} 
+          className={product.isInWishlist ? "wishlist-active" : ""}
+        />
+      </button>
       <div className="product-card-content">
         <h3 className="product-card-title">
           <Link
