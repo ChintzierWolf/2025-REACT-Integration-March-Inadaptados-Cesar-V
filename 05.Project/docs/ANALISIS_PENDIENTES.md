@@ -47,13 +47,19 @@
 - Bug corregido: `product.id` → `product._id`
 - Estilos CSS agregados para wishlist
 
+### G4: Reviews Frontend ✅
+- `reviewService.js` creado con `getProductReviews()`, `createReview()`, `deleteReview()`
+- Sección de reviews agregada a `ProductDetails.jsx`
+- Formulario para crear reviews con rating (1-5 estrellas) y comentario
+- Lista de reviews con usuario, rating y fecha
+- Estilos CSS agregados para sección de reviews
+
 ---
 
 ## 📋 Gaps pendientes
 
 | # | Gap | Prioridad | Estado |
 |---|-----|-----------|--------|
-| G4 | Reviews frontend | 🟡 Media | No existe |
 | G6 | Seed ShippingAddress/PaymentMethod | 🟡 Media | No existe |
 | G7 | Tests Vitest | 🟡 Media | Con problemas |
 
@@ -69,9 +75,10 @@ src/services/
 ├── orderService.js      ✅ API real
 ├── paymentService.js    ✅ API real
 ├── productService.js    ✅ API real
-├── shippingService.js   ✅ API real
+├── reviewService.js     ✅ API real (NUEVO)
+├── shippingService.js  ✅ API real
 ├── userService.js       ✅ API real
-└── wishlistService.js   ✅ API real (NUEVO)
+└── wishlistService.js  ✅ API real
 ```
 
 ---
@@ -86,10 +93,9 @@ src/services/
 
 ## 🔄 Próximos pasos recomendados
 
-1. **G4**: Implementar Reviews en frontend
-2. **G6**: Crear seed para ShippingAddress y PaymentMethod
-3. **G7**: Reparar suite de tests Vitest
-4. **Docs**: Archivar BACKLOG_MVP.md y PRODUCT_SPECS.md
+1. **G6**: Crear seed para ShippingAddress y PaymentMethod
+2. **G7**: Reparar suite de tests Vitest
+3. **Docs**: Archivar BACKLOG_MVP.md y PRODUCT_SPECS.md
 
 ---
 
