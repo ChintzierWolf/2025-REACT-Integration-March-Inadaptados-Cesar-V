@@ -1,20 +1,29 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { useCart } from "../../context/CartContext";
+import { useAuth } from "../../context/AuthContext";
 import categoriesData from "../../data/categories.json";
 import Breadcrumb from "../../layout/Breadcrumb/Breadcrumb";
 import { getProductById } from "../../services/productService";
+import { getProductReviews, createReview } from "../../services/reviewService";
 import Badge from "../common/Badge";
 import Button from "../common/Button";
 import ErrorMessage from "../common/ErrorMessage/ErrorMessage";
 import Loading from "../common/Loading/Loading";
+import Icon from "../common/Icon/Icon";
 import "./ProductDetails.css";
 
 export default function ProductDetails({ productId }) {
   const { addToCart } = useCart();
+  const { isAuthenticated, user } = useAuth();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [reviews, setReviews] = useState([]);
+  const [reviewsLoading, setReviewsLoading] = useState(true);
+  const [newReview, setNewReview] = useState({ rating: 5, comment: "" });
+  const [submitting, setSubmitting] = useState(false);
+  const [reviewError, setReviewError] = useState(null);
 
   useEffect(() => {
     setLoading(true);
@@ -43,6 +52,47 @@ export default function ProductDetails({ productId }) {
 
   const handleAddToCart = () => {
     if (product) addToCart(product, 1);
+  };
+
+  useEffect(() => {
+    if (productId) {
+      setReviewsLoading(true);
+      getProductReviews(productId)
+        .then((data) => {
+          setReviews(Array.isArray(data) ? data : []);
+        })
+        .catch(() => {
+          setReviews([]);
+        })
+        .finally(() => {
+          setReviewsLoading(false);
+        });
+    }
+  }, [productId]);
+
+  const handleSubmitReview = async (e) => {
+    e.preventDefault();
+    if (!isAuthenticated()) {
+      setReviewError("Inicia sesión para dejar una reseña");
+      return;
+    }
+    if (newReview.rating < 1 || newReview.rating > 5) {
+      setReviewError("La calificación debe ser entre 1 y 5");
+      return;
+    }
+
+    setSubmitting(true);
+    setReviewError(null);
+
+    try {
+      const created = await createReview(productId, newReview.rating, newReview.comment);
+      setReviews((prev) => [created, ...prev]);
+      setNewReview({ rating: 5, comment: "" });
+    } catch (err) {
+      setReviewError(err.message || "Error al enviar la reseña");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   if (loading) {
@@ -125,6 +175,111 @@ export default function ProductDetails({ productId }) {
             </Link>
           </div>
         </div>
+      </div>
+
+      <div className="product-reviews-section">
+        <h2>Reseñas ({reviews.length})</h2>
+
+        {reviewsLoading ? (
+          <Loading message="Cargando reseñas..." />
+        ) : (
+          <>
+            {reviews.length > 0 && product?.ratingsAverage && (
+              <div className="product-rating-summary">
+                <div className="rating-stars">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <Icon
+                      key={star}
+                      name={star <= Math.round(product.ratingsAverage) ? "star" : "starOutline"}
+                      size={24}
+                      className="rating-star"
+                    />
+                  ))}
+                </div>
+                <span className="rating-value">
+                  {product.ratingsAverage.toFixed(1)} de 5 ({product.ratingsQuantity} reseñas)
+                </span>
+              </div>
+            )}
+
+            {isAuthenticated() && (
+              <form className="review-form" onSubmit={handleSubmitReview}>
+                <h3>Deja tu reseña</h3>
+                <div className="review-form-group">
+                  <label>Calificación:</label>
+                  <div className="rating-input">
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <button
+                        key={star}
+                        type="button"
+                        className={`star-btn ${newReview.rating >= star ? "active" : ""}`}
+                        onClick={() => setNewReview({ ...newReview, rating: star })}
+                      >
+                        <Icon
+                          name={newReview.rating >= star ? "star" : "starOutline"}
+                          size={28}
+                        />
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                <div className="review-form-group">
+                  <label>Comentario (opcional):</label>
+                  <textarea
+                    value={newReview.comment}
+                    onChange={(e) => setNewReview({ ...newReview, comment: e.target.value })}
+                    placeholder="Cuéntanos tu experiencia con este producto..."
+                    maxLength={500}
+                    rows={3}
+                  />
+                </div>
+                {reviewError && <ErrorMessage>{reviewError}</ErrorMessage>}
+                <Button type="submit" disabled={submitting}>
+                  {submitting ? "Enviando..." : "Enviar Reseña"}
+                </Button>
+              </form>
+            )}
+
+            {!isAuthenticated() && (
+              <p className="review-login-prompt">
+                <Link to="/login">Inicia sesión</Link> para dejar una reseña
+              </p>
+            )}
+
+            <div className="reviews-list">
+              {reviews.length === 0 ? (
+                <p className="no-reviews">Aún no hay reseñas para este producto. ¡Sé el primero!</p>
+              ) : (
+                reviews.map((review) => (
+                  <div key={review._id} className="review-card">
+                    <div className="review-header">
+                      <div className="review-user">
+                        <Icon name="user" size={20} />
+                        <span>{review.user?.displayName || "Usuario"}</span>
+                      </div>
+                      <div className="review-rating">
+                        {[1, 2, 3, 4, 5].map((star) => (
+                          <Icon
+                            key={star}
+                            name={star <= review.rating ? "star" : "starOutline"}
+                            size={16}
+                            className={star <= review.rating ? "star-filled" : ""}
+                          />
+                        ))}
+                      </div>
+                    </div>
+                    {review.comment && (
+                      <p className="review-comment">{review.comment}</p>
+                    )}
+                    <span className="review-date">
+                      {new Date(review.createdAt).toLocaleDateString("es-MX")}
+                    </span>
+                  </div>
+                ))
+              )}
+            </div>
+          </>
+        )}
       </div>
     </div>
   );
