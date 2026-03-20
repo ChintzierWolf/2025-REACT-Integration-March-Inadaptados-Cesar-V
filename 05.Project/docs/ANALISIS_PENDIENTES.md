@@ -54,13 +54,18 @@
 - Lista de reviews con usuario, rating y fecha
 - Estilos CSS agregados para sección de reviews
 
+### G6: Seed con datos de prueba ✅
+- Seed.js extendido para crear usuarios, direcciones y métodos de pago
+- Usuarios de prueba: demo@test.com y admin@test.com
+- Direcciones de envío asociadas a cada usuario
+- Métodos de pago (tarjetas y PayPal) asociados a cada usuario
+
 ---
 
 ## 📋 Gaps pendientes
 
 | # | Gap | Prioridad | Estado |
 |---|-----|-----------|--------|
-| G6 | Seed ShippingAddress/PaymentMethod | 🟡 Media | No existe |
 | G7 | Tests Vitest | 🟡 Media | Con problemas |
 
 ---
