@@ -66,7 +66,7 @@
 
 | # | Gap | Prioridad | Estado |
 |---|-----|-----------|--------|
-| G7 | Tests Vitest | 🟡 Media | Con problemas |
+| G7 | Tests Vitest | 🟡 Media | Timeout corregido, problemas de conexión pendientes |
 
 ---
 
@@ -88,7 +88,13 @@ src/services/
 
 ---
 
-## 📁 Archivos obsoletos (no usar)
+## 📁 Archivos archivados
+
+Los siguientes documentos fueron movidos a `/docs/archive/`:
+- `BACKLOG_MVP.md` - Obsoleto, épicas completadas
+- `PRODUCT_SPECS.md` - Obsoleto, contradecía estado real
+
+## 📁 Archivos obsoletos del frontend (no usar)
 
 - `src/data/users.json` - Datos mock (ya no se usa)
 - `src/data/shipping-address.json` - Datos mock (ya no se usa)
@@ -98,15 +104,20 @@ src/services/
 
 ## 🔄 Próximos pasos recomendados
 
-1. **G6**: Crear seed para ShippingAddress y PaymentMethod
-2. **G7**: Reparar suite de tests Vitest
-3. **Docs**: Archivar BACKLOG_MVP.md y PRODUCT_SPECS.md
+1. **G7**: Reparar suite de tests Vitest
+2. Verificar integración completa del flujo de usuario
 
 ---
 
 ## ⚠️ Bugs detectados en backend
 
 - **wishListController.js**: El modelo `WishList` usa array de objetos `{product, addedAt}`, pero el controlador usa `findIndex(p => p.toString())` que asume array de ObjectIds directos. Verificar compatibilidad.
+
+## ⚠️ Tests Vitest (G7)
+
+- Timeout de hooks corregido (de 10s a 60s)
+- Configuración de vitest actualizada con `hookTimeout` y `testTimeout`
+- Problemas de conexión con MongoMemoryServer persisten (necesita revisión de arquitectura)
 
 ---
 
