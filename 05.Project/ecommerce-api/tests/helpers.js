@@ -34,7 +34,7 @@ export const createMockReqRes = (overrides = {}) => {
 export const UserBuilder = (overrides = {}) => ({
   displayName: "Test User",
   email: `test-${Date.now()}@example.com`,
-  password: "password123",
+  hashPassword: "$2b$10$rQZ8K.W8vZ5wQ5vZ5wQ5vOqW5vZ5wQ5vZ5wQ5vZ5wQ5vZ5wQ5vZ5", // Pre-hashed password
   role: "customer",
   isActive: true,
   ...overrides
@@ -47,6 +47,7 @@ export const ProductBuilder = (overrides = {}) => ({
   stock: 10,
   genre: "Action",
   platform: "PC",
+  category: null,
   ...overrides
 });
 

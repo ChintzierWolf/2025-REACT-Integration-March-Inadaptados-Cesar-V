@@ -12,6 +12,7 @@ vi.mock('jsonwebtoken');
 describe('Auth Controller', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    vi.restoreAllMocks();
   });
 
   describe('register', () => {
@@ -23,7 +24,9 @@ describe('Auth Controller', () => {
       bcrypt.hash.mockResolvedValue('hashed');
       
       const mockSave = vi.fn().mockResolvedValue(true);
-      User.mockImplementation(() => ({ save: mockSave }));
+      User.mockImplementation(function() {
+        return { save: mockSave };
+      });
 
       await register(req, res, next);
 
@@ -60,7 +63,8 @@ describe('Auth Controller', () => {
       const { req, res, next } = createMockReqRes({
         body: { email: 'test@test.com', password: 'pass' }
       });
-      User.findOne.mockResolvedValue({ _id: '123', email: 'test@test.com', hashPassword: 'hashed', role: 'guest' });
+      const mockUser = { _id: '123', email: 'test@test.com', hashPassword: 'hashed', role: 'guest', displayName: 'Test', phone: '123', avatar: 'avatar.png' };
+      User.findOne.mockResolvedValue(mockUser);
       bcrypt.compare.mockResolvedValue(true);
       jwt.sign.mockReturnValue('mock_token');
 
@@ -70,7 +74,17 @@ describe('Auth Controller', () => {
       expect(bcrypt.compare).toHaveBeenCalledWith('pass', 'hashed');
       expect(jwt.sign).toHaveBeenCalled();
       expect(res.status).toHaveBeenCalledWith(200);
-      expect(res.json).toHaveBeenCalledWith({ token: 'mock_token' });
+      expect(res.json).toHaveBeenCalledWith({
+        token: 'mock_token',
+        user: {
+          _id: '123',
+          displayName: 'Test',
+          email: 'test@test.com',
+          role: 'guest',
+          phone: '123',
+          avatar: 'avatar.png'
+        }
+      });
     });
 
     it('should return 400 if user does not exist', async () => {
