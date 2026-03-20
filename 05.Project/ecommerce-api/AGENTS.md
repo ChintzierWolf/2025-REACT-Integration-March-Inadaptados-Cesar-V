@@ -47,8 +47,20 @@ Todas las rutas están prefijadas por `/api`.
 |                | POST   | `/categories/`                   |  ✅  |  ✅   |
 | **Notifs**     | GET    | `/notifications/`                |  ✅  |  ❌   |
 | **Payments**   | GET    | `/payment-methods/`              |  ✅  |  ❌   |
+|                | POST   | `/payment-methods/`              |  ✅  |  ❌   |
+|                | PUT    | `/payment-methods/:id`           |  ✅  |  ❌   |
+|                | PATCH  | `/payment-methods/:id/set-default` |  ✅  |  ❌   |
+|                | DELETE | `/payment-methods/:id`           |  ✅  |  ❌   |
+| **Shipping**   | GET    | `/shipping-address/`              |  ✅  |  ❌   |
+|                | POST   | `/shipping-address/`             |  ✅  |  ❌   |
+|                | DELETE | `/shipping-address/:id`          |  ✅  |  ❌   |
+| **Wishlist**   | GET    | `/wishlist/`                     |  ✅  |  ❌   |
+|                | POST   | `/wishlist/toggle`               |  ✅  |  ❌   |
+| **Reviews**    | GET    | `/reviews/product/:productId`    |  ❌  |  ❌   |
+|                | POST   | `/reviews/`                      |  ✅  |  ❌   |
+|                | DELETE | `/reviews/:id`                   |  ✅  |  ❌   |
 
-## 🏗️ Modelos Mongoose (Principales)
+## 🏗️ Modelos Mongoose (Completos)
 
 ### User
 
@@ -57,6 +69,7 @@ Todas las rutas están prefijadas por `/api`.
 - `hashPassword` (String, Required)
 - `role` (String, enum: ['admin', 'customer', 'guest'])
 - `phone` (String, 10 digits)
+- `avatar` (String, default placeholder)
 - `isActive` (Boolean, default: true)
 
 ### Product
@@ -66,6 +79,7 @@ Todas las rutas están prefijadas por `/api`.
 - `stock` (Number, Required)
 - `image` (String, Default placeholder)
 - `category` (ObjectId -> Category)
+- `isFeatured` (Boolean, default: false)
 - `platform` (enum: ['PC', 'PlayStation', 'Xbox', 'Nintendo', 'Mobile'], Optional)
 - `genre` (enum: ['Action', 'Adventure', 'RPG', ...], Optional)
 - `releaseDate` (Date, Optional)
@@ -74,8 +88,12 @@ Todas las rutas están prefijadas por `/api`.
 
 - `user` (ObjectId -> User)
 - `products` (Array of {productId, quantity, price})
+- `shippingAddress` (ObjectId -> ShippingAddress)
+- `paymentMethod` (ObjectId -> PaymentMethod)
+- `shippingCost` (Number)
 - `totalPrice` (Number)
 - `status` (enum: ['pending', 'processing', 'shipped', 'delivered', 'cancelled'])
+- `paymentStatus` (enum: ['pending', 'paid', 'failed', 'refunded'])
 
 ### Cart
 
@@ -86,6 +104,31 @@ Todas las rutas están prefijadas por `/api`.
 
 - `name` (String, Required)
 - `description` (String)
+- `imageURL` (String)
+- `parentCategory` (ObjectId -> Category, optional)
+
+### ShippingAddress
+
+- `user` (ObjectId -> User)
+- `name` (String, Required)
+- `street` (String, Required)
+- `city` (String)
+- `postalCode` (String)
+- `country` (String)
+- `isDefault` (Boolean, default: false)
+
+### PaymentMethod
+
+- `user` (ObjectId -> User)
+- `type` (String: 'credit', 'debit')
+- `last4` (String, last 4 digits)
+- `alias` (String, friendly name)
+- `isDefault` (Boolean, default: false)
+
+### Wishlist
+
+- `user` (ObjectId -> User)
+- `products` (Array of ObjectId -> Product)
 
 ### Review
 

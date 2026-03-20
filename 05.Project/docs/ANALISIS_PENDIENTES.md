@@ -1,67 +1,89 @@
-# Análisis y Tareas Pendientes
+# Estado del Proyecto - Marzo 2026
 
-## ✅ 1. Validación de US-002: Cliente HTTP Axios (COMPLETADA)
-Se ha validado y estabilizado la comunicación UI-UX mediante las siguientes correcciones:
+## ✅ Épicas completadas (Originales)
 
-### Backend (API)
-- **Conectividad DB**: Migración de MongoDB Local a **MongoDB Atlas** en `.env` y `.env.production` para evitar errores `ECONNREFUSED`.
-- **CORS**: Configuración `CORS_ORIGIN = *` para permitir peticiones desde cualquier origen.
-- **Rutas (Endpoints)**: Corrección en `src/routes/productRoutes.js` para servir productos en `/api/products`.
-- **Controladores**: Ajuste de `getProducts` para devolver un **Array plano** compatible con el componente `<List />`.
+### Épica 1: Infraestructura y Normalización de Datos
+- Seed script para productos y categorías con jerarquía
+- Cliente HTTP Axios con interceptores configurado
 
-### Frontend (App)
-- **Puerto Estático**: Archivo `.env` en `ecommerce-app` con `PORT=4000` y `REACT_APP_API_URL`.
-- **Servicios**: `productService.js` consume exitosamente datos dinámicos desde la API usando Axios.
+### Épica 2: Catálogo y Navegación Dinámica
+- `categoryService.js` consume `/api/categories`
+- `productService.js` consume `/api/products`
+- Navegación con categoryId real de MongoDB
 
-### Sembrado de Datos (Seed)
-- Ejecución exitosa de `npm run seed`.
-- Seed modificado para marcar los primeros 6 productos como **Destacados** (`isFeatured: true`).
+### Épica 3: Autenticación Real
+- `AuthContext` creado para estado global
+- Login y Register conectados a API real
+- JWT almacenado en localStorage
+- Interceptor Axios inyecta token automáticamente
 
-> **Estado Actual:** El sistema es funcional. Al entrar a **[http://localhost:4000](http://localhost:4000)** se visualizan las tarjetas de productos traídas desde la nube (Atlas).
-
----
-
-## ✅ 2. ÉPICA 2: Catálogo y Navegación Dinámica (COMPLETADA)
-- **Refactor `categoryService.js`**: Reemplazado `categories.json` por llamadas a `http.get('/categories')` y `http.get('/products/category/:idCategory')`.
-- **Seed mejorado**: Ahora mantiene la jerarquía `parentCategory` correctamente al poblar MongoDB.
-- **Navegación**: Los productos se filtran usando el `categoryId` real de MongoDB.
+### Épica 4: Transaccionalidad Segura
+- `CartContext` sincroniza con backend cuando usuario autenticado
+- Checkout conectado a `POST /api/orders/`
+- Servicios de shipping y payment conectados a API
 
 ---
 
-## ✅ 3. ÉPICA 3: Autenticación Real (COMPLETADA)
-- **AuthContext**: Creado `src/context/AuthContext.jsx` para el estado global del usuario.
-- **auth.js refactorizado**: Conecta a `/api/auth/login` y `/api/auth/register`.
-- **JWT**: Token almacenado en `localStorage` e inyectado automáticamente en todas las peticiones por el interceptor de Axios.
-- **Login/Register**: Páginas y formularios funcionales conectados a la API real.
-- **Register**: Nueva página `/register` creada.
+## ✅ Gaps críticos corregidos (Marzo 2026)
 
-### Backend (API)
-- **authController.js**: Actualizado para devolver datos completos del usuario (incluyendo `_id`) en el login.
+### G1: Orders.jsx conectado a API ✅
+- `orderService.js` creado con `getOrders()`, `getOrderById()`, `cancelOrder()`
+- `Orders.jsx` refactorizado para consumir `GET /api/orders/user/:id`
+- Ya no depende de localStorage para historial de órdenes
 
----
+### G2: userService.js refactorizado ✅
+- Ya no importa `users.json` mock
+- Funciones consumen endpoints reales: `GET /users/profile`, `PUT /users/profile`, etc.
 
-## ✅ 4. ÉPICA 4: Transaccionalidad Segura (COMPLETADA)
-- **Carrito sincronizado**: `CartContext` ahora sincroniza con el backend cuando el usuario está autenticado.
-- **Checkout conectado**: El flujo de checkout envía la orden a `POST /api/orders/` en lugar de guardar solo en localStorage.
-- **Servicios refactorizados**:
-  - `shippingService.js`: Conecta a `/shipping-address/`
-  - `paymentService.js`: Conecta a `/payment-methods/`
-  - `cartService.js`: Conecta a `/cart/` y `/orders/`
-
-### Backend (API)
-- **Modelos**: `Cart`, `Order`, `ShippingAddress`, `PaymentMethod` con referencias ObjectId.
-- **Controladores**: Lógica completa de negocio para carrito y órdenes.
+### G5: AGENTS.md reescrito ✅
+- Documento completamente actualizado
+- Refleja estado post-integración
+- Elimina referencias a patrones mock obsoletos
 
 ---
 
-## 📋 Próximos Pasos (Opcionales)
+## 📋 Gaps pendientes
 
-1. **Persistencia del carrito anónimo**: Mantener carrito en localStorage para usuarios no autenticados y fusionar al hacer login.
-2. **Validación de inventario**: Verificar stock disponible antes de confirmar la orden.
-3. **Notificaciones**: Implementar sistema de notificaciones para estados de orden.
-4. **Gestión de usuarios**: CRUD completo de direcciones y métodos de pago desde el perfil.
-5. **Panel de administración**: Dashboard para que los admins gestionen órdenes y productos.
+| # | Gap | Prioridad | Estado |
+|---|-----|-----------|--------|
+| G3 | Wishlist frontend | 🟡 Media | No existe |
+| G4 | Reviews frontend | 🟡 Media | No existe |
+| G6 | Seed ShippingAddress/PaymentMethod | 🟡 Media | No existe |
+| G7 | Tests Vitest | 🟡 Media | Con problemas |
 
 ---
 
-> *Nota: Todas las épicas están completadas. El proyecto ahora tiene una arquitectura full-stack con autenticación JWT, carrito sincronizado con base de datos y flujo de checkout completo.*
+## 📁 Estructura de servicios actual
+
+```
+src/services/
+├── addressService.js    ✅ API real
+├── cartService.js       ✅ API real
+├── categoryService.js   ✅ API real
+├── orderService.js      ✅ API real (NUEVO)
+├── paymentService.js    ✅ API real
+├── productService.js    ✅ API real
+├── shippingService.js   ✅ API real
+└── userService.js       ✅ API real (REFACTORIZADO)
+```
+
+---
+
+## 📁 Archivos obsoletos (no usar)
+
+- `src/data/users.json` - Datos mock (ya no se usa)
+- `src/data/shipping-address.json` - Datos mock (ya no se usa)
+- `src/data/paymentMethods.json` - Datos mock (ya no se usa)
+
+---
+
+## 🔄 Próximos pasos recomendados
+
+1. **G3/G4**: Implementar Wishlist y Reviews en frontend
+2. **G6**: Crear seed para ShippingAddress y PaymentMethod
+3. **G7**: Reparar suite de tests Vitest
+4. **Docs**: Archivar BACKLOG_MVP.md y PRODUCT_SPECS.md
+
+---
+
+*Última actualización: Marzo 2026*

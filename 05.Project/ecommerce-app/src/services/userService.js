@@ -1,24 +1,29 @@
-import users from "../data/users.json";
+import http from '../utils/http';
+import { getCurrentUser } from '../utils/auth';
 
-export const fetchUsers = async () => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(users);
-    }, 1500); // 1.5 segundos de delay
+export const getProfile = async () => {
+  return await http.get('/users/profile');
+};
+
+export const updateProfile = async (userData) => {
+  return await http.put('/users/profile', userData);
+};
+
+export const changePassword = async (currentPassword, newPassword) => {
+  return await http.put('/users/change-password', {
+    currentPassword,
+    newPassword
   });
 };
 
-export const searchUsers = async (query) => {
-  const lowerQuery = query.trim().toLowerCase();
-  return fetchUsers().then((data) =>
-    data.filter(
-      (user) =>
-        user.name.toLowerCase().includes(lowerQuery) ||
-        user.email?.toLowerCase().includes(lowerQuery)
-    )
-  );
+export const getAllUsers = async () => {
+  return await http.get('/users/');
 };
 
 export const getUserById = async (userId) => {
-  return fetchUsers().then((data) => data.find((user) => user._id === userId));
+  return await http.get(`/users/${userId}`);
+};
+
+export const deactivateAccount = async () => {
+  return await http.patch('/users/deactivate');
 };
