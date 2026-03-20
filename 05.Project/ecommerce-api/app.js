@@ -4,12 +4,20 @@ import routes from './src/routes/index.js';
 import logger from './src/middlewares/logger.js';
 import setupGlobalErrorHandlers from './src/middlewares/globalErrorHandler.js';
 import errorHandler from './src/middlewares/errorHandler.js';
+import cors from 'cors';
 
 dotenv.config();
 
 setupGlobalErrorHandlers();
 
 const app = express();
+
+// Configurar CORS
+// Permite peticiones del origen definido en .env (ej. localhost:3000) o de cualquier origen en desarrollo
+app.use(cors({
+  origin: process.env.CORS_ORIGIN || '*',
+  credentials: true
+}));
 
 app.use(express.json());
 app.use(logger);

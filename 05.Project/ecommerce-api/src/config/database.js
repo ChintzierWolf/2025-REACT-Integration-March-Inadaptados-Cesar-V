@@ -10,26 +10,30 @@ dotenv.config();
 // Función asíncrona que establece la conexión con la base de datos
 const dbConnection = async () => {
   try {
-    // Obtenemos la URI base del servidor MongoDB y el nombre de la base de datos desde .env
+    // Obtenemos la URI base del servidor MongoDB y el nombre opcional de la base de datos desde .env
     const dbURI = process.env.MONGODB_URI;
-    const dbName = process.env.MONGODB_DB;
+    const dbName = process.env.MONGODB_DB; // Opcional si la URI ya lo trae
 
-    // Validamos que las variables estén definidas
-    if (!dbURI || !dbName) 
+    // Validamos que la URI esté definida
+    if (!dbURI) 
     {
-      console.error('❌ Error: MONGODB_URI o MONGODB_DB no están definidos en el archivo .env');
+      console.error('❌ Error: MONGODB_URI no está definido en el archivo de entorno.');
       process.exit(1); // Finaliza el proceso si faltan variables críticas
     }
 
-    await mongoose.connect(`${dbURI}/${dbName}`, 
-    {
-      // If you use MongoDB < 8 you have to use this:
-      // Aunque las versiones modernas de Mongoose ya no requieren useNewUrlParser
-      // y useUnifiedTopology, es buena práctica incluirlas para compatibilidad:
+    // Opciones de configuración
+    const options = {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    };
 
-      useNewUrlParser: true,        // Permite usar el nuevo parser de URL (recomendado)
-      useUnifiedTopology: true,     // Usa el nuevo motor de administración de conexiones
-    });
+    // Si MONGODB_DB fue provisto explícitamente, lo inyectamos aquí (ideal para Mongoose > 6)
+    // Esto evita concatenar strings que rompen URLs de MongoDB Atlas (mongodb+srv://...)
+    if (dbName) {
+      options.dbName = dbName;
+    }
+
+    await mongoose.connect(dbURI, options);
 
     console.log(`✅ MongoDB conectado a la base de datos "${dbName}"`);
 

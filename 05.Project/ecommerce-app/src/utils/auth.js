@@ -1,42 +1,45 @@
-import { fetchUsers } from "../services/userService";
-
-const validUsers = {
-  "admin@email.com": "admin123",
-  "cliente@email.com": "cliente123",
-};
+import http from './http';
 
 export async function login(email, password) {
-  if (!validUsers[email] || validUsers[email] !== password) {
-    return {
-      success: false,
-      error: "Email o contraseña incorrectos",
+  try {
+    const response = await http.post('/auth/login', { email, password });
+    localStorage.setItem('token', response.token);
+    const userData = {
+      _id: response.user?._id,
+      email: response.user?.email || email,
+      displayName: response.user?.displayName,
+      role: response.user?.role || 'guest',
+      phone: response.user?.phone,
+      avatar: response.user?.avatar
     };
+    localStorage.setItem('user', JSON.stringify(userData));
+    return { success: true, user: userData };
+  } catch (error) {
+    return { success: false, error: error.message };
   }
+}
 
-  const users = await fetchUsers();
-  const user = users.find((u) => u.email === email);
-
-  if (user) {
-    const token = btoa(`${email}:${Date.now()}`);
-    const userWithLoginDate = { ...user, loginDate: new Date().toISOString() };
-    localStorage.setItem("authToken", token);
-    localStorage.setItem("userData", JSON.stringify(userWithLoginDate));
-    return { success: true, user: userWithLoginDate };
+export async function register(userData) {
+  try {
+    await http.post('/auth/register', userData);
+    return { success: true };
+  } catch (error) {
+    return { success: false, error: error.message };
   }
-  return { success: false, error: "Usuario no encontrado" };
 }
 
 export function logout() {
-  localStorage.removeItem("authToken");
-  localStorage.removeItem("userData");
+  localStorage.removeItem('token');
+  localStorage.removeItem('user');
+  window.location.href = '/';
 }
 
 export function getCurrentUser() {
-  const userData = localStorage.getItem("userData");
+  const userData = localStorage.getItem('user');
   return userData ? JSON.parse(userData) : null;
 }
 
 export function isAuthenticated() {
-  const token = localStorage.getItem("authToken");
+  const token = localStorage.getItem('token');
   return token !== null;
 }

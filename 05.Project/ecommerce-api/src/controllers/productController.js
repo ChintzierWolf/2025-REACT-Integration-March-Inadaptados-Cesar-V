@@ -14,16 +14,7 @@ async function getProducts(req, res, next) {
 
     const totalResults = await Product.countDocuments();
     const totalPages = Math.ceil(totalResults / limit);
-    res.json({
-      products,
-      pagination: {
-        currentPage: page,
-        totalPages,
-        totalResults,
-        hasNext: page < totalPages,
-        hasPrev: page > 1,
-      }
-    });
+    res.json(products);
   } catch (error) {
     next(error);
   }
