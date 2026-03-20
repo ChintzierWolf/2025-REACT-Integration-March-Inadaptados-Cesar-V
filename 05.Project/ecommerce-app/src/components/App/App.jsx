@@ -1,11 +1,13 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { CartProvider } from "../../context/CartContext";
+import { AuthProvider } from "../../context/AuthContext";
 import Layout from "../../layout/Layout";
 import Cart from "../../pages/Cart";
 import CategoryPage from "../../pages/CategoryPage";
 import Checkout from "../../pages/Checkout";
 import Home from "../../pages/Home";
 import Login from "../../pages/Login";
+import Register from "../../pages/Register";
 import OrderConfirmation from "../../pages/OrderConfirmation";
 import Orders from "../../pages/Orders";
 import Product from "../../pages/Product";
@@ -17,73 +19,68 @@ import WishList from "../../pages/WishList";
 
 function App() {
   return (
-    <CartProvider>
-      <BrowserRouter>
-        <Layout>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/cart" element={<Cart />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/search" element={<SearchResults />} />
-            <Route path="/product/:productId" element={<Product />} />
-            <Route path="/category/:categoryId" element={<CategoryPage />} />
-            <Route
-              path="/profile"
-              element={
-                <ProtectedRoute
-                  redirectTo="/login"
-                  allowedRoles={["admin", "customer", "cliente"]}
-                >
-                  <Profile />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/checkout"
-              element={
-                <ProtectedRoute>
-                  <Checkout></Checkout>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/wishlist"
-              element={
-                <ProtectedRoute>
-                  <WishList></WishList>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/orders"
-              element={
-                <ProtectedRoute>
-                  <Orders />
-                </ProtectedRoute>
-              }
-            />
-            <Route path="/order-confirmation" element={<OrderConfirmation />} />
-            <Route
-              path="/settings"
-              element={
-                <ProtectedRoute>
-                  <Settings></Settings>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/settings"
-              element={
-                <ProtectedRoute>
-                  <Settings></Settings>
-                </ProtectedRoute>
-              }
-            />
-            <Route path="*" element={<div>Ruta no encontrada</div>} />
-          </Routes>
-        </Layout>
-      </BrowserRouter>
-    </CartProvider>
+    <AuthProvider>
+      <CartProvider>
+        <BrowserRouter>
+          <Layout>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/cart" element={<Cart />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
+              <Route path="/search" element={<SearchResults />} />
+              <Route path="/product/:productId" element={<Product />} />
+              <Route path="/category/:categoryId" element={<CategoryPage />} />
+              <Route
+                path="/profile"
+                element={
+                  <ProtectedRoute
+                    redirectTo="/login"
+                    allowedRoles={["admin", "customer", "cliente"]}
+                  >
+                    <Profile />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/checkout"
+                element={
+                  <ProtectedRoute>
+                    <Checkout />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/wishlist"
+                element={
+                  <ProtectedRoute>
+                    <WishList />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/orders"
+                element={
+                  <ProtectedRoute>
+                    <Orders />
+                  </ProtectedRoute>
+                }
+              />
+              <Route path="/order-confirmation" element={<OrderConfirmation />} />
+              <Route
+                path="/settings"
+                element={
+                  <ProtectedRoute>
+                    <Settings />
+                  </ProtectedRoute>
+                }
+              />
+              <Route path="*" element={<div>Ruta no encontrada</div>} />
+            </Routes>
+          </Layout>
+        </BrowserRouter>
+      </CartProvider>
+    </AuthProvider>
   );
 }
 

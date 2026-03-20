@@ -15,7 +15,7 @@ const productSchema = new mongoose.Schema(
       type: String,
       required: [true, 'La descripción es obligatoria'],
       trim: true,
-      maxLength: [100, 'El nombre no puede superar los 100 caracteres'],
+      maxLength: [1000, 'La descripción no puede superar los 1000 caracteres'],
     },
 
     // 💰 Precio del producto
@@ -32,14 +32,12 @@ const productSchema = new mongoose.Schema(
       min: [0, 'El stock no puede ser negativo'],
     },
 
-    // 🖼️ URLs de imágenes del producto
-    imagesUrl: [
-      {
+    // 🖼️ URL de imagen del producto
+    image: {
         type: String,
         default: 'https://placehold.co/800x600.png',
         trim: true,
-      },
-    ],
+    },
 
     // 🗂️ Categoría general (ej. "Videojuegos", "Accesorios")
     category: {
@@ -53,7 +51,7 @@ const productSchema = new mongoose.Schema(
     platform: {
       type: String,
       enum: ['PC', 'PlayStation', 'Xbox', 'Nintendo', 'Mobile'],
-      required: [true, 'La plataforma es obligatoria'],
+      required: false,
       index: true,
     },
 
@@ -69,13 +67,13 @@ const productSchema = new mongoose.Schema(
         'Sports',
         'Puzzle',
       ],
-      required: [true, 'El género es obligatorio'],
+      required: false,
     },
 
     // 📅 Fecha de lanzamiento
     releaseDate: {
       type: Date,
-      required: [true, 'La fecha de lanzamiento es obligatoria'],
+      required: false,
     },
 
     // ⭐ Promedio de calificaciones (de reseñas)

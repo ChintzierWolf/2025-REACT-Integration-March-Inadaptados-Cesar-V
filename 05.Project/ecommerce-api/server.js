@@ -3,7 +3,14 @@ import dbConnection from './src/config/database.js';
 import chalk from 'chalk';
 import app from './app.js';
 
-dotenv.config({ path: './.env.production' });
+import fs from 'fs';
+
+// Cargamos variables de entorno predeterminadas, intentando primero .env.production si existe localmente
+if (fs.existsSync('./.env.production')) {
+  dotenv.config({ path: './.env.production' });
+} else {
+  dotenv.config(); // Fallback a .env estándar si existe
+}
 
 dbConnection(); // Conecta a la base de datos MongoDB
 

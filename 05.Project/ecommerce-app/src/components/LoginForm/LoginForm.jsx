@@ -75,6 +75,7 @@ export default function LoginForm() {
           </Button>
         </form>
         <div className="login-footer">
+          <p>¿No tienes cuenta? <Link to="/register">Regístrate</Link></p>
           <Link to="/">Volver al inicio</Link>
         </div>
       </div>

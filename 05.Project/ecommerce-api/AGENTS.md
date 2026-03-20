@@ -64,9 +64,11 @@ Todas las rutas están prefijadas por `/api`.
 - `name` (String, Required)
 - `price` (Number, Required)
 - `stock` (Number, Required)
+- `image` (String, Default placeholder)
 - `category` (ObjectId -> Category)
-- `platform` (enum: ['PC', 'PlayStation', 'Xbox', 'Nintendo', 'Mobile'])
-- `genre` (enum: ['Action', 'Adventure', 'RPG', ...])
+- `platform` (enum: ['PC', 'PlayStation', 'Xbox', 'Nintendo', 'Mobile'], Optional)
+- `genre` (enum: ['Action', 'Adventure', 'RPG', ...], Optional)
+- `releaseDate` (Date, Optional)
 
 ### Order
 

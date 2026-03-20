@@ -11,6 +11,7 @@ import ErrorMessage from "../components/common/ErrorMessage/ErrorMessage";
 import Loading from "../components/common/Loading/Loading";
 import Icon from "../components/common/Icon/Icon";
 import { useCart } from "../context/CartContext";
+import { getCurrentUser } from "../utils/auth";
 import {
   getDefaultPaymentMethod,
   getPaymentMethods,
@@ -19,6 +20,7 @@ import {
   getDefaultShippingAddress,
   getShippingAddresses,
 } from "../services/shippingService";
+import { createOrder } from "../services/cartService";
 import "./Checkout.css";
 
 export default function Checkout() {
@@ -158,28 +160,49 @@ export default function Checkout() {
   };
   const handleCancelPayment = () => { setShowPaymentForm(false); setEditingPayment(null); setPaymentSectionOpen(false); };
 
-  const handleCreateOrder = () => {
+  const handleCreateOrder = async () => {
     if (!selectedAddress || !selectedPayment || !cartItems || cartItems.length === 0) return;
 
-    const order = {
-      id: Date.now().toString(),
-      date: new Date().toISOString(),
-      items: cartItems.map((item) => ({ ...item, subtotal: item.price * item.quantity })),
-      subtotal,
-      tax: taxAmount,
-      shipping: shippingCost,
-      total: grandTotal,
-      shippingAddress: selectedAddress,
-      paymentMethod: selectedPayment,
-      status: "confirmed",
+    const user = getCurrentUser();
+    if (!user?._id) {
+      setLocalError("Debes iniciar sesión para realizar una orden");
+      return;
+    }
+
+    const orderData = {
+      user: user._id,
+      products: cartItems.map((item) => ({
+        productId: item._id,
+        quantity: item.quantity,
+        price: item.price,
+      })),
+      shippingAddress: selectedAddress._id,
+      paymentMethod: selectedPayment._id,
+      shippingCost,
     };
 
-    const orders = JSON.parse(localStorage.getItem("orders") || "[]");
-    orders.push(order);
-    localStorage.setItem("orders", JSON.stringify(orders));
-    setIsOrderFinished(true);
-    navigate("/order-confirmation", { state: { order } });
-    clearCart();
+    try {
+      const orderResponse = await createOrder(orderData);
+      
+      const order = {
+        _id: orderResponse._id,
+        date: new Date().toISOString(),
+        items: cartItems.map((item) => ({ ...item, subtotal: item.price * item.quantity })),
+        subtotal,
+        tax: taxAmount,
+        shipping: shippingCost,
+        total: grandTotal,
+        shippingAddress: selectedAddress,
+        paymentMethod: selectedPayment,
+        status: "pending",
+      };
+
+      setIsOrderFinished(true);
+      navigate("/order-confirmation", { state: { order } });
+      clearCart();
+    } catch (error) {
+      setLocalError("Error al crear la orden: " + error.message);
+    }
   };
 
   return (
