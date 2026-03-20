@@ -3,7 +3,8 @@ import { Link } from "react-router-dom";
 import Button from "../components/common/Button";
 import Icon from "../components/common/Icon/Icon";
 import Loading from "../components/common/Loading/Loading";
-import { STORAGE_KEYS, readLocalJSON } from "../utils/storageHelpers";
+import ErrorMessage from "../components/common/ErrorMessage/ErrorMessage";
+import { getOrders } from "../services/orderService";
 import "./Orders.css";
 
 const formatMoney = (value = 0) =>
@@ -25,41 +26,73 @@ const formatDate = (isoString) => {
   }
 };
 
+const getStatusLabel = (status) => {
+  const labels = {
+    pending: "Pendiente",
+    processing: "Procesando",
+    shipped: "Enviado",
+    delivered: "Entregado",
+    cancelled: "Cancelado",
+    confirmed: "Confirmado"
+  };
+  return labels[status?.toLowerCase()] || status || "Confirmado";
+};
+
 export default function Orders() {
   const [orders, setOrders] = useState([]);
   const [selectedOrderId, setSelectedOrderId] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    const loadOrders = () => {
-      const storedOrders = readLocalJSON(STORAGE_KEYS.orders) || [];
-      const sortedOrders = [...storedOrders].sort(
-        (a, b) => new Date(b.date) - new Date(a.date)
-      );
-      setOrders(sortedOrders);
-      setSelectedOrderId((current) => current ?? sortedOrders[0]?.id ?? null);
-      setLoading(false);
+    const loadOrders = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const data = await getOrders();
+        const sortedOrders = [...(data || [])].sort(
+          (a, b) => new Date(b.createdAt || b.date) - new Date(a.createdAt || a.date)
+        );
+        setOrders(sortedOrders);
+        setSelectedOrderId(sortedOrders[0]?._id || null);
+      } catch (err) {
+        setError("Error al cargar las órdenes. Intenta más tarde.");
+        console.error("Error loading orders:", err);
+      } finally {
+        setLoading(false);
+      }
     };
 
     loadOrders();
-    window.addEventListener("storage", loadOrders);
-    return () => window.removeEventListener("storage", loadOrders);
   }, []);
 
   const selectedOrder = useMemo(
-    () => orders.find((order) => order.id === selectedOrderId) || null,
+    () => orders.find((order) => order._id === selectedOrderId) || null,
     [orders, selectedOrderId]
   );
 
   const detailStatusToken = selectedOrder
-    ? (selectedOrder.status || "confirmed").toLowerCase()
-    : "confirmed";
-  const detailStatusLabel = selectedOrder?.status || "Confirmado";
+    ? (selectedOrder.status || "pending").toLowerCase()
+    : "pending";
+  const detailStatusLabel = getStatusLabel(selectedOrder?.status);
 
   if (loading) {
     return (
       <div className="orders-page">
-        <Loading message="Cargando pedidos guardados..." />
+        <Loading message="Cargando tus pedidos..." />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="orders-page orders-empty">
+        <Icon name="alertCircle" size={48} />
+        <h1>Error al cargar pedidos</h1>
+        <p>{error}</p>
+        <Link to="/" className="orders-link">
+          <Button>Volver al inicio</Button>
+        </Link>
       </div>
     );
   }
@@ -68,13 +101,10 @@ export default function Orders() {
     return (
       <div className="orders-page orders-empty">
         <Icon name="package" size={48} />
-        <h1>No tienes pedidos guardados</h1>
+        <h1>No tienes pedidos</h1>
         <p>
-          Gracias por tu compra. Puedes seguir comprando ahora mismo, aqui.
-        </p>
-        <p>
-          Cada vez que se confirme una compra en el checkout, la orden se
-          guarda en el navegador para consultarla en el futuro.
+          Aún no has realizado ninguna compra. Explora nuestros productos y
+          realiza tu primera orden.
         </p>
         <Link to="/" className="orders-link">
           <Button>Descubrir productos</Button>
@@ -91,13 +121,13 @@ export default function Orders() {
           <h1>Mis pedidos</h1>
           <p className="muted">
             {orders.length === 1
-              ? "Tienes 1 pedido guardado en este dispositivo"
-              : `Tienes ${orders.length} pedidos guardados en este dispositivo`}
+              ? "Tienes 1 pedido"
+              : `Tienes ${orders.length} pedidos`}
           </p>
         </div>
         <Button
           variant="secondary"
-          onClick={() => setSelectedOrderId(orders[0]?.id ?? null)}
+          onClick={() => setSelectedOrderId(orders[0]?._id || null)}
         >
           Ver más reciente
         </Button>
@@ -111,27 +141,29 @@ export default function Orders() {
           </div>
           <div className="orders-list-body">
             {orders.map((order) => {
-              const itemCount = order.items?.length || 0;
-              const statusToken = (order.status || "confirmed").toLowerCase();
-              const isActive = selectedOrderId === order.id;
+              const itemCount = order.products?.length || 0;
+              const statusToken = (order.status || "pending").toLowerCase();
+              const isActive = selectedOrderId === order._id;
               return (
                 <button
-                  key={order.id}
+                  key={order._id}
                   className={`order-card${isActive ? " active" : ""}`}
-                  onClick={() => setSelectedOrderId(order.id)}
+                  onClick={() => setSelectedOrderId(order._id)}
                 >
                   <div className="order-card-head">
-                    <span className="order-id">#{order.id}</span>
+                    <span className="order-id">#{order._id?.slice(-8)}</span>
                     <span
                       className={`order-status order-status-${statusToken}`}
                     >
-                      {order.status || "Confirmado"}
+                      {getStatusLabel(order.status)}
                     </span>
                   </div>
-                  <p className="order-date">{formatDate(order.date)}</p>
+                  <p className="order-date">
+                    {formatDate(order.createdAt || order.date)}
+                  </p>
                   <div className="order-card-meta">
-                    <span>{itemCount} artículos</span>
-                    <strong>{formatMoney(order.total || 0)}</strong>
+                    <span>{itemCount} {itemCount === 1 ? "artículo" : "artículos"}</span>
+                    <strong>{formatMoney(order.totalPrice || order.total || 0)}</strong>
                   </div>
                 </button>
               );
@@ -144,9 +176,11 @@ export default function Orders() {
             <>
               <div className="order-detail-header">
                 <div>
-                  <p className="eyebrow">Pedido #{selectedOrder.id}</p>
-                  <h2>{formatMoney(selectedOrder.total || 0)}</h2>
-                  <p className="muted">{formatDate(selectedOrder.date)}</p>
+                  <p className="eyebrow">Pedido #{selectedOrder._id?.slice(-8)}</p>
+                  <h2>{formatMoney(selectedOrder.totalPrice || selectedOrder.total || 0)}</h2>
+                  <p className="muted">
+                    {formatDate(selectedOrder.createdAt || selectedOrder.date)}
+                  </p>
                 </div>
                 <span
                   className={`order-status order-status-${detailStatusToken}`}
@@ -156,27 +190,31 @@ export default function Orders() {
               </div>
 
               <div className="order-section">
-                <h3>Resumen del pago</h3>
+                <h3>Resumen del pedido</h3>
                 <ul className="order-summary-list">
                   <li>
                     <span>Subtotal</span>
-                    <strong>{formatMoney(selectedOrder.subtotal || 0)}</strong>
+                    <strong>
+                      {formatMoney(selectedOrder.totalPrice - (selectedOrder.shippingCost || 0) - ((selectedOrder.totalPrice - (selectedOrder.shippingCost || 0)) * 0.16 / 1.16) || 0)}
+                    </strong>
                   </li>
                   <li>
-                    <span>IVA</span>
-                    <strong>{formatMoney(selectedOrder.tax || 0)}</strong>
+                    <span>Impuestos</span>
+                    <strong>
+                      {formatMoney(((selectedOrder.totalPrice - (selectedOrder.shippingCost || 0)) * 0.16 / 1.16 || 0)}
+                    </strong>
                   </li>
                   <li>
                     <span>Envío</span>
                     <strong>
-                      {selectedOrder.shipping === 0
+                      {selectedOrder.shippingCost === 0
                         ? "Gratis"
-                        : formatMoney(selectedOrder.shipping || 0)}
+                        : formatMoney(selectedOrder.shippingCost || 0)}
                     </strong>
                   </li>
                   <li className="order-summary-total">
                     <span>Total</span>
-                    <strong>{formatMoney(selectedOrder.total || 0)}</strong>
+                    <strong>{formatMoney(selectedOrder.totalPrice || selectedOrder.total || 0)}</strong>
                   </li>
                 </ul>
               </div>
@@ -186,15 +224,16 @@ export default function Orders() {
                 {selectedOrder.shippingAddress ? (
                   <address className="order-address">
                     <strong>{selectedOrder.shippingAddress.name}</strong>
-                    <p>{selectedOrder.shippingAddress.address1}</p>
-                    {selectedOrder.shippingAddress.address2 && (
-                      <p>{selectedOrder.shippingAddress.address2}</p>
+                    <p>{selectedOrder.shippingAddress.street}</p>
+                    {selectedOrder.shippingAddress.city && (
+                      <p>
+                        {selectedOrder.shippingAddress.city},{" "}
+                        {selectedOrder.shippingAddress.postalCode}
+                      </p>
                     )}
-                    <p>
-                      {selectedOrder.shippingAddress.city},{" "}
-                      {selectedOrder.shippingAddress.postalCode}
-                    </p>
-                    <p>{selectedOrder.shippingAddress.country}</p>
+                    {selectedOrder.shippingAddress.country && (
+                      <p>{selectedOrder.shippingAddress.country}</p>
+                    )}
                   </address>
                 ) : (
                   <p className="muted">Sin dirección registrada.</p>
@@ -208,7 +247,8 @@ export default function Orders() {
                     <p>{selectedOrder.paymentMethod.alias}</p>
                     <p>
                       ****{" "}
-                      {selectedOrder.paymentMethod.cardNumber?.slice(-4) ||
+                      {selectedOrder.paymentMethod.last4 ||
+                        selectedOrder.paymentMethod.cardNumber?.slice(-4) ||
                         "----"}
                     </p>
                   </div>
@@ -220,10 +260,10 @@ export default function Orders() {
               <div className="order-section">
                 <h3>Productos</h3>
                 <ul className="order-items">
-                  {selectedOrder.items?.map((item, index) => (
-                    <li key={`${selectedOrder.id}-${item.id || index}`}>
+                  {selectedOrder.products?.map((item, index) => (
+                    <li key={`${selectedOrder._id}-${item.productId?._id || item.product || index}`}>
                       <div>
-                        <p>{item.name || item.title || "Producto"}</p>
+                        <p>{item.productId?.name || item.name || "Producto"}</p>
                         <span>
                           Cantidad: {item.quantity || 1} · Precio:{" "}
                           {formatMoney(item.price || 0)}
@@ -231,8 +271,7 @@ export default function Orders() {
                       </div>
                       <strong>
                         {formatMoney(
-                          item.subtotal ||
-                            (item.price || 0) * (item.quantity || 1)
+                          (item.price || 0) * (item.quantity || 1)
                         )}
                       </strong>
                     </li>
