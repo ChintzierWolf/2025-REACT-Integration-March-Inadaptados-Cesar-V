@@ -3,9 +3,11 @@ import { defineConfig } from 'vitest/config';
 export default defineConfig({
   test: {
     environment: 'node',
-    globals: true, // Enable globals for setupFiles and convenience
-    setupFiles: ['./tests/setup.js'], // Global setup like MongoDB memory server
-    clearMocks: true, // Automatycally clears mock calls before every test
+    globals: true,
+    setupFiles: ['./tests/setup.js'],
+    clearMocks: true,
+    hookTimeout: 60000,
+    testTimeout: 30000,
     coverage: {
       provider: 'v8',
       reporter: ['text', 'html', 'json'],
@@ -14,8 +16,8 @@ export default defineConfig({
         'tests/**',
         'dist/**',
         '**/*.config.js',
-        'src/config/**', // Exclude config files from coverage
-        'server.js' // Exclude main entry file as it requires full app start
+        'src/config/**',
+        'server.js'
       ]
     }
   }

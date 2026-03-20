@@ -66,7 +66,7 @@
 
 | # | Gap | Prioridad | Estado |
 |---|-----|-----------|--------|
-| G7 | Tests Vitest | 🟡 Media | Con problemas |
+| G7 | Tests Vitest | 🟡 Media | Timeout corregido, problemas de conexión pendientes |
 
 ---
 
@@ -112,6 +112,12 @@ Los siguientes documentos fueron movidos a `/docs/archive/`:
 ## ⚠️ Bugs detectados en backend
 
 - **wishListController.js**: El modelo `WishList` usa array de objetos `{product, addedAt}`, pero el controlador usa `findIndex(p => p.toString())` que asume array de ObjectIds directos. Verificar compatibilidad.
+
+## ⚠️ Tests Vitest (G7)
+
+- Timeout de hooks corregido (de 10s a 60s)
+- Configuración de vitest actualizada con `hookTimeout` y `testTimeout`
+- Problemas de conexión con MongoMemoryServer persisten (necesita revisión de arquitectura)
 
 ---
 
