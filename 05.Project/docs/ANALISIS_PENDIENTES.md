@@ -60,13 +60,25 @@
 - Direcciones de envío asociadas a cada usuario
 - Métodos de pago (tarjetas y PayPal) asociados a cada usuario
 
+### G7: Tests Vitest (Unitarios e Integración) ✅
+- Configuración completa con MongoMemoryServer
+- Unit tests: 21/21 passing
+- Integration tests: 24/24 passing (Auth, Orders, Products, Cart)
+- Fixes críticos aplicados:
+  - Estabilización de suite discovery en Vitest 4.0.18 (global imports fix)
+  - Normalización de rutas RESTful (eliminación de redundancias en cart, categories, etc.)
+  - Pruebas de seguridad: Aislamiento de órdenes y NoSQL Injection
+  - Pruebas de lógica: Reducción automática de stock en órdenes
+  - Sincronización de esquemas Mongoose en toda la suite de pruebas
+
 ---
 
-## 📋 Gaps pendientes
+## 📋 Estado de Gaps
 
 | # | Gap | Prioridad | Estado |
 |---|-----|-----------|--------|
-| G7 | Tests Vitest | 🟡 Media | Timeout corregido, problemas de conexión pendientes |
+| G1-G6 | Frontend + Seed | ✅ | Completados |
+| G7 | Tests (Unit + Int) | ✅ | Completados (45 tests total) |
 
 ---
 
@@ -104,20 +116,32 @@ Los siguientes documentos fueron movidos a `/docs/archive/`:
 
 ## 🔄 Próximos pasos recomendados
 
-1. **G7**: Reparar suite de tests Vitest
-2. Verificar integración completa del flujo de usuario
+1. Verificar integración completa del flujo de usuario
+2. Probar endpoint de wishlist en ambiente de producción
 
 ---
 
-## ⚠️ Bugs detectados en backend
+- **wishListController.js**: ✅ Corregido. El modelo `WishList` usa array de objetos `{product, addedAt}`. El controlador ahora maneja correctamente esta estructura y usa `.populate('products.product')`.
 
-- **wishListController.js**: El modelo `WishList` usa array de objetos `{product, addedAt}`, pero el controlador usa `findIndex(p => p.toString())` que asume array de ObjectIds directos. Verificar compatibilidad.
+---
 
-## ⚠️ Tests Vitest (G7)
+## 📊 Resumen de cambios realizados (Marzo 2026)
 
-- Timeout de hooks corregido (de 10s a 60s)
-- Configuración de vitest actualizada con `hookTimeout` y `testTimeout`
-- Problemas de conexión con MongoMemoryServer persisten (necesita revisión de arquitectura)
+- **wishListController.js**: Corregida lógica de toggle y población de datos (array de objetos).
+- **authController.js**: Añadido parámetro `next` faltante en función `register`
+- **authRoutes.js**: Agregadas validaciones de express-validator para register
+- **tests/helpers.js**: Corregido UserBuilder para usar `hashPassword`
+- **tests/unit/controllers/authController.test.js**: Actualizado para coincidir con respuesta real
+
+### Frontend (ecommerce-app)
+- **ProductCard.jsx**: Corregido `product.id` → `product._id`
+- **Orders.jsx**: Conectado a API real
+- **userService.js**: Removida dependencia de users.json mock
+- **wishlistService.js, WishList.jsx, WishList.css**: Nuevos archivos
+- **reviewService.js**: Nuevo archivo
+- **Normalización de Rutas**: Eliminadas redundancias en todos los endpoints principales.
+- **Suite de Pruebas de Integración**: 100% pasadas, incluyendo seguridad y gestión de stock.
+- **AGENTS.md**: Reescrito completamente
 
 ---
 

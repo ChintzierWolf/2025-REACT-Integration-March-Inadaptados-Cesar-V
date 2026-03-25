@@ -34,7 +34,7 @@ export const createMockReqRes = (overrides = {}) => {
 export const UserBuilder = (overrides = {}) => ({
   displayName: "Test User",
   email: `test-${Date.now()}@example.com`,
-  password: "password123",
+  hashPassword: "$2b$10$rQZ8K.W8vZ5wQ5vZ5wQ5vOqW5vZ5wQ5vZ5wQ5vZ5wQ5vZ5wQ5vZ5", // Pre-hashed password
   role: "customer",
   isActive: true,
   ...overrides
@@ -47,6 +47,7 @@ export const ProductBuilder = (overrides = {}) => ({
   stock: 10,
   genre: "Action",
   platform: "PC",
+  category: "507f1f77bcf86cd799439011", // Default fake ID
   ...overrides
 });
 
@@ -67,7 +68,7 @@ export const OrderBuilder = (userId, products = [], overrides = {}) => ({
  */
 
 export const generateTestToken = (payload = {}) => {
-  const defaultPayload = { userId: "mock123", role: "customer" };
+  const defaultPayload = { id: "mock123", role: "customer" };
   const secret = process.env.JWT_SECRET || "test-secret";
   return jwt.sign({ ...defaultPayload, ...payload }, secret, { expiresIn: "1h" });
 };

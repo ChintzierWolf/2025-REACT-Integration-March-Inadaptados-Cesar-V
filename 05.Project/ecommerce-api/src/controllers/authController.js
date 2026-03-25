@@ -20,7 +20,7 @@ const checkUserExist = async (email) => {
   return user;
 }
 
-async function register(req, res) {
+async function register(req, res, next) {
   try {
     const { displayName, email, password, phone } = req.body;
     const userExist = await checkUserExist(email);

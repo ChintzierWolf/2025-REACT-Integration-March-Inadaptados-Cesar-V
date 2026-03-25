@@ -1,16 +1,21 @@
-import { describe, it, expect, beforeEach } from 'vitest';
 import request from 'supertest';
 import app from '../../app.js';
 import User from '../../src/models/user.js';
 import Product from '../../src/models/product.js';
 import Order from '../../src/models/order.js';
+import Category from '../../src/models/category.js';
 import { generateTestToken } from '../helpers.js';
 
 describe('Orders Integration Tests', () => {
-  let custUser, adminUser, product1, product2;
+  let custUser, adminUser, product1, product2, cat;
   let custToken, adminToken;
 
   beforeEach(async () => {
+    cat = await Category.create({
+      name: 'Videojuegos',
+      description: 'Categoría de prueba'
+    });
+
     custUser = await User.create({
       displayName: 'Customer',
       email: 'customer@order.com',
@@ -29,11 +34,11 @@ describe('Orders Integration Tests', () => {
     adminToken = generateTestToken({ id: adminUser._id, role: adminUser.role });
 
     product1 = await Product.create({
-      title: 'P1', sku: 'S1', price: 500, description: 'D', stock: 10
+      name: 'P1', sku: 'S1', price: 500, description: 'D', stock: 10, category: cat._id, platform: 'PC', genre: 'Action'
     });
     
     product2 = await Product.create({
-      title: 'P2', sku: 'S2', price: 200, description: 'D', stock: 10
+      name: 'P2', sku: 'S2', price: 200, description: 'D', stock: 10, category: cat._id, platform: 'PC', genre: 'Action'
     });
   });
 
@@ -57,6 +62,12 @@ describe('Orders Integration Tests', () => {
       expect(res.body).toHaveProperty('status', 'pending');
       // Total: (2 * 500) + (1 * 200) + 50 = 1250
       expect(res.body.totalPrice).toBe(1250); 
+      
+      // Verification of Stock Reduction
+      const p1After = await Product.findById(product1._id);
+      expect(p1After.stock).toBe(8); // 10 - 2
+      const p2After = await Product.findById(product2._id);
+      expect(p2After.stock).toBe(9); // 10 - 1
     });
 
     it('should fail if products array is empty (400)', async () => {
@@ -98,6 +109,22 @@ describe('Orders Integration Tests', () => {
       expect(res.status).toBe(200);
       expect(res.body._id).toBe(order._id.toString());
       expect(res.body.user._id).toBe(custUser._id.toString());
+    });
+
+    it('should forbid customer from viewing another users order (403)', async () => {
+      const otherUser = await User.create({
+        displayName: 'Hacker',
+        email: 'hacker@test.com',
+        hashPassword: 'hash',
+        role: 'customer'
+      });
+      const hackerToken = generateTestToken({ id: otherUser._id, role: otherUser.role });
+      
+      const res = await request(app)
+        .get(`/api/orders/${order._id}`)
+        .set('Authorization', `Bearer ${hackerToken}`);
+
+      expect(res.status).toBe(403);
     });
   });
 
