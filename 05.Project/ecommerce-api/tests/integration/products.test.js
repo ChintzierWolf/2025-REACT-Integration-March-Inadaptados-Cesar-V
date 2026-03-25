@@ -1,37 +1,45 @@
-import { describe, it, expect, beforeEach } from 'vitest';
 import request from 'supertest';
 import app from '../../app.js';
 import Product from '../../src/models/product.js';
 import { generateTestToken } from '../helpers.js';
+import Category from '../../src/models/category.js';
 
 describe('Products Integration Tests', () => {
   
-  let p1, p2;
+  let p1, p2, cat;
 
   beforeEach(async () => {
+    // Create Category
+    cat = await Category.create({
+      name: 'Videojuegos',
+      description: 'Categoría de prueba'
+    });
+
     // Seed db with 2 valid products
     p1 = await Product.create({
-      title: 'Zelda BOTW',
+      name: 'Zelda BOTW',
       sku: 'NIN-ZELDA',
       price: 60,
-      description: 'Game',
-      genre: ['Adventure'],
-      platform: ['Switch'],
+      description: 'Game description',
+      genre: 'Adventure',
+      platform: 'Nintendo',
       stock: 5,
       brand: 'Nintendo',
-      condition: 'new'
+      condition: 'new',
+      category: cat._id
     });
 
     p2 = await Product.create({
-      title: 'God of War',
+      name: 'God of War',
       sku: 'SON-GOW',
       price: 50,
-      description: 'Game',
-      genre: ['Action'],
-      platform: ['PS4'],
+      description: 'Game description',
+      genre: 'Action',
+      platform: 'PlayStation',
       stock: 10,
       brand: 'Sony',
-      condition: 'used'
+      condition: 'used',
+      category: cat._id
     });
   });
 

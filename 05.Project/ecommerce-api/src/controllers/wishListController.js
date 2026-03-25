@@ -6,15 +6,18 @@ export const toggleWishlistItem = async (req, res, next) => {
     let wishList = await WishList.findOne({ user: req.user._id });
 
     if (!wishList) {
-      wishList = await WishList.create({ user: req.user._id, products: [productId] });
+      wishList = await WishList.create({ 
+        user: req.user._id, 
+        products: [{ product: productId }] 
+      });
       return res.status(201).json({ success: true, message: 'Agregado a WishList', data: wishList });
     }
 
-    const index = wishList.products.findIndex(p => p.toString() === productId);
+    const index = wishList.products.findIndex(p => p.product.toString() === productId);
     if (index > -1) {
       wishList.products.splice(index, 1);
     } else {
-      wishList.products.push(productId);
+      wishList.products.push({ product: productId });
     }
     
     await wishList.save();
@@ -26,7 +29,7 @@ export const toggleWishlistItem = async (req, res, next) => {
 
 export const getWishList = async (req, res, next) => {
   try {
-    const wishList = await WishList.findOne({ user: req.user._id }).populate('products');
+    const wishList = await WishList.findOne({ user: req.user._id }).populate('products.product');
     if (!wishList) {
       return res.status(200).json({ success: true, data: { products: [] } });
     }

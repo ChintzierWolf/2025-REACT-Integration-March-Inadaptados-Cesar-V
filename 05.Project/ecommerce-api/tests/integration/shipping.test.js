@@ -1,4 +1,3 @@
-import { describe, it, expect, beforeEach } from 'vitest';
 import request from 'supertest';
 import app from '../../app.js';
 import User from '../../src/models/user.js';
