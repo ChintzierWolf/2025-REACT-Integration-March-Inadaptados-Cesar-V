@@ -19,6 +19,12 @@ Este documento certifica el estado actual del ecosistema e-commerce tras la exit
 - **Protocolo SSDLC**: Se sigue estrictamente el protocolo operativo de seguridad desde el diseño hasta el despliegue.
 - **Documentación**: Guías `AGENTS.md` actualizadas para reflejar los patrones post-integración.
 
+### 4. Optimización de Performance (TanStack Query)
+- **Caché Global**: Implementación de TanStack Query para la gestión de estados asíncronos.
+- **Reducción de Latencia**: Los productos, categorías y reseñas ahora se sirven desde un caché inteligente (stale-while-revalidate).
+- **Hooks Personalizados**: Migración exitosa de `Home.jsx`, `ProductDetails.jsx` y `CategoryProducts.jsx` a una arquitectura basada en hooks (`useProducts`, `useCategories`, `useReviews`).
+
+
 ## 📊 Matriz de Gaps (Estado: CERRADO)
 
 | # | Gap Identificado | Prioridad | Estado | Resolución |
@@ -49,5 +55,11 @@ src/services/
 
 ---
 
-*Última validación técnica: 27 de Marzo, 2026*
-*Estado General: **LISTO PARA STAGING***
+*Última validación técnica: 2 de Abril, 2026*
+*Estado General: **OPTIMIZACIÓN EN PROGRESO***
+
+## 🚀 Próximos Pasos (Pendiente de Análisis)
+1. **Zustand Migration**: Sustitución de `CartContext` y `AuthContext` por un store centralizado.
+2. **Infinite Scroll**: Implementación de paginación infinita en las listas.
+3. **Zod Validation**: Robustecimiento de los esquemas de datos.
+
