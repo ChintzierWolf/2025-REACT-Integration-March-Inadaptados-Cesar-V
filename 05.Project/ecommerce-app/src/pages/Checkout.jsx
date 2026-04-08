@@ -10,7 +10,7 @@ import Button from "../components/common/Button";
 import ErrorMessage from "../components/common/ErrorMessage/ErrorMessage";
 import Loading from "../components/common/Loading/Loading";
 import Icon from "../components/common/Icon/Icon";
-import { useCart } from "../context/CartContext";
+import { useCartStore } from "../stores/cartStore";
 import { getCurrentUser } from "../utils/auth";
 import {
   getDefaultPaymentMethod,
@@ -25,7 +25,9 @@ import "./Checkout.css";
 
 export default function Checkout() {
   const navigate = useNavigate();
-  const { cartItems, total, clearCart } = useCart();
+  const cartItems = useCartStore((state) => state.cartItems);
+  const total = useCartStore((state) => state.total);
+  const clearCart = useCartStore((state) => state.clearCart);
 
   // --- LÓGICA DE NEGOCIO FINANCIERA ---
   const subtotal = typeof total === "number" ? total : 0;

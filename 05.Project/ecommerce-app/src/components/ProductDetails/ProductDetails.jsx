@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { useCart } from "../../context/CartContext";
-import { useAuth } from "../../context/AuthContext";
+import { useCartStore } from "../../stores/cartStore";
+import { useAuthStore } from "../../stores/authStore";
 import categoriesData from "../../data/categories.json";
 import Breadcrumb from "../../layout/Breadcrumb/Breadcrumb";
 import { useProduct } from "../../hooks/useProducts";
@@ -14,8 +14,8 @@ import Icon from "../common/Icon/Icon";
 import "./ProductDetails.css";
 
 export default function ProductDetails({ productId }) {
-  const { addToCart } = useCart();
-  const { isAuthenticated } = useAuth();
+  const addToCart = useCartStore((state) => state.addToCart);
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   
   // Queries
   const { data: product, isLoading: productLoading, error: productError } = useProduct(productId);

@@ -2,11 +2,14 @@ import { useNavigate } from "react-router-dom";
 import CartView from "../components/Cart/CartView";
 import Button from "../components/common/Button";
 import Icon from "../components/common/Icon/Icon";
-import { useCart } from "../context/CartContext";
+import { useCartStore } from "../stores/cartStore";
 import "./Cart.css";
 
 export default function Cart() {
-  const { cartItems, clearCart, getTotalItems, getTotalPrice } = useCart();
+  const cartItems = useCartStore((state) => state.cartItems);
+  const clearCart = useCartStore((state) => state.clearCart);
+  const getTotalItems = useCartStore((state) => state.getTotalItems);
+  const getTotalPrice = useCartStore((state) => state.getTotalPrice);
 
   const navigate = useNavigate();
 

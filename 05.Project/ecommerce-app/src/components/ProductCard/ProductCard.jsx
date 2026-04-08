@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { useState } from "react";
-import { useCart } from "../../context/CartContext";
-import { useAuth } from "../../context/AuthContext";
+import { useCartStore } from "../../stores/cartStore";
+import { useAuthStore } from "../../stores/authStore";
 import Badge from "../common/Badge";
 import Button from "../common/Button";
 import Icon from "../common/Icon/Icon";
@@ -9,8 +9,8 @@ import { toggleWishlistItem } from "../../services/wishlistService";
 import "./ProductCard.css";
 
 export default function ProductCard({ product, orientation = "vertical" }) {
-  const { addToCart } = useCart();
-  const { isAuthenticated } = useAuth();
+  const addToCart = useCartStore((state) => state.addToCart);
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   const [wishlistLoading, setWishlistLoading] = useState(false);
   const { name, price, stock, image, description } = product || {};
 

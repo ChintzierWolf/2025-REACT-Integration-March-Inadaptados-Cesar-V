@@ -1,45 +1,21 @@
-import http from './http';
+import { useAuthStore } from '../stores/authStore';
 
 export async function login(email, password) {
-  try {
-    const response = await http.post('/auth/login', { email, password });
-    localStorage.setItem('token', response.token);
-    const userData = {
-      _id: response.user?._id,
-      email: response.user?.email || email,
-      displayName: response.user?.displayName,
-      role: response.user?.role || 'guest',
-      phone: response.user?.phone,
-      avatar: response.user?.avatar
-    };
-    localStorage.setItem('user', JSON.stringify(userData));
-    return { success: true, user: userData };
-  } catch (error) {
-    return { success: false, error: error.message };
-  }
+  return await useAuthStore.getState().login(email, password);
 }
 
 export async function register(userData) {
-  try {
-    await http.post('/auth/register', userData);
-    return { success: true };
-  } catch (error) {
-    return { success: false, error: error.message };
-  }
+  return await useAuthStore.getState().register(userData);
 }
 
 export function logout() {
-  localStorage.removeItem('token');
-  localStorage.removeItem('user');
-  window.location.href = '/';
+  useAuthStore.getState().logout();
 }
 
 export function getCurrentUser() {
-  const userData = localStorage.getItem('user');
-  return userData ? JSON.parse(userData) : null;
+  return useAuthStore.getState().user;
 }
 
 export function isAuthenticated() {
-  const token = localStorage.getItem('token');
-  return token !== null;
+  return useAuthStore.getState().isAuthenticated();
 }
