@@ -201,7 +201,7 @@ export default function Orders() {
                   <li>
                     <span>Impuestos</span>
                     <strong>
-                      {formatMoney(((selectedOrder.totalPrice - (selectedOrder.shippingCost || 0)) * 0.16 / 1.16 || 0)}
+                      {formatMoney(((selectedOrder.totalPrice - (selectedOrder.shippingCost || 0)) * 0.16 / 1.16) || 0)}
                     </strong>
                   </li>
                   <li>
