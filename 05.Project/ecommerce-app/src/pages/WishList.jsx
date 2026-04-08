@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
-import { useCart } from "../context/CartContext";
+import { useAuthStore } from "../stores/authStore";
+import { useCartStore } from "../stores/cartStore";
 import { getWishlist, toggleWishlistItem } from "../services/wishlistService";
 import Button from "../components/common/Button";
 import Icon from "../components/common/Icon/Icon";
@@ -16,8 +16,8 @@ const formatMoney = (value = 0) =>
   }).format(value);
 
 export default function WishList() {
-  const { isAuthenticated } = useAuth();
-  const { addToCart } = useCart();
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  const addToCart = useCartStore((state) => state.addToCart);
   const navigate = useNavigate();
   
   const [wishlist, setWishlist] = useState([]);

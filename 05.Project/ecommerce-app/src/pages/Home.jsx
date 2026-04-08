@@ -1,34 +1,13 @@
-import { useEffect, useState } from "react";
+import { useProducts } from "../hooks/useProducts";
 import BannerCarousel from "../components/BannerCarousel/BannerCarousel";
 import List from "../components/List/List";
 import ErrorMessage from "../components/common/ErrorMessage/ErrorMessage";
 import Loading from "../components/common/Loading/Loading";
 import homeImagesTop from "../data/homeImagesTop.json";
 import homeImagesBottom from "../data/homeImagesBottom.json";
-import { fetchProducts } from "../services/productService";
 
 export default function Home() {
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    const loadProducts = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-        const productsData = await fetchProducts();
-        setProducts(productsData);
-      } catch (err) {
-        setError("No se pudieron cargar los productos. Intenta más tarde.");
-        setProducts([]);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadProducts();
-  }, []);
+  const { data: products, isLoading, error } = useProducts();
 
   return (
     <div>
@@ -51,7 +30,7 @@ export default function Home() {
       </div>
       
       <div className="container">
-        {loading ? (
+        {isLoading ? (
           <Loading>Cargando productos...</Loading>
         ) : error ? (
           <ErrorMessage>{error}</ErrorMessage>

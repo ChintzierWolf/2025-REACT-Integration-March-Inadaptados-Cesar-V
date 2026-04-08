@@ -1,11 +1,11 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { useCart } from "../../context/CartContext";
-import { useAuth } from "../../context/AuthContext";
+import { useCartStore } from "../../stores/cartStore";
+import { useAuthStore } from "../../stores/authStore";
 import categoriesData from "../../data/categories.json";
 import Breadcrumb from "../../layout/Breadcrumb/Breadcrumb";
-import { getProductById } from "../../services/productService";
-import { getProductReviews, createReview } from "../../services/reviewService";
+import { useProduct } from "../../hooks/useProducts";
+import { useReviews, useCreateReview } from "../../hooks/useReviews";
 import Badge from "../common/Badge";
 import Button from "../common/Button";
 import ErrorMessage from "../common/ErrorMessage/ErrorMessage";
@@ -14,61 +14,32 @@ import Icon from "../common/Icon/Icon";
 import "./ProductDetails.css";
 
 export default function ProductDetails({ productId }) {
-  const { addToCart } = useCart();
-  const { isAuthenticated, user } = useAuth();
-  const [product, setProduct] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [reviews, setReviews] = useState([]);
-  const [reviewsLoading, setReviewsLoading] = useState(true);
+  const addToCart = useCartStore((state) => state.addToCart);
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  
+  // Queries
+  const { data: product, isLoading: productLoading, error: productError } = useProduct(productId);
+  const { data: reviews = [], isLoading: reviewsLoading } = useReviews(productId);
+  const { mutateAsync: createReviewMutation } = useCreateReview();
+
+  // Local States for form UI
   const [newReview, setNewReview] = useState({ rating: 5, comment: "" });
   const [submitting, setSubmitting] = useState(false);
   const [reviewError, setReviewError] = useState(null);
 
-  useEffect(() => {
-    setLoading(true);
-    setError(null);
-    getProductById(productId)
-      .then((foundProduct) => {
-        if (!foundProduct) {
-          setError("Producto no encontrado");
-        } else {
-          setProduct(foundProduct);
-        }
-      })
-      .catch(() => setError("Ocurrió un error al cargar el producto."))
-      .finally(() => setLoading(false));
-  }, [productId]);
-
   const resolvedCategory = useMemo(() => {
     if (!product?.category) return null;
-    // Si category es un string (nombre)
     if (typeof product.category === 'string') {
         return categoriesData.find(c => c.name === product.category);
     }
     return null;
   }, [product]);
+
   const categorySlug = resolvedCategory?.id || null;
 
   const handleAddToCart = () => {
     if (product) addToCart(product, 1);
   };
-
-  useEffect(() => {
-    if (productId) {
-      setReviewsLoading(true);
-      getProductReviews(productId)
-        .then((data) => {
-          setReviews(Array.isArray(data) ? data : []);
-        })
-        .catch(() => {
-          setReviews([]);
-        })
-        .finally(() => {
-          setReviewsLoading(false);
-        });
-    }
-  }, [productId]);
 
   const handleSubmitReview = async (e) => {
     e.preventDefault();
@@ -76,17 +47,16 @@ export default function ProductDetails({ productId }) {
       setReviewError("Inicia sesión para dejar una reseña");
       return;
     }
-    if (newReview.rating < 1 || newReview.rating > 5) {
-      setReviewError("La calificación debe ser entre 1 y 5");
-      return;
-    }
-
+    
     setSubmitting(true);
     setReviewError(null);
 
     try {
-      const created = await createReview(productId, newReview.rating, newReview.comment);
-      setReviews((prev) => [created, ...prev]);
+      await createReviewMutation({ 
+        productId, 
+        rating: newReview.rating, 
+        comment: newReview.comment 
+      });
       setNewReview({ rating: 5, comment: "" });
     } catch (err) {
       setReviewError(err.message || "Error al enviar la reseña");
@@ -95,17 +65,18 @@ export default function ProductDetails({ productId }) {
     }
   };
 
-  if (loading) {
+  if (productLoading) {
     return (
       <div className="product-details-container">
         <Loading message="Cargando producto..." />
       </div>
     );
   }
-  if (error) {
+
+  if (productError) {
     return (
       <div className="product-details-container">
-        <ErrorMessage message={error}>
+        <ErrorMessage message={productError.message || "Ocurrio un error al cargar el producto"}>
           <p className="muted">
             Revisa nuestra <Link to="/">página principal</Link> o explora otras
             categorías.
@@ -114,6 +85,7 @@ export default function ProductDetails({ productId }) {
       </div>
     );
   }
+
   if (!product) return null;
 
   const { name, description, price, stock, image, category } = product;

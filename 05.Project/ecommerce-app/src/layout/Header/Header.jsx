@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Icon from "../../components/common/Icon/Icon";
-import { useCart } from "../../context/CartContext";
+import { useCartStore } from "../../stores/cartStore";
 import { useTheme } from "../../context/ThemeContext";
 import { getCurrentUser, isAuthenticated, logout } from "../../utils/auth";
 import Navigation from "../Navigation/Navigation";
@@ -13,7 +13,7 @@ export default function Header() {
   const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const { isDarkMode, toggleTheme } = useTheme();
-  const { getTotalItems } = useCart();
+  const getTotalItems = useCartStore((state) => state.getTotalItems);
   const totalItems = getTotalItems();
   const navigate = useNavigate();
 

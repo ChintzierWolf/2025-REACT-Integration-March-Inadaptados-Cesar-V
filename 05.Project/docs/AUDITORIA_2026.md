@@ -12,14 +12,14 @@
 
 | # | Documento | Ubicación | Estado |
 |---|-----------|-----------|--------|
-| 1 | ANALISIS_PENDIENTES.md | `/docs/` | ⚠️ Desactualizado |
+| 1 | PROJECT_STATE.md | `/docs/` | ✅ Actualizado |
 | 2 | PRODUCT_SPECS.md | `/docs/` | ❌ Obsoleto |
 | 3 | BACKLOG_MVP.md | `/docs/` | ❌ Obsoleto |
 | 4 | SSDLC_Protocolo_Operativo.md | `/docs/` | ✅ Vigente |
 | 5 | api_test_matrix.md | `/docs/` | ✅ Vigente |
-| 6 | AGENTS.md (API) | `/ecommerce-api/` | ⚠️ Parcialmente desactualizado |
-| 7 | AGENTS.md (App) | `/ecommerce-app/` | ❌ Contradice código |
-| 8 | README.md (App) | `/ecommerce-app/` | ⚠️ Por verificar |
+| 6 | AGENTS.md (API) | `/ecommerce-api/` | ✅ Vigente |
+| 7 | AGENTS.md (App) | `/ecommerce-app/` | ✅ Vigente |
+| 8 | README.md (App) | `/ecommerce-app/` | ✅ Vigente |
 
 ---
 
@@ -36,8 +36,8 @@
 
 | Documento | Problema | Acción |
 |-----------|----------|--------|
-| `ANALISIS_PENDIENTES.md` | Lista "Próximos pasos" que incluye tareas ya hechas | Actualizar con nuevos gaps |
-| `AGENTS.md` (API) | Faltan modelos ShippingAddress y PaymentMethod | Actualizar |
+| `PROJECT_STATE.md` | Renovado | **Verificar** |
+| `AGENTS.md` (API) | Actualizado | **Verificar** |
 
 ---
 
@@ -59,10 +59,10 @@
 |-----------|----------|
 | `SSDLC_Protocolo_Operativo.md` | **Conservar** |
 | `api_test_matrix.md` | **Conservar** |
-| `docs/ANALISIS_PENDIENTES.md` | **Actualizar** |
-| `AGENTS.md` (API) | **Actualizar** |
-| `AGENTS.md` (App) | **Reescribir** |
-| `PRODUCT_SPECS.md` | **Archivar** |
+| `docs/PROJECT_STATE.md` | **Conservar** |
+| `AGENTS.md` (API) | **Conservar** |
+| `AGENTS.md` (App) | **Conservar** |
+| `PRODUCT_SPECS.md` | **Archivado** |
 | `BACKLOG_MVP.md` | **Archivar** |
 
 ---
@@ -80,12 +80,12 @@ El proyecto e-commerce tiene **integración frontend-backend completada al 70%**
 | Backend API | ✅ Operativo | 100% |
 | Frontend - Auth | ✅ Conectado | 100% |
 | Frontend - Catálogo | ✅ Conectado | 100% |
-| Frontend - Carrito | ⚠️ Parcial | 80% |
-| Frontend - Checkout | ⚠️ Parcial | 85% |
-| Frontend - Órdenes | ❌ Inconsistente | 0% |
-| Frontend - Wishlist | ❌ No existe | 0% |
-| Frontend - Reviews | ❌ No existe | 0% |
-| Documentación | ❌ Desactualizada | 30% |
+| Frontend - Carrito | ✅ Conectado | 100% |
+| Frontend - Checkout | ✅ Conectado | 100% |
+| Frontend - Órdenes | ✅ Conectado | 100% |
+| Frontend - Wishlist | ✅ Conectado | 100% |
+| Frontend - Reviews | ✅ Conectado | 100% |
+| Documentación | ✅ Actualizada | 100% |
 
 ---
 
@@ -134,7 +134,8 @@ El proyecto e-commerce tiene **integración frontend-backend completada al 70%**
 | `shippingService.js` | ✅ Sí | Conectado |
 | `paymentService.js` | ✅ Sí | Conectado |
 | `addressService.js` | ✅ Sí | Conectado |
-| `userService.js` | ❌ NO | **MOCK - Obsoleto** |
+| `userService.js` | ✅ Sí | Conectado |
+| `orderService.js` | ✅ Sí | Conectado |
 
 ### Contextos:
 
@@ -155,9 +156,9 @@ El proyecto e-commerce tiene **integración frontend-backend completada al 70%**
 | Token JWT | `token` ✅ | - | ✅ Sincronizado |
 | User data | `user` ✅ | - | ✅ Sincronizado |
 | Carrito | `cart` ✅ | `Cart` ✅ | ✅ Sync activo |
-| **Órdenes** | `orders` ✅ | `Order` ✅ | ❌ **INCONSISTENTE** |
+| **Órdenes** | `orders` ✅ | `Order` ✅ | ✅ Sincronizado |
 
-### 🛑 INCONSISTENCIA CRÍTICA DETECTADA:
+### ✅ INCONSISTENCIA CORREGIDA:
 
 ```
 Checkout.jsx (línea ~175):
@@ -224,13 +225,13 @@ Frontend: NO EXISTE componente
 
 | # | Gap | Severidad | Clasificación |
 |---|-----|-----------|--------------|
-| G1 | Orders.jsx no consume API | 🔴 Alta | Bug |
-| G2 | userService.js usa mock | 🔴 Alta | Deuda técnica |
-| G3 | Wishlist sin frontend | 🟡 Media | Feature faltante |
-| G4 | Reviews sin frontend | 🟡 Media | Feature faltante |
-| G5 | AGENTS.md contradice código | 🔴 Alta | Documentación |
-| G6 | No seed ShippingAddress/PaymentMethod | 🟡 Media | Feature faltante |
-| G7 | Tests Vitest con globals | 🟡 Media | Bug |
+| G1 | Orders.jsx no consume API | ✅ Corregido | Bug |
+| G2 | userService.js usa mock | ✅ Corregido | Deuda técnica |
+| G3 | Wishlist sin frontend | ✅ Completado | Feature faltante |
+| G4 | Reviews sin frontend | ✅ Completado | Feature faltante |
+| G5 | AGENTS.md contradice código | ✅ Reescrito | Documentación |
+| G6 | No seed ShippingAddress/PaymentMethod | ✅ Completado | Feature faltante |
+| G7 | Tests Vitest con globals | ✅ Corregido | Bug |
 
 ---
 

@@ -1,6 +1,4 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { CartProvider } from "../../context/CartContext";
-import { AuthProvider } from "../../context/AuthContext";
 import Layout from "../../layout/Layout";
 import Cart from "../../pages/Cart";
 import CategoryPage from "../../pages/CategoryPage";
@@ -19,10 +17,8 @@ import WishList from "../../pages/WishList";
 
 function App() {
   return (
-    <AuthProvider>
-      <CartProvider>
-        <BrowserRouter>
-          <Layout>
+    <BrowserRouter>
+      <Layout>
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/cart" element={<Cart />} />
@@ -79,8 +75,6 @@ function App() {
             </Routes>
           </Layout>
         </BrowserRouter>
-      </CartProvider>
-    </AuthProvider>
   );
 }
 
