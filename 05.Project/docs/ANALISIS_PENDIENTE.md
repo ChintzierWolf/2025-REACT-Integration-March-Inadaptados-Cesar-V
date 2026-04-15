@@ -14,15 +14,16 @@ Este documento resume el estado técnico del proyecto tras la integración exito
 
 ### 1. ÉPICA 4: Transaccionalidad Segura (Carrito & Checkout)
 **Prioridad:** 🔴 Muy Alta
-- **Desafío:** El carrito actualmente depende excesivamente de `localStorage`.
-- **Acción:** Sincronizar el `CartContext` con `GET /api/cart` y `POST /api/cart/add-product` usando los `_id` reales de los productos.
-- **Acción:** Modificar `Checkout.jsx` para que el cálculo de totales, impuestos y envío ocurra **exclusivamente** en el Backend.
+- **Desafío:** El carrito depende excesivamente de `localStorage` y cálculos en el cliente.
+- **Acción:** Sincronizar el `CartContext` (`src/context/CartContext.jsx`) con los endpoints `GET /api/cart` y `POST /api/cart/add-product`.
+- **Acción:** Refactorizar `src/services/cartService.js` para manejar la persistencia en DB.
+- **Acción:** Modificar `src/components/Checkout/Checkout.jsx` para que invoque `orderService.createOrder()` delegando la lógica de IVA y fletes al Backend.
 
 ### 2. ÉPICA 5: Gestión de Perfil y Órdenes
 **Prioridad:** 🔴 Alta
-- **Desafío:** `Orders.jsx` debe consumir la API real (`/api/orders/user/:id`) en lugar de `localStorage`.
-- **Acción:** Refactorizar el componente `Orders` para listar pedidos desde la base de datos.
-- **Acción:** Integrar `userService.js` completamente con los endpoints de perfil.
+- **Desafío:** Desconexión entre historial de órdenes en DB y UI.
+- **Acción:** Refactorizar `src/pages/Orders.jsx` para consumir `orderService.getOrdersByUser()`.
+- **Acción:** Implementar `src/services/userService.js` para eliminar mocks de perfil.
 
 ### 3. ÉPICA 6: UI de Soporte (Wishlist & Reviews)
 **Prioridad:** 🟡 Media
