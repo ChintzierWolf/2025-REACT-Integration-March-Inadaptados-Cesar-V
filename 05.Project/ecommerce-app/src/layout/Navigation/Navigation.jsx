@@ -1,33 +1,47 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Icon from "../../components/common/Icon/Icon";
-import categoriesData from "../../data/categories.json";
+import { fetchCategories } from "../../services/categoryService";
 import "./Navigation.css";
 
 const Navigation = ({ isMobile = false, onLinkClick }) => {
   const [categories, setCategories] = useState([]);
+  const [allCategories, setAllCategories] = useState([]);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   useEffect(() => {
-    // Obtener categorías principales (que son parent de otras categorías)
-    const allParentIds = new Set(
-      categoriesData
-        .filter((cat) => cat.parentCategory)
-        .map((cat) => cat.parentCategory._id)
-    );
+    const loadCategories = async () => {
+      try {
+        const data = await fetchCategories();
+        setAllCategories(data);
+        
+        // Obtener categorías principales
+        const allParentIds = new Set(
+          data
+            .filter((cat) => cat.parentCategory)
+            .map((cat) => (typeof cat.parentCategory === 'object' ? cat.parentCategory._id : cat.parentCategory))
+        );
 
-    // Filtrar categorías que son padres o que no tienen parent
-    const mainCategories = categoriesData.filter(
-      (cat) => !cat.parentCategory || allParentIds.has(cat._id)
-    );
+        const mainCategories = data.filter(
+          (cat) => !cat.parentCategory || allParentIds.has(cat._id)
+        );
 
-    setCategories(mainCategories);
+        setCategories(mainCategories);
+      } catch (err) {
+        console.error("Error cargando categorías:", err);
+      }
+    };
+    
+    loadCategories();
   }, []);
 
   // Función para obtener subcategorías de una categoría principal
   const getSubcategories = (parentId) => {
-    const subcategories = categoriesData.filter(
-      (cat) => cat.parentCategory && cat.parentCategory._id === parentId
+    const subcategories = allCategories.filter(
+      (cat) => {
+         const catParentId = cat.parentCategory && typeof cat.parentCategory === 'object' ? cat.parentCategory._id : cat.parentCategory;
+         return catParentId === parentId;
+      }
     );
     return subcategories.sort((a, b) => a.name.localeCompare(b.name));
   };

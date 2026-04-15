@@ -40,23 +40,24 @@ export default function RegisterForm() {
       return;
     }
 
-    const result = await register({
-      displayName: formData.displayName,
-      email: formData.email,
-      password: formData.password,
-      phone: formData.phone
-    });
-
-    if (result.success) {
+    try {
+      await register({
+        displayName: formData.displayName,
+        email: formData.email,
+        password: formData.password,
+        phone: formData.phone
+      });
+      
       setSuccess(true);
       setTimeout(() => {
         navigate("/login");
       }, 2000);
-    } else {
-      setError(result.error || "Error al registrar usuario");
+      
+    } catch (err) {
+      setError(err.message || "Error al registrar usuario en la plataforma");
+    } finally {
+      setLoading(false);
     }
-
-    setLoading(false);
   };
 
   if (success) {

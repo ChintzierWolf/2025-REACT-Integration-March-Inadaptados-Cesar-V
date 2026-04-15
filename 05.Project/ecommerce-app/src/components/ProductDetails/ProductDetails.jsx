@@ -2,7 +2,6 @@ import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { useCartStore } from "../../stores/cartStore";
 import { useAuthStore } from "../../stores/authStore";
-import categoriesData from "../../data/categories.json";
 import Breadcrumb from "../../layout/Breadcrumb/Breadcrumb";
 import { useProduct } from "../../hooks/useProducts";
 import { useReviews, useCreateReview } from "../../hooks/useReviews";
@@ -29,13 +28,13 @@ export default function ProductDetails({ productId }) {
 
   const resolvedCategory = useMemo(() => {
     if (!product?.category) return null;
-    if (typeof product.category === 'string') {
-        return categoriesData.find(c => c.name === product.category);
+    if (typeof product.category === 'object') {
+        return product.category;
     }
     return null;
   }, [product]);
 
-  const categorySlug = resolvedCategory?.id || null;
+  const categorySlug = resolvedCategory?._id || null;
 
   const handleAddToCart = () => {
     if (product) addToCart(product, 1);
@@ -119,9 +118,9 @@ export default function ProductDetails({ productId }) {
         <div className="product-details-info">
           <div className="product-details-title">
             <h1 className="h1">{name}</h1>
-            {(resolvedCategory?.name || category) && (
+            {(resolvedCategory?.name) && (
               <span className="product-details-category">
-                {resolvedCategory?.name || category}
+                {resolvedCategory.name}
               </span>
             )}
           </div>
