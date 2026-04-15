@@ -6,7 +6,7 @@ Este documento certifica el estado actual del ecosistema e-commerce tras la exit
 
 ### 1. Integración Frontend-Backend (100%)
 - **Servicios API**: Todos los servicios en `src/services/` consumen los endpoints reales de MongoDB vía Axios. Se han eliminado todos los mocks y archivos JSON de datos de prueba local.
-- **Autenticación**: Flujo completo de JWT implementado. Registro y Login conectados. Interceptores de Axios inyectan el token automáticamente en cada petición.
+- **Autenticación**: Flujo completo de JWT implementado. Registro y Login conectados a la API real con manejo de errores `try/catch`. Interceptores de Axios inyectan el token automáticamente en cada petición. ✅ **ÉPICA 3 COMPLETADA**.
 - **Gestión de Sesión**: Consistencia total entre `localStorage` (para persistencia rápida) y la base de datos (fuente de verdad).
 
 ### 2. Corrección de Gaps Críticos (Marzo 2026)
@@ -58,8 +58,8 @@ src/services/
 *Última validación técnica: 2 de Abril, 2026*
 *Estado General: **OPTIMIZACIÓN EN PROGRESO***
 
-## 🚀 Próximos Pasos (Pendiente de Análisis)
-1. **Zustand Migration**: Sustitución de `CartContext` y `AuthContext` por un store centralizado.
-2. **Infinite Scroll**: Implementación de paginación infinita en las listas.
-3. **Zod Validation**: Robustecimiento de los esquemas de datos.
+## 🚀 Próximos Pasos (Análisis de Gaps G3-G7)
+1. **ÉPICA 4: Transaccionalidad Segura** (En progreso): Migración total de Carrito y Checkout a endpoints protegidos.
+2. **ÉPICA 6: Features Faltantes**: Implementación de interfaces de usuario para Wishlist y Reviews (Backend ya operativo).
+3. **ÉPICA 7: Estabilización**: Depuración del entorno de tests (Vitest) y actualización de guías en AGENTS.md.
 
