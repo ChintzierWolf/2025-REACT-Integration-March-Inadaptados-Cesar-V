@@ -5,18 +5,17 @@ const AddressItem = ({ address, isSelected, onSelect, onEdit, onDelete }) => {
   return (
     <div
       className={`address-item ${isSelected ? "selected" : ""} ${
-        address.default ? "default" : ""
+        address.isDefault ? "default" : ""
       }`}
     >
       <div className="address-content">
         <h4>{address.name}</h4>
-        <p>{address.address1}</p>
-        {address.address2 && <p>{address.address2}</p>}
+        <p className="address-line">{address.address}</p>
         <p>
-          {address.city}, {address.postalCode}
+          {address.city}, {address.state}, {address.postalCode}
         </p>
-        {address.reference && <p>{address.reference}</p>}
-        {address.default && (
+        <p>Tel: {address.phone}</p>
+        {address.isDefault && (
           <span className="default-badge">Predeterminada</span>
         )}
       </div>

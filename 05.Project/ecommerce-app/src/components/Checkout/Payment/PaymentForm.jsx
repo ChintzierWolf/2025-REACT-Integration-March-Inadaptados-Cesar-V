@@ -11,8 +11,9 @@ const PaymentForm = ({
 }) => {
   const [formData, setFormData] = useState({
     alias: "",
+    type: "credit_card",
     cardNumber: "",
-    placeHolder: "",
+    cardHolderName: "",
     expiryDate: "",
     cvv: "",
     isDefault: false,
@@ -24,8 +25,9 @@ const PaymentForm = ({
     if (initialValues && Object.keys(initialValues).length > 0) {
       setFormData({
         alias: "",
+        type: "credit_card",
         cardNumber: "",
-        placeHolder: "",
+        cardHolderName: "",
         expiryDate: "",
         cvv: "",
         isDefault: false,
@@ -50,8 +52,9 @@ const PaymentForm = ({
     if (!isEdit) {
       setFormData({
         alias: "",
+        type: "credit_card",
         cardNumber: "",
-        placeHolder: "",
+        cardHolderName: "",
         expiryDate: "",
         cvv: "",
         isDefault: false,
@@ -64,7 +67,7 @@ const PaymentForm = ({
       <h3>{isEdit ? "Editar Método de Pago" : "Nuevo Método de Pago"}</h3>
 
       <Input
-        label="Alias de la tarjeta"
+        label="Alias de la tarjeta (Ej. Mi Tarjeta Banamex)"
         name="alias"
         value={formData.alias}
         onChange={handleChange}
@@ -76,40 +79,43 @@ const PaymentForm = ({
         name="cardNumber"
         value={formData.cardNumber}
         onChange={handleChange}
-        pattern="[0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{4}"
+        pattern="[0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{4}|[0-9]{16}"
         placeHolder="1234-5678-9012-3456"
         required
       />
 
       <Input
         label="Nombre del titular"
-        name="placeHolder"
-        value={formData.placeHolder}
+        name="cardHolderName"
+        value={formData.cardHolderName}
         onChange={handleChange}
         required
       />
 
-      <div className="form-row">
-        <Input
-          label="Fecha de expiración"
-          name="expiryDate"
-          value={formData.expiryDate}
-          onChange={handleChange}
-          placeHolder="MM/YY"
-          pattern="[0-9]{2}/[0-9]{2}"
-          required
-        />
-
-        <Input
-          label="CVV"
-          name="cvv"
-          value={formData.cvv}
-          onChange={handleChange}
-          type="password"
-          maxLength="4"
-          pattern="[0-9]{3,4}"
-          required
-        />
+      <div className="form-row" style={{ display: 'flex', gap: '16px' }}>
+        <div style={{ flex: 1 }}>
+          <Input
+            label="Fecha de expiración"
+            name="expiryDate"
+            value={formData.expiryDate}
+            onChange={handleChange}
+            placeHolder="MM/YY"
+            pattern="[0-9]{2}/[0-9]{2}"
+            required
+          />
+        </div>
+        <div style={{ flex: 1 }}>
+          <Input
+            label="CVV"
+            name="cvv"
+            value={formData.cvv}
+            onChange={handleChange}
+            type="password"
+            maxLength="4"
+            pattern="[0-9]{3,4}"
+            required
+          />
+        </div>
       </div>
 
       <div className="form-checkbox">

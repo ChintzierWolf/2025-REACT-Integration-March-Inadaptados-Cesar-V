@@ -44,6 +44,7 @@ async function createPaymentMethod(req, res) {
   try {
     const {
       user,
+      alias,
       type,
       cardNumber,
       cardHolderName,
@@ -103,6 +104,7 @@ async function createPaymentMethod(req, res) {
 
     const newPaymentMethod = await PaymentMethod.create({
       user,
+      alias,
       type,
       cardNumber: type === 'credit_card' || type === 'debit_card' ? cardNumber : undefined,
       cardHolderName: type === 'credit_card' || type === 'debit_card' ? cardHolderName : undefined,
@@ -132,7 +134,7 @@ async function updatePaymentMethod(req, res) {
     }
 
     // Campos permitidos para actualizar
-    const allowedFields = ['cardHolderName', 'expiryDate', 'paypalEmail', 'bankName', 'accountNumber', 'isDefault', 'isActive'];
+    const allowedFields = ['alias', 'cardHolderName', 'expiryDate', 'paypalEmail', 'bankName', 'accountNumber', 'isDefault', 'isActive'];
     const filteredUpdate = {};
 
     for (const field of allowedFields) {

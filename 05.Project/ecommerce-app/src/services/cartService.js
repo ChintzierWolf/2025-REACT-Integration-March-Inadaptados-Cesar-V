@@ -37,14 +37,3 @@ export const updateCart = async (cartId, products) => {
   });
 };
 
-export const createOrder = async (orderData) => {
-  return await http.post('/orders/', orderData);
-};
-
-export const getOrders = async (userId) => {
-  return await http.get(`/orders/user/${userId}`);
-};
-
-export const getOrderById = async (orderId) => {
-  return await http.get(`/orders/${orderId}`);
-};

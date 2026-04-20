@@ -1,7 +1,7 @@
 import Cart from '../models/cart.js';
 import errorHandler from '../middlewares/errorHandler.js';
 
-async function getCarts(req, res) {
+async function getCarts(req, res, next) {
   try {
     const carts = await Cart.find().populate('user').populate('products.product');
     res.json(carts);
@@ -10,7 +10,7 @@ async function getCarts(req, res) {
   }
 }
 
-async function getCartById(req, res) {
+async function getCartById(req, res, next) {
   try {
     const id = req.params.id;
     const cart = await Cart.findById(id).populate('user').populate('products.product');
@@ -23,7 +23,7 @@ async function getCartById(req, res) {
   }
 }
 
-async function getCartByUser(req, res) {
+async function getCartByUser(req, res, next) {
   try {
     const userId = req.params.id;
     const cart = await Cart.findOne({ user: userId }).populate('user').populate('products.product');
@@ -36,7 +36,7 @@ async function getCartByUser(req, res) {
   }
 }
 
-async function createCart(req, res) {
+async function createCart(req, res, next) {
   try {
     const { user, products } = req.body;
     if (!user || !products || !Array.isArray(products)) {
@@ -64,7 +64,7 @@ async function createCart(req, res) {
   }
 }
 
-async function updateCart(req, res) {
+async function updateCart(req, res, next) {
   try {
     const { id } = req.params;
     const { user, products } = req.body;
@@ -94,7 +94,7 @@ async function updateCart(req, res) {
   }
 }
 
-async function deleteCart(req, res) {
+async function deleteCart(req, res, next) {
   try {
     const { id } = req.params;
     const deletedCart = await Cart.findByIdAndDelete(id);
@@ -109,7 +109,7 @@ async function deleteCart(req, res) {
   }
 }
 
-async function addProductToCart(req, res) {
+async function addProductToCart(req, res, next) {
   try {
     const { userId, productId, quantity = 1 } = req.body;
 

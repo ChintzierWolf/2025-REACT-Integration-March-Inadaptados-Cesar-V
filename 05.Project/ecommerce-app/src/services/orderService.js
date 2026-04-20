@@ -1,6 +1,10 @@
 import http from '../utils/http';
 import { getCurrentUser } from '../utils/auth';
 
+export const createOrder = async (orderData) => {
+  return await http.post('/orders/', orderData);
+};
+
 export const getOrders = async () => {
   const user = getCurrentUser();
   if (!user?._id) {

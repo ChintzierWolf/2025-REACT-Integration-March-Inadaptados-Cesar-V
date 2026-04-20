@@ -20,7 +20,7 @@ import {
   useDeletePayment
 } from "../hooks/useCheckout";
 import CheckoutSkeleton from "../components/Checkout/CheckoutSkeleton";
-import { createOrder } from "../services/cartService";
+import { createOrder } from "../services/orderService";
 import { getCurrentUser } from "../utils/auth";
 import "./Checkout.css";
 
@@ -291,7 +291,7 @@ export default function Checkout() {
                     <Icon name="mapPin" size={18} />
                     <div>
                       <strong>{selectedAddress.name}</strong>
-                      <p>{selectedAddress.address1}, {selectedAddress.city}</p>
+                      <p>{selectedAddress.address}, {selectedAddress.city}</p>
                     </div>
                   </div>
                 )

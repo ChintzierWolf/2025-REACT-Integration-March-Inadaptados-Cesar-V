@@ -11,13 +11,13 @@ const AddressForm = ({
 }) => {
   const [formData, setFormData] = useState({
     name: "",
-    address1: "",
-    address2: "",
+    address: "",
     postalCode: "",
     city: "",
-    country: "",
-    reference: "",
-    default: false,
+    state: "",
+    country: "México",
+    phone: "",
+    isDefault: false,
     ...initialValues,
   });
 
@@ -26,13 +26,13 @@ const AddressForm = ({
     if (initialValues && Object.keys(initialValues).length > 0) {
       setFormData({
         name: "",
-        address1: "",
-        address2: "",
+        address: "",
         postalCode: "",
         city: "",
-        country: "",
-        reference: "",
-        default: false,
+        state: "",
+        country: "México",
+        phone: "",
+        isDefault: false,
         ...initialValues,
       });
     }
@@ -54,13 +54,13 @@ const AddressForm = ({
     if (!isEdit) {
       setFormData({
         name: "",
-        address1: "",
-        address2: "",
+        address: "",
         postalCode: "",
         city: "",
-        country: "",
-        reference: "",
-        default: false,
+        state: "",
+        country: "México",
+        phone: "",
+        isDefault: false,
       });
     }
   };
@@ -70,7 +70,7 @@ const AddressForm = ({
       <h3>{isEdit ? "Editar Dirección" : "Nueva Dirección"}</h3>
 
       <Input
-        label="Nombre de la dirección"
+        label="Nombre de la dirección (Ej. Casa, Trabajo)"
         name="name"
         value={formData.name}
         onChange={handleChange}
@@ -78,35 +78,54 @@ const AddressForm = ({
       />
 
       <Input
-        label="Dirección Línea 1"
-        name="address1"
-        value={formData.address1}
+        label="Dirección completa"
+        name="address"
+        value={formData.address}
         onChange={handleChange}
         required
       />
 
-      <Input
-        label="Dirección Línea 2"
-        name="address2"
-        value={formData.address2}
-        onChange={handleChange}
-      />
+      <div className="form-row" style={{ display: 'flex', gap: '16px' }}>
+        <div style={{ flex: 1 }}>
+          <Input
+            label="Código Postal"
+            name="postalCode"
+            value={formData.postalCode}
+            onChange={handleChange}
+            required
+          />
+        </div>
+        <div style={{ flex: 1 }}>
+          <Input
+            label="Teléfono"
+            name="phone"
+            value={formData.phone}
+            onChange={handleChange}
+            required
+          />
+        </div>
+      </div>
 
-      <Input
-        label="Código Postal"
-        name="postalCode"
-        value={formData.postalCode}
-        onChange={handleChange}
-        required
-      />
-
-      <Input
-        label="Ciudad"
-        name="city"
-        value={formData.city}
-        onChange={handleChange}
-        required
-      />
+      <div className="form-row" style={{ display: 'flex', gap: '16px' }}>
+        <div style={{ flex: 1 }}>
+          <Input
+            label="Ciudad"
+            name="city"
+            value={formData.city}
+            onChange={handleChange}
+            required
+          />
+        </div>
+        <div style={{ flex: 1 }}>
+          <Input
+            label="Estado"
+            name="state"
+            value={formData.state}
+            onChange={handleChange}
+            required
+          />
+        </div>
+      </div>
 
       <Input
         label="País"
@@ -116,22 +135,15 @@ const AddressForm = ({
         required
       />
 
-      <Input
-        label="Referencia"
-        name="reference"
-        value={formData.reference}
-        onChange={handleChange}
-      />
-
       <div className="form-checkbox">
         <input
           type="checkbox"
-          name="default"
-          checked={formData.default}
+          name="isDefault"
+          checked={formData.isDefault}
           onChange={handleChange}
-          id="defaultAddress"
+          id="isDefaultAddress"
         />
-        <label htmlFor="defaultAddress">
+        <label htmlFor="isDefaultAddress">
           Establecer como dirección predeterminada
         </label>
       </div>

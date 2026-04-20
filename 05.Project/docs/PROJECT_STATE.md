@@ -21,9 +21,10 @@ Este documento detalla el estado real del ecosistema e-commerce durante su fase 
 
 | # | Gap Identificado | Prioridad | Estado | Acción Requerida |
 |---|-------------------|-----------|--------|------------------|
-| G1 | Integración useAuthStore | 🔴 Crítico | 🟡 Parcial | Sustituir `utils/auth` en Header y ProtectedRoutes |
-| G2 | Implementación useQuery | 🔴 Crítico | ❌ Pendiente | Refactorizar `Home.jsx` y `Product.jsx` |
-| G3 | Limpieza de Documentación | 🟢 Bajo | [/] Iniciado | Archivar archivos obsoletos y sincronizar AGENTS.md |
+| G1 | Integración useAuthStore | 🔴 Crítico | ✅ Completado | Refactorizado usando Zustand y adapter en utils/auth |
+| G2 | Implementación useQuery | 🔴 Crítico | ✅ Completado | Refactorizado usando hooks de React Query en servicios |
+| G3 | Sincronización Modelos Checkout | 🔴 Crítico | ✅ Completado | Sincronizados modelos de Address y Payment entre Frontend y Backend |
+| G4 | Limpieza de Documentación | 🟢 Bajo | [/] Iniciado | Archivar archivos obsoletos y sincronizar AGENTS.md |
 
 ---
 
