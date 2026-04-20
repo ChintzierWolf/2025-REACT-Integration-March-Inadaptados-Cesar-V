@@ -1,41 +1,34 @@
-# Estado del Proyecto - Versión Final Post-Integración (Marzo 2026)
+# Estado del Proyecto - En Modernización (Abril 2026)
 
-Este documento certifica el estado actual del ecosistema e-commerce tras la exitosa integración del frontend con la API real.
+Este documento detalla el estado real del ecosistema e-commerce durante su fase de modernización técnica.
 
-## ✅ Resumen de Hitos Alcanzados
+## 🚧 Resumen de Hitos y Trabajo en Progreso
 
-### 1. Integración Frontend-Backend (100%)
-- **Servicios API**: Todos los servicios en `src/services/` consumen los endpoints reales de MongoDB vía Axios. Se han eliminado todos los mocks y archivos JSON de datos de prueba local.
-- **Autenticación**: Flujo completo de JWT implementado. Registro y Login conectados a la API real con manejo de errores `try/catch`. Interceptores de Axios inyectan el token automáticamente en cada petición. ✅ **ÉPICA 3 COMPLETADA**.
-- **Gestión de Sesión**: Consistencia total entre `localStorage` (para persistencia rápida) y la base de datos (fuente de verdad).
+### 1. Integración Frontend-Backend (Conectividad Base)
+- **Servicios API**: Los servicios en `src/services/` ya apuntan a la API real, eliminando la mayoría de los mocks JSON. ✅ **Base establecida**.
+- **Autenticación**: Flujo JWT funcional en el backend. El frontend usa actualmente `utils/auth.js` (basado en localStorage), pero falta integrarlo totalmente con **Zustand**.
 
-### 2. Corrección de Gaps Críticos (Marzo 2026)
-- **Historial de Órdenes**: `Orders.jsx` ahora consume `GET /api/orders/user/:id`. Se eliminó la dependencia de `localStorage` para el historial, permitiendo la sincronización entre dispositivos.
-- **userService Refactor**: El servicio de usuario utiliza la API real para perfiles, cambios de contraseña y gestión de cuentas.
-- **Wishlist y Reviews**: Implementación completa de ambos módulos tanto en Backend como en Frontend.
+### 2. Modernización de Lógica (Zustand & React Query) - [EN PROGRESO]
+- **Zustand**: Los archivos de store (`authStore.js`, `cartStore.js`) se han creado, pero su integración en componentes es parcial.
+    - `Header.jsx`: Usa `useCartStore` pero NO usa `useAuthStore` todavía.
+- **TanStack Query (React Query)**: El proveedor está configurado en `index.js`, pero la mayoría de los componentes (`Home`, `Orders`, etc.) siguen usando `useEffect` con Axios directo en lugar de hooks de React Query.
 
-### 3. Calidad y Operaciones
-- **Suite de Pruebas**: 100% de efectividad en pruebas unitarias e integración (Vitest + MongoMemoryServer).
-- **Protocolo SSDLC**: Se sigue estrictamente el protocolo operativo de seguridad desde el diseño hasta el despliegue.
-- **Documentación**: Guías `AGENTS.md` actualizadas para reflejar los patrones post-integración.
+### 3. Gaps Críticos Pendientes
+- **Refactorización de Sesión**: Migrar de `utils/auth.js` manual a `useAuthStore` de Zustand en toda la app.
+- **Migración a Hooks**: Sustituir el patrón `useEffect + useState` por `useQuery` en catálogos y órdenes.
 
-### 4. Optimización de Performance (TanStack Query)
-- **Caché Global**: Implementación de TanStack Query para la gestión de estados asíncronos.
-- **Reducción de Latencia**: Los productos, categorías y reseñas ahora se sirven desde un caché inteligente (stale-while-revalidate).
-- **Hooks Personalizados**: Migración exitosa de `Home.jsx`, `ProductDetails.jsx` y `CategoryProducts.jsx` a una arquitectura basada en hooks (`useProducts`, `useCategories`, `useReviews`).
+## 📊 Matriz de Gaps Reales
 
+| # | Gap Identificado | Prioridad | Estado | Acción Requerida |
+|---|-------------------|-----------|--------|------------------|
+| G1 | Integración useAuthStore | 🔴 Crítico | 🟡 Parcial | Sustituir `utils/auth` en Header y ProtectedRoutes |
+| G2 | Implementación useQuery | 🔴 Crítico | ❌ Pendiente | Refactorizar `Home.jsx` y `Product.jsx` |
+| G3 | Limpieza de Documentación | 🟢 Bajo | [/] Iniciado | Archivar archivos obsoletos y sincronizar AGENTS.md |
 
-## 📊 Matriz de Gaps (Estado: CERRADO)
+---
 
-| # | Gap Identificado | Prioridad | Estado | Resolución |
-|---|-------------------|-----------|--------|------------|
-| G1 | Orders localStorage | 🔴 Crítico | ✅ | Conectado a API real |
-| G2 | userService mock | 🔴 Crítico | ✅ | Migrado a Axios/API |
-| G5 | AGENTS.md desincronizado | 🔴 Crítico | ✅ | Reescrito totalmente |
-| G3 | Wishlist frontend | 🟡 Medio   | ✅ | Implementado |
-| G4 | Reviews frontend | 🟡 Medio   | ✅ | Implementado |
-| G6 | Seed de datos parcial | 🟡 Medio   | ✅ | Extendido con pagos/direcciones |
-| G7 | Estabilización tests | 🟡 Medio   | ✅ | Fixes de Vitest aplicados |
+*Última validación técnica: 17 de Abril, 2026*
+*Estado General: **FASE 1: CONSISTENCIA Y LIMPIEZA***
 
 ## 📁 Estructura de Servicios Verificada
 

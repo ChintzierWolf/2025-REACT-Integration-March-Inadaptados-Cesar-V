@@ -1,8 +1,7 @@
-import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuthStore } from "../stores/authStore";
 import { useCartStore } from "../stores/cartStore";
-import { getWishlist, toggleWishlistItem } from "../services/wishlistService";
+import { useWishlist, useToggleWishlist } from "../hooks/useWishlist";
 import Button from "../components/common/Button";
 import Icon from "../components/common/Icon/Icon";
 import Loading from "../components/common/Loading/Loading";
@@ -16,42 +15,21 @@ const formatMoney = (value = 0) =>
   }).format(value);
 
 export default function WishList() {
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  const { user, isAuthenticated } = useAuthStore();
+  const isAuth = isAuthenticated();
   const addToCart = useCartStore((state) => state.addToCart);
   const navigate = useNavigate();
-  
-  const [wishlist, setWishlist] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
 
-  useEffect(() => {
-    if (!isAuthenticated()) {
-      setError("Inicia sesión para ver tu lista de deseos");
-      setLoading(false);
-      return;
-    }
+  const { data, isLoading, error: queryError } = useWishlist();
+  const { mutateAsync: toggleWishlist } = useToggleWishlist();
 
-    const loadWishlist = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-        const data = await getWishlist();
-        setWishlist(data?.products || []);
-      } catch (err) {
-        setError("Error al cargar tu lista de deseos");
-        console.error("Error loading wishlist:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const wishlist = data?.products || [];
 
-    loadWishlist();
-  }, [isAuthenticated]);
+  const loading = isAuth && isLoading;
 
   const handleRemoveFromWishlist = async (productId) => {
     try {
-      await toggleWishlistItem(productId);
-      setWishlist((prev) => prev.filter((p) => p._id !== productId));
+      await toggleWishlist(productId);
     } catch (err) {
       console.error("Error removing from wishlist:", err);
     }
@@ -82,12 +60,10 @@ export default function WishList() {
     );
   }
 
-  if (error) {
+  if (queryError) {
     return (
       <div className="wishlist-page wishlist-empty">
-        <Icon name="alertCircle" size={64} />
-        <h1>Error</h1>
-        <p>{error}</p>
+        <p>{queryError.message || "No se pudo cargar la lista de deseos"}</p>
         <Button variant="secondary" onClick={() => window.location.reload()}>
           Reintentar
         </Button>

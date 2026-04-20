@@ -2,8 +2,8 @@ import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Icon from "../../components/common/Icon/Icon";
 import { useCartStore } from "../../stores/cartStore";
+import { useAuthStore } from "../../stores/authStore";
 import { useTheme } from "../../context/ThemeContext";
-import { getCurrentUser, isAuthenticated, logout } from "../../utils/auth";
 import Navigation from "../Navigation/Navigation";
 import "./Header.css";
 
@@ -13,13 +13,11 @@ export default function Header() {
   const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const { isDarkMode, toggleTheme } = useTheme();
-  const getTotalItems = useCartStore((state) => state.getTotalItems);
-  const totalItems = getTotalItems();
+  const totalItems = useCartStore((state) => state.cartItems.reduce((total, item) => total + item.quantity, 0));
   const navigate = useNavigate();
 
-  // Simular estado de autenticación - reemplazar con tu lógica real
-  const [isAuth, setIsAuth] = useState(true);
-  const [user, setUser] = useState(getCurrentUser());
+  const { user, logout: storeLogout, isAuthenticated } = useAuthStore();
+  const isAuth = isAuthenticated();
 
   // Referencias para manejo de clicks fuera
   const userMenuRef = useRef(null);
@@ -37,19 +35,7 @@ export default function Header() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  useEffect(() => {
-    const updateAuthState = () => {
-      setIsAuth(isAuthenticated());
-      setUser(getCurrentUser());
-    };
-
-    window.addEventListener("storage", updateAuthState);
-    updateAuthState();
-
-    return () => {
-      window.addEventListener("storage", updateAuthState);
-    };
-  }, []);
+  // El estado de Auth se maneja ahora a través de Zustand y su inicialización automática
 
   // Cerrar menús con Escape y clicks fuera
   useEffect(() => {
@@ -127,12 +113,9 @@ export default function Header() {
   };
 
   const handleLogout = () => {
-    logout();
-    setIsAuth(false);
-    setUser(null);
+    storeLogout();
     setIsUserMenuOpen(false);
     setIsMobileMenuOpen(false);
-    window.location.reload();
   };
 
   const handleUserMenuToggle = () => {

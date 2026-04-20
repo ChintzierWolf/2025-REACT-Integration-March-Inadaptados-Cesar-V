@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { login } from "../../utils/auth";
+import { useAuthStore } from "../../stores/authStore";
 import Button from "../common/Button";
 import ErrorMessage from "../common/ErrorMessage/ErrorMessage";
 import Input from "../common/Input";
@@ -11,6 +11,7 @@ export default function LoginForm() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const login = useAuthStore((state) => state.login);
   const navigate = useNavigate();
 
   const onSubmit = async (e) => {
@@ -20,11 +21,8 @@ export default function LoginForm() {
 
     try {
       await login(email, password);
-      // El estado exitoso ahora redirige y recarga de inmediato.
       navigate("/");
-      window.location.reload();
     } catch (err) {
-      // Capturamos específicamente el mensaje de error provisto por el backend y parseado globalmente en axios.
       setError(err.message || "Fallo en la comunicación de Autenticación");
     } finally {
       setLoading(false);

@@ -7,9 +7,10 @@ import "./Cart.css";
 
 export default function Cart() {
   const cartItems = useCartStore((state) => state.cartItems);
+  const total = useCartStore((state) => state.total);
   const clearCart = useCartStore((state) => state.clearCart);
-  const getTotalItems = useCartStore((state) => state.getTotalItems);
-  const getTotalPrice = useCartStore((state) => state.getTotalPrice);
+  
+  const totalItems = cartItems.reduce((acc, item) => acc + item.quantity, 0);
 
   const navigate = useNavigate();
 
@@ -35,7 +36,7 @@ export default function Cart() {
         </div>
         <div className="cart-header-info">
           <span className="cart-items-count">
-            {getTotalItems()} {getTotalItems() === 1 ? "artículo" : "artículos"}
+            {totalItems} {totalItems === 1 ? "artículo" : "artículos"}
           </span>
           <Button
             variant="ghost"
@@ -55,7 +56,7 @@ export default function Cart() {
         <div className="cart-summary">
           <div className="cart-total">
             <span className="cart-total-subtitle">Total a pagar</span>
-            <h2>${getTotalPrice().toFixed(2)}</h2>
+            <h2>${total.toFixed(2)}</h2>
           </div>
           <div className="cart-actions">
             <Button

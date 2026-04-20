@@ -1,0 +1,46 @@
+[
+  {
+    "title": "Nuevas Consolas 2025",
+    "subtitle": "Descubre la potencia de Xbox Series X y PS5",
+    "image": "https://hyperdrivegaming.com/wp-content/uploads/2025/04/consolas-de-videojuegos-2025.png",
+    "buttonText": "Ver Consolas",
+    "buttonLink": "/consolas",
+    "backgroundColor": "#26336c",
+    "discountPercentage": 20,
+    "validUntil": "2025-12-31",
+    "communityRating": 4.8
+  },
+  {
+    "title": "Ofertas Especiales en Juegos",
+    "subtitle": "Hasta 60% de descuento en títulos seleccionados",
+    "image": "https://imagescontentstack.coppel.com/v3/assets/blt81f564913ca7e893/blt06d202765d02fcc8/692db4d2179d43cffc33000d/SLIDERS_1_2978X1434_PX.jpg?width=2978&height=1434&auto=avif&quality=75&format=pjpg",
+    "buttonText": "Ver Ofertas",
+    "buttonLink": "/juegos",
+    "backgroundColor": "#8677b5",
+    "discountPercentage": 60,
+    "validUntil": "2025-12-15",
+    "communityRating": 4.6
+  },
+  {
+    "title": "Accesorios Gamer",
+    "subtitle": "Headsets, controles y más para tu setup",
+    "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTzsg7snLzWLIyxMNgjKVSToBMXCrMuTWNAPQ&s",
+    "buttonText": "Explorar",
+    "buttonLink": "/accesorios",
+    "backgroundColor": "#3eb7ea",
+    "discountPercentage": 35,
+    "validUntil": "2026-01-10",
+    "communityRating": 4.7
+  },
+  {
+    "title": "Envío Gratis",
+    "subtitle": "En compras superiores a $50 en consolas y accesorios",
+    "image": "https://www.puritecequipos.com.mx/wp-content/uploads/2022/05/envio-gratis-puritecequipos.jpg",
+    "buttonText": "Comprar Ahora",
+    "buttonLink": "/free-shipping",
+    "backgroundColor": "#79bf87",
+    "discountPercentage": 0,
+    "validUntil": "2026-02-01",
+    "communityRating": 4.9
+  }
+]

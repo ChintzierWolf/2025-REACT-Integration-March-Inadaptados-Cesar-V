@@ -1,0 +1,27 @@
+.skeleton-checkout {
+  opacity: 0.8;
+  pointer-events: none;
+}
+
+.skeleton-checkout .checkout-module {
+  border-color: rgba(0, 0, 0, 0.05);
+}
+
+.skeleton-checkout .module-header {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.skeleton-checkout .order-summary-card {
+  box-shadow: none;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+[data-theme="dark"] .skeleton-checkout .checkout-module,
+[data-theme="dark"] .skeleton-checkout .module-header,
+[data-theme="dark"] .skeleton-checkout .order-summary-card {
+  border-color: rgba(255, 255, 255, 0.05);
+}
+
+.skeleton-checkout .module-content {
+  padding: 20px;
+}

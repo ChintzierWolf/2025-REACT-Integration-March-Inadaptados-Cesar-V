@@ -1,5 +1,8 @@
+import { useEffect } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Layout from "../../layout/Layout";
+import { useAuthStore } from "../../stores/authStore";
+import { useCartStore } from "../../stores/cartStore";
 import Cart from "../../pages/Cart";
 import CategoryPage from "../../pages/CategoryPage";
 import Checkout from "../../pages/Checkout";
@@ -16,6 +19,15 @@ import Settings from "../../pages/Setttings";
 import WishList from "../../pages/WishList";
 
 function App() {
+  const { user } = useAuthStore();
+  const syncCart = useCartStore((state) => state.syncCartWithBackend);
+
+  useEffect(() => {
+    if (user?._id) {
+      syncCart();
+    }
+  }, [user?._id, syncCart]);
+
   return (
     <BrowserRouter>
       <Layout>
