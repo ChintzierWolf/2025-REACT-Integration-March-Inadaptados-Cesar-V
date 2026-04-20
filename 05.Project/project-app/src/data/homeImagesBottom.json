@@ -1,0 +1,78 @@
+[
+  {
+    "title": "Lanzamiento PlayStation VR2",
+    "subtitle": "Sumérgete en la nueva era de realidad virtual",
+    "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQkvbtZ_LqinT-w5UVE6hh3vUIbVVuk8hCg2g&s",
+    "buttonText": "Explorar VR",
+    "buttonLink": "/productos/psvr2",
+    "backgroundColor": "#1c1c3c",
+    "validUntil": "2026-03-01",
+    "communityRating": 4.7
+  },
+  {
+    "title": "Top Juegos Multiplayer",
+    "subtitle": "Conéctate y juega con amigos en línea",
+    "image": "https://i.redd.it/72lnmkv7lrde1.png",
+    "buttonText": "Ver Juegos",
+    "buttonLink": "/juegos/multiplayer",
+    "backgroundColor": "#2a4d8f",
+    "discountPercentage": 40,
+    "validUntil": "2026-01-20",
+    "communityRating": 4.8
+  },
+  {
+    "title": "Bundle Xbox Game Pass",
+    "subtitle": "Acceso ilimitado a más de 100 juegos",
+    "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSCrjx9AVbH7YHh1Osud0H2bRNszvrCvo9F6w&s",
+    "buttonText": "Suscribirse",
+    "buttonLink": "/suscripciones/gamepass",
+    "backgroundColor": "#107c10",
+    "discountPercentage": 25,
+    "validUntil": "2026-02-15",
+    "communityRating": 4.9
+  },
+  {
+    "title": "Nintendo Switch Edición Especial",
+    "subtitle": "Diseños únicos inspirados en sagas icónicas",
+    "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR22i3l_fbylYABShkLHSUDJOULy5UFM9pa5w&s",
+    "buttonText": "Comprar Switch",
+    "buttonLink": "/productos/switch-edicion",
+    "backgroundColor": "#e60012",
+    "discountPercentage": 10,
+    "validUntil": "2026-04-01",
+    "communityRating": 4.6
+  },
+  {
+    "title": "Accesorios Premium",
+    "subtitle": "Mejora tu experiencia con teclados, mouse y headsets gamer",
+    "image": "https://fussionweb.com/cdn/shop/files/KIT-2001-1.jpg?v=1737065008",
+    "buttonText": "Explorar Accesorios",
+    "buttonLink": "/productos/accesorios-premium",
+    "backgroundColor": "#3eb7ea",
+    "discountPercentage": 30,
+    "validUntil": "2026-01-31",
+    "communityRating": 4.5
+  },
+  {
+    "title": "Colección Retro",
+    "subtitle": "Revive clásicos de NES, SNES y Sega",
+    "image": "https://images.unsplash.com/photo-1511512578047-dfb367046420?w=1200&h=600&fit=crop",
+    "buttonText": "Descubrir Retro",
+    "buttonLink": "/colecciones/retro",
+    "backgroundColor": "#ffcc00",
+    "discountPercentage": 50,
+    "validUntil": "2026-02-28",
+    "communityRating": 4.9
+  },
+  {
+    "title": "Eventos eSports",
+    "subtitle": "Participa en torneos y gana premios exclusivos",
+    "image": "https://images.unsplash.com/photo-1511512578047-dfb367046420?w=1200&h=600&fit=crop",
+    "buttonText": "Unirme",
+    "buttonLink": "/eventos/esports",
+    "backgroundColor": "#6c2eb9",
+    "discountPercentage": 0,
+    "validUntil": "2026-05-01",
+    "communityRating": 4.7
+  }
+]

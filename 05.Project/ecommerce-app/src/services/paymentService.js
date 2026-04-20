@@ -20,7 +20,7 @@ export const getDefaultPaymentMethod = async () => {
 export const createPaymentMethod = async (paymentData) => {
   const user = getCurrentUser();
   if (!user?._id) throw new Error('Debes iniciar sesión');
-  return await http.post('/payment-methods/', {
+  return await http.post('/payment-methods', {
     ...paymentData,
     user: user._id
   });
