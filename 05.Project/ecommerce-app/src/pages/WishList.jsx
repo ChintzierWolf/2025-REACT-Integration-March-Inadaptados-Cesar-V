@@ -96,6 +96,19 @@ export default function WishList() {
               : `${wishlist.length} productos guardados`}
           </p>
         </div>
+        {wishlist.length > 0 && (
+          <Button
+            variant="secondary"
+            onClick={() => {
+              wishlist.forEach((product) => {
+                if (product.stock > 0) handleAddToCart(product);
+              });
+            }}
+          >
+            <Icon name="shoppingCart" size={18} />
+            Añadir todo al carrito
+          </Button>
+        )}
       </div>
 
       <div className="wishlist-grid">

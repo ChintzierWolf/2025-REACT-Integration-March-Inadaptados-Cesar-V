@@ -4,6 +4,7 @@ import Icon from "../../components/common/Icon/Icon";
 import { useCartStore } from "../../stores/cartStore";
 import { useAuthStore } from "../../stores/authStore";
 import { useTheme } from "../../context/ThemeContext";
+import { useWishlist } from "../../hooks/useWishlist";
 import Navigation from "../Navigation/Navigation";
 import "./Header.css";
 
@@ -18,6 +19,9 @@ export default function Header() {
 
   const { user, logout: storeLogout, isAuthenticated } = useAuthStore();
   const isAuth = isAuthenticated();
+
+  const { data: wishlistData } = useWishlist();
+  const wishlistItemsCount = wishlistData?.products?.length || 0;
 
   // Referencias para manejo de clicks fuera
   const userMenuRef = useRef(null);
@@ -343,6 +347,18 @@ export default function Header() {
                   </div>
                 )}
               </div>
+
+              {/* Wishlist Button */}
+              <Link
+                to="/wishlist"
+                className="wishlist-btn"
+                aria-label="Ver lista de deseos"
+              >
+                <Icon name="heart" size={24} />
+                {wishlistItemsCount > 0 && (
+                  <span className="wishlist-badge">{wishlistItemsCount}</span>
+                )}
+              </Link>
 
               {/* Cart Button */}
               <Link

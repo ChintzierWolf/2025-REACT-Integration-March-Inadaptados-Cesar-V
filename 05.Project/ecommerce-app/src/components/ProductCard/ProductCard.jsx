@@ -5,13 +5,13 @@ import { useAuthStore } from "../../stores/authStore";
 import Badge from "../common/Badge";
 import Button from "../common/Button";
 import Icon from "../common/Icon/Icon";
-import { toggleWishlistItem } from "../../services/wishlistService";
+import { useToggleWishlist } from "../../hooks/useWishlist";
 import "./ProductCard.css";
 
 export default function ProductCard({ product, orientation = "vertical" }) {
   const addToCart = useCartStore((state) => state.addToCart);
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  const [wishlistLoading, setWishlistLoading] = useState(false);
+  const { mutateAsync: toggleWishlist, isLoading: isToggling } = useToggleWishlist();
   const { name, price, stock, image, description } = product || {};
 
   if (!product) {
@@ -43,13 +43,10 @@ export default function ProductCard({ product, orientation = "vertical" }) {
       return;
     }
     
-    setWishlistLoading(true);
     try {
-      await toggleWishlistItem(product._id);
+      await toggleWishlist(product._id);
     } catch (error) {
       console.error("Error toggling wishlist:", error);
-    } finally {
-      setWishlistLoading(false);
     }
   };
 
@@ -68,7 +65,7 @@ export default function ProductCard({ product, orientation = "vertical" }) {
       <button
         className="product-card-wishlist-btn"
         onClick={handleToggleWishlist}
-        disabled={wishlistLoading}
+        disabled={isToggling}
         title={isAuthenticated() ? "Agregar a favoritos" : "Inicia sesión para guardar en favoritos"}
       >
         <Icon 
