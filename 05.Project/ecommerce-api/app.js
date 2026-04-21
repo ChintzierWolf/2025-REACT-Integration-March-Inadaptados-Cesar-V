@@ -5,6 +5,8 @@ import logger from './src/middlewares/logger.js';
 import setupGlobalErrorHandlers from './src/middlewares/globalErrorHandler.js';
 import errorHandler from './src/middlewares/errorHandler.js';
 import cors from 'cors';
+import swaggerUi from 'swagger-ui-express';
+import { swaggerSpec } from './src/config/swagger.js';
 
 dotenv.config();
 
@@ -21,6 +23,9 @@ app.use(cors({
 
 app.use(express.json());
 app.use(logger);
+
+// Documentación de API
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.get('/', (req, res) => {
   res.send('WELCOME!');

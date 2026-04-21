@@ -109,6 +109,37 @@ async function deleteCart(req, res, next) {
   }
 }
 
+/**
+ * @swagger
+ * /cart/add-product:
+ *   post:
+ *     summary: Añadir un producto al carrito
+ *     tags: [Cart]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [userId, productId, quantity]
+ *             properties:
+ *               userId:
+ *                 type: string
+ *               productId:
+ *                 type: string
+ *               quantity:
+ *                 type: integer
+ *                 minimum: 1
+ *     responses:
+ *       200:
+ *         description: Producto añadido exitosamente
+ *       400:
+ *         description: Datos inválidos
+ *       401:
+ *         description: No autorizado
+ */
 async function addProductToCart(req, res, next) {
   try {
     const { userId, productId, quantity = 1 } = req.body;

@@ -23,13 +23,14 @@ Este documento detalla el estado real del ecosistema e-commerce durante su fase 
 |---|-------------------|-----------|--------|------------------|
 | G1 | Integración useAuthStore | 🔴 Crítico | ✅ Completado | Refactorizado usando Zustand y adapter en utils/auth |
 | G2 | Implementación useQuery | 🔴 Crítico | ✅ Completado | Refactorizado usando hooks de React Query en servicios |
-| G3 | Sincronización Modelos Checkout | 🔴 Crítico | ✅ Completado | Sincronizados modelos de Address y Payment entre Frontend y Backend |
-| G4 | Limpieza de Documentación | 🟢 Bajo | [/] Iniciado | Archivar archivos obsoletos y sincronizar AGENTS.md |
+| G3 | Sincronización Modelos Checkout | 🔴 Crítico | ✅ Completado | Sincronizados modelos de Address y Payment |
+| G4 | WishList Visual & Sync | 🟠 Medio | ✅ Completado | Implementación de UI, contador reactivo y fix de modelos |
+| G5 | Validaciones Zod & Swagger | 🟠 Medio | [/] Iniciado | Infraestructura lista, rutas Auth y Cart refactorizadas |
 
 ---
 
-*Última validación técnica: 17 de Abril, 2026*
-*Estado General: **FASE 1: CONSISTENCIA Y LIMPIEZA***
+*Última validación técnica: 21 de Abril, 2026*
+*Estado General: **FASE 2: ROBUSTEZ Y SEGURIDAD***
 
 ## 📁 Estructura de Servicios Verificada
 
