@@ -23,11 +23,11 @@ export default function WishList() {
   const { data: response, isLoading, error: queryError } = useWishlist();
   const { mutateAsync: toggleWishlist } = useToggleWishlist();
 
-  // El backend devuelve { success, data: { products: [{ product: {...}, _id: ... }] } }
+  // El interceptor de axios ya aplanó la respuesta a { products: [...] }
   // Aplanamos la lista para que cada objeto sea el producto directamente
-  const wishlist = response?.data?.products?.map(item => ({
+  const wishlist = response?.products?.map(item => ({
     ...item.product,
-    wishlistItemId: item._id // Guardamos el ID del item de la lista por si se necesita
+    wishlistItemId: item._id
   })) || [];
 
   const loading = isAuth && isLoading;
