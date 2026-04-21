@@ -20,10 +20,15 @@ export default function WishList() {
   const addToCart = useCartStore((state) => state.addToCart);
   const navigate = useNavigate();
 
-  const { data, isLoading, error: queryError } = useWishlist();
+  const { data: response, isLoading, error: queryError } = useWishlist();
   const { mutateAsync: toggleWishlist } = useToggleWishlist();
 
-  const wishlist = data?.products || [];
+  // El backend devuelve { success, data: { products: [{ product: {...}, _id: ... }] } }
+  // Aplanamos la lista para que cada objeto sea el producto directamente
+  const wishlist = response?.data?.products?.map(item => ({
+    ...item.product,
+    wishlistItemId: item._id // Guardamos el ID del item de la lista por si se necesita
+  })) || [];
 
   const loading = isAuth && isLoading;
 
@@ -35,8 +40,23 @@ export default function WishList() {
     }
   };
 
-  const handleAddToCart = (product) => {
-    addToCart(product, 1);
+  const handleAddToCart = async (product) => {
+    try {
+      await addToCart(product, 1);
+    } catch (err) {
+      console.error("Error adding to cart:", err);
+    }
+  };
+
+  const handleAddAllToCart = async () => {
+    const validProducts = wishlist.filter(p => p.stock > 0);
+    if (validProducts.length === 0) return;
+
+    try {
+      await Promise.all(validProducts.map(p => addToCart(p, 1)));
+    } catch (err) {
+      console.error("Error adding all to cart:", err);
+    }
   };
 
   if (loading) {
@@ -99,11 +119,8 @@ export default function WishList() {
         {wishlist.length > 0 && (
           <Button
             variant="secondary"
-            onClick={() => {
-              wishlist.forEach((product) => {
-                if (product.stock > 0) handleAddToCart(product);
-              });
-            }}
+            onClick={handleAddAllToCart}
+            disabled={wishlist.every(p => p.stock <= 0)}
           >
             <Icon name="shoppingCart" size={18} />
             Añadir todo al carrito

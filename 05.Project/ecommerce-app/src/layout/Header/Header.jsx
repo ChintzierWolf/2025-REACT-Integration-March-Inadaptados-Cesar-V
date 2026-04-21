@@ -21,7 +21,7 @@ export default function Header() {
   const isAuth = isAuthenticated();
 
   const { data: wishlistData } = useWishlist();
-  const wishlistItemsCount = wishlistData?.products?.length || 0;
+  const wishlistItemsCount = wishlistData?.data?.products?.length || 0;
 
   // Referencias para manejo de clicks fuera
   const userMenuRef = useRef(null);
