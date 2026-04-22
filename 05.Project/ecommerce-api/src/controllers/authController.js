@@ -27,12 +27,12 @@ const checkUserExist = async (email) => {
  *     summary: Registrar un nuevo usuario
  *     tags: [Auth]
  *     requestBody:
- *       required: true,
+ *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             type: object,
- *             required: [displayName, email, password],
+ *             type: object
+ *             required: [displayName, email, password]
  *             properties:
  *               displayName:
  *                 type: string
@@ -78,12 +78,12 @@ async function register(req, res, next) {
  *     summary: Iniciar sesión
  *     tags: [Auth]
  *     requestBody:
- *       required: true,
+ *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             type: object,
- *             required: [email, password],
+ *             type: object
+ *             required: [email, password]
  *             properties:
  *               email:
  *                 type: string

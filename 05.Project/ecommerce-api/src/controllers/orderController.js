@@ -1,6 +1,27 @@
+/**
+ * @swagger
+ * tags:
+ *   name: Orders
+ *   description: Gestión de pedidos, checkout y estados de envío
+ */
+
 import errorHandler from '../middlewares/errorHandler.js';
 import Order from '../models/order.js';
 
+/**
+ * @swagger
+ * /orders:
+ *   get:
+ *     summary: Obtener todos los pedidos (Solo Admin)
+ *     tags: [Orders]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Lista de pedidos recuperada exitosamente
+ *       403:
+ *         description: No autorizado
+ */
 async function getOrders(req, res) {
   try {
     const orders = await Order.find()
@@ -15,6 +36,26 @@ async function getOrders(req, res) {
   }
 }
 
+/**
+ * @swagger
+ * /orders/{id}:
+ *   get:
+ *     summary: Obtener un pedido por ID
+ *     tags: [Orders]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Detalles del pedido recuperados
+ *       404:
+ *         description: Pedido no encontrado
+ */
 async function getOrderById(req, res) {
   try {
     const id = req.params.id;
@@ -32,6 +73,24 @@ async function getOrderById(req, res) {
   }
 }
 
+/**
+ * @swagger
+ * /orders/user/{userId}:
+ *   get:
+ *     summary: Obtener pedidos de un usuario específico
+ *     tags: [Orders]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: userId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Lista de pedidos del usuario
+ */
 async function getOrdersByUser(req, res) {
   try {
     const userId = req.params.userId;
@@ -51,6 +110,47 @@ async function getOrdersByUser(req, res) {
   }
 }
 
+/**
+ * @swagger
+ * /orders:
+ *   post:
+ *     summary: Crear un nuevo pedido (Checkout)
+ *     tags: [Orders]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [user, products, shippingAddress, paymentMethod]
+ *             properties:
+ *               user:
+ *                 type: string
+ *               shippingAddress:
+ *                 type: string
+ *               paymentMethod:
+ *                 type: string
+ *               shippingCost:
+ *                 type: number
+ *               products:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                   properties:
+ *                     productId:
+ *                       type: string
+ *                     quantity:
+ *                       type: integer
+ *                     price:
+ *                       type: number
+ *     responses:
+ *       201:
+ *         description: Pedido creado exitosamente
+ *       400:
+ *         description: Error en la validación de datos
+ */
 async function createOrder(req, res) {
   try {
     const {
@@ -183,6 +283,34 @@ async function cancelOrder(req, res) {
   }
 }
 
+/**
+ * @swagger
+ * /orders/{id}/status:
+ *   patch:
+ *     summary: Actualizar estado de envío de un pedido
+ *     tags: [Orders]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               status:
+ *                 type: string
+ *                 enum: [pending, processing, shipped, delivered, cancelled]
+ *     responses:
+ *       200:
+ *         description: Estado actualizado exitosamente
+ */
 async function updateOrderStatus(req, res) {
   try {
     const { id } = req.params;
@@ -215,6 +343,34 @@ async function updateOrderStatus(req, res) {
   }
 }
 
+/**
+ * @swagger
+ * /orders/{id}/payment:
+ *   patch:
+ *     summary: Actualizar estado de pago de un pedido
+ *     tags: [Orders]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               paymentStatus:
+ *                 type: string
+ *                 enum: [pending, paid, failed, refunded]
+ *     responses:
+ *       200:
+ *         description: Estado de pago actualizado
+ */
 async function updatePaymentStatus(req, res) {
   try {
     const { id } = req.params;
@@ -247,6 +403,26 @@ async function updatePaymentStatus(req, res) {
   }
 }
 
+/**
+ * @swagger
+ * /orders/{id}:
+ *   delete:
+ *     summary: Eliminar una orden cancelada (Solo Admin)
+ *     tags: [Orders]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Orden eliminada
+ *       400:
+ *         description: Solo se pueden eliminar órdenes canceladas
+ */
 async function deleteOrder(req, res) {
   try {
     const { id } = req.params;
