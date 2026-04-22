@@ -55,6 +55,10 @@ export const useAuthStore = create(
       isAuthenticated: () => {
         const state = get();
         return !!state.user && !!localStorage.getItem('token');
+      },
+
+      setUser: (userData) => {
+        set({ user: userData });
       }
     }),
     {

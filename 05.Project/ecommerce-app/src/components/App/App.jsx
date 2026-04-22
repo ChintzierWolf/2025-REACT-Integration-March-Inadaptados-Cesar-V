@@ -15,7 +15,7 @@ import Product from "../../pages/Product";
 import Profile from "../../pages/Profile";
 import ProtectedRoute from "../../pages/ProtectedRoute";
 import SearchResults from "../../pages/SearchResults";
-import Settings from "../../pages/Setttings";
+import Settings from "../../pages/Settings";
 import WishList from "../../pages/WishList";
 
 function App() {
