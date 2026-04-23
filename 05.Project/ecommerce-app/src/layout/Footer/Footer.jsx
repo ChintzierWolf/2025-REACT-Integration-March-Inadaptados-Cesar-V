@@ -1,10 +1,27 @@
+import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import Icon from "../../components/common/Icon/Icon";
+import { fetchCategories } from "../../services/categoryService";
 import "./Footer.css";
 
 export default function Footer() {
   const location = useLocation();
   const isHome = location.pathname === "/";
+  const [categories, setCategories] = useState([]);
+
+  useEffect(() => {
+    const loadCategories = async () => {
+      try {
+        const data = await fetchCategories();
+        // Filtrar solo categorías principales (sin padre) para el footer
+        const mainCategories = data.filter(cat => !cat.parentCategory);
+        setCategories(mainCategories.slice(0, 5)); // Mostrar máximo 5 para no romper el diseño
+      } catch (err) {
+        console.error("Error cargando categorías en footer:", err);
+      }
+    };
+    loadCategories();
+  }, []);
 
   return (
     <footer className="footer">
@@ -44,26 +61,20 @@ export default function Footer() {
               <div className="footer-section">
                 <h3>Categorías</h3>
                 <ul>
-                  <li>
-                    <Link to={"/category/68b0d4189b825d20ce1e5740"} aria-label="Consolas">
-                      Consolas
-                    </Link>
-                  </li>
-                  <li>
-                    <Link to={"/category/68b0d4189b825d20ce1e5750"} aria-label="Videojuegos">
-                      Videojuegos
-                    </Link>
-                  </li>
-                  <li>
-                    <Link to={"/category/68b0d4189b825d20ce1e5760"} aria-label="Accesorios">
-                      Accesorios
-                    </Link>
-                  </li>
-                  <li>
-                    <Link to={"/category/68b0d4189b825d20ce1e5770"} aria-label="Más">
-                      Más
-                    </Link>
-                  </li>
+                  {categories.length > 0 ? (
+                    categories.map((category) => (
+                      <li key={category._id}>
+                        <Link to={`/category/${category._id}`} aria-label={category.name}>
+                          {category.name}
+                        </Link>
+                      </li>
+                    ))
+                  ) : (
+                    <>
+                      <li><Link to="/category/consolas">Consolas</Link></li>
+                      <li><Link to="/category/videojuegos">Videojuegos</Link></li>
+                    </>
+                  )}
                 </ul>
               </div>
 

@@ -493,7 +493,8 @@
   font-weight: 600;
 }
 
-.cart-badge {
+.cart-badge,
+.wishlist-badge {
   position: absolute;
   top: -2px;
   right: 2px;
@@ -506,6 +507,30 @@
   min-width: 16px;
   text-align: center;
   line-height: 1;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.wishlist-badge {
+  background: var(--color-red); /* Rojo para diferenciar favoritos de carrito */
+}
+
+.wishlist-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: transparent;
+  border: none;
+  color: var(--color-white);
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: all 0.2s;
+  position: relative;
+}
+
+.wishlist-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--color-red);
 }
 
 /* Theme Button */

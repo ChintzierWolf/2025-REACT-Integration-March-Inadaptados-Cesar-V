@@ -20,6 +20,34 @@ const checkUserExist = async (email) => {
   return user;
 }
 
+/**
+ * @swagger
+ * /auth/register:
+ *   post:
+ *     summary: Registrar un nuevo usuario
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [displayName, email, password]
+ *             properties:
+ *               displayName:
+ *                 type: string
+ *               email:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *               phone:
+ *                 type: string
+ *     responses:
+ *       201:
+ *         description: Usuario registrado exitosamente
+ *       400:
+ *         description: El usuario ya existe o error de validación
+ */
 async function register(req, res, next) {
   try {
     const { displayName, email, password, phone } = req.body;
@@ -43,6 +71,30 @@ async function register(req, res, next) {
   }
 }
 
+/**
+ * @swagger
+ * /auth/login:
+ *   post:
+ *     summary: Iniciar sesión
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [email, password]
+ *             properties:
+ *               email:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Login exitoso, devuelve token y datos de usuario
+ *       400:
+ *         description: Credenciales inválidas
+ */
 async function login(req, res, next) {
   try {
     const { email, password } = req.body;

@@ -1,5 +1,5 @@
 import http from '../utils/http';
-import { getCurrentUser } from '../utils/auth';
+
 
 export const getProfile = async () => {
   return await http.get('/users/profile');

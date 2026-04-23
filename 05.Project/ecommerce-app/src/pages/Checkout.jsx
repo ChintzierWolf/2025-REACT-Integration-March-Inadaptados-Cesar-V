@@ -10,22 +10,25 @@ import Button from "../components/common/Button";
 import ErrorMessage from "../components/common/ErrorMessage/ErrorMessage";
 import Loading from "../components/common/Loading/Loading";
 import Icon from "../components/common/Icon/Icon";
-import { useCart } from "../context/CartContext";
+import { useCartStore } from "../stores/cartStore";
+import { 
+  useShippingAddresses, 
+  usePaymentMethods,
+  useCreateAddress,
+  useDeleteAddress,
+  useCreatePayment,
+  useDeletePayment
+} from "../hooks/useCheckout";
+import CheckoutSkeleton from "../components/Checkout/CheckoutSkeleton";
+import { createOrder } from "../services/orderService";
 import { getCurrentUser } from "../utils/auth";
-import {
-  getDefaultPaymentMethod,
-  getPaymentMethods,
-} from "../services/paymentService";
-import {
-  getDefaultShippingAddress,
-  getShippingAddresses,
-} from "../services/shippingService";
-import { createOrder } from "../services/cartService";
 import "./Checkout.css";
 
 export default function Checkout() {
   const navigate = useNavigate();
-  const { cartItems, total, clearCart } = useCart();
+  const cartItems = useCartStore((state) => state.cartItems);
+  const total = useCartStore((state) => state.total);
+  const clearCart = useCartStore((state) => state.clearCart);
 
   // --- LÓGICA DE NEGOCIO FINANCIERA ---
   const subtotal = typeof total === "number" ? total : 0;
@@ -47,21 +50,31 @@ export default function Checkout() {
       currency: "MXN",
     }).format(v);
 
-  // --- EFECTOS Y REFERENCIAS ---
-  useEffect(() => {
-    if (!cartItems || cartItems.length === 0) {
-      if (!isOrderFinished) {
-        navigate("/cart");
-      }
-    }
-  }, [cartItems, navigate]);
+  // --- DATOS (REACT QUERY) ---
+  const { 
+    data: addressList = [], 
+    isLoading: loadingAddresses, 
+    error: addressError 
+  } = useShippingAddresses();
+
+  const { 
+    data: paymentList = [], 
+    isLoading: loadingPayments, 
+    error: paymentError 
+  } = usePaymentMethods();
+
+  // Mutaciones
+  const createAddressMutation = useCreateAddress();
+  const deleteAddressMutation = useDeleteAddress();
+  const createPaymentMutation = useCreatePayment();
+  const deletePaymentMutation = useDeletePayment();
+
+  const loadingData = loadingAddresses || loadingPayments;
+  const dataError = addressError || paymentError;
 
   // --- ESTADOS LOCALES ---
   const [addresses, setAddresses] = useState([]);
   const [payments, setPayments] = useState([]);
-  const [loadingLocal, setLoadingLocal] = useState(true);
-  const [localError, setLocalError] = useState(null);
-
   const [showAddressForm, setShowAddressForm] = useState(false);
   const [showPaymentForm, setShowPaymentForm] = useState(false);
   const [editingAddress, setEditingAddress] = useState(null);
@@ -72,94 +85,107 @@ export default function Checkout() {
 
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [selectedPayment, setSelectedPayment] = useState(null);
+  const [localError, setLocalError] = useState(null);
 
-  // --- CARGA DE DATOS INICIAL ---
+  // --- EFECTOS DE NAVEGACIÓN ---
   useEffect(() => {
-    async function loadData() {
-      setLoadingLocal(true);
-      setLocalError(null);
-      try {
-        const [addrList, firstAddress, payList, firstPayment] =
-          await Promise.all([
-            getShippingAddresses(),
-            getDefaultShippingAddress(),
-            getPaymentMethods(),
-            getDefaultPaymentMethod(),
-          ]);
-
-        setAddresses(addrList || []);
-        setPayments(payList || []);
-        setSelectedAddress(firstAddress);
-        setSelectedPayment(firstPayment);
-        setAddressSectionOpen(!firstAddress);
-        setPaymentSectionOpen(!firstPayment);
-      } catch (err) {
-        setLocalError("No se pudo cargar direcciones o métodos de pago.");
-      } finally {
-        setLoadingLocal(false);
+    if (!cartItems || cartItems.length === 0) {
+      if (!isOrderFinished) {
+        navigate("/cart");
       }
     }
-    loadData();
-  }, []);
+  }, [cartItems, navigate, isOrderFinished]);
 
-  // --- HANDLERS ---
-  // (Manteniendo la misma lógica pero simplificada para el ejemplo)
+  // --- SINCRONIZACIÓN DE DATOS ---
+  useEffect(() => {
+    if (addressList.length > 0) {
+      setAddresses(addressList);
+      if (!selectedAddress) {
+        const defaultAddr = addressList.find(a => a.isDefault) || addressList[0];
+        setSelectedAddress(defaultAddr);
+        setAddressSectionOpen(!defaultAddr);
+      }
+    } else {
+      setAddresses([]);
+      setSelectedAddress(null);
+      setAddressSectionOpen(true);
+    }
+  }, [addressList, selectedAddress]);
+
+  useEffect(() => {
+    if (paymentList.length > 0) {
+      setPayments(paymentList);
+      if (!selectedPayment) {
+        const defaultPay = paymentList.find(p => p.isDefault) || paymentList[0];
+        setSelectedPayment(defaultPay);
+        setPaymentSectionOpen(!defaultPay);
+      }
+    } else {
+      setPayments([]);
+      setSelectedPayment(null);
+      setPaymentSectionOpen(true);
+    }
+  }, [paymentList, selectedPayment]);
+
+  // --- HANDLERS DIRECCIÓN ---
   const handleAddressToggle = () => { setShowAddressForm(false); setEditingAddress(null); setAddressSectionOpen((prev) => !prev); };
   const handleSelectAddress = (address) => { setSelectedAddress(address); setShowAddressForm(false); setEditingAddress(null); setAddressSectionOpen(false); };
   const handleAddressNew = () => { setShowAddressForm(true); setEditingAddress(null); setAddressSectionOpen(true); };
   const handleAddressEdit = (address) => { setShowAddressForm(true); setEditingAddress(address); setAddressSectionOpen(true); };
-  const handleAddressDelete = (address) => {
-    const updatedAddresses = addresses.filter((add) => add._id !== address._id);
-    if (selectedAddress?._id === address._id) setSelectedAddress(updatedAddresses[0] || null);
-    setAddresses(updatedAddresses);
-  };
-  const handleAddressSubmit = (formData) => {
-    let updatedAddresses;
-    let newSelectedAddress = selectedAddress;
-    if (editingAddress) {
-      updatedAddresses = addresses.map((addr) => addr._id === editingAddress._id ? { ...addr, ...formData } : addr);
-      if (selectedAddress?._id === editingAddress._id) newSelectedAddress = updatedAddresses.find((a) => a._id === editingAddress._id);
-    } else {
-      const newAddress = { _id: Date.now().toString(), ...formData };
-      updatedAddresses = [...addresses, newAddress];
-      newSelectedAddress = newAddress;
+  
+  const handleAddressDelete = async (address) => {
+    try {
+      await deleteAddressMutation.mutateAsync(address._id);
+      if (selectedAddress?._id === address._id) setSelectedAddress(null);
+    } catch (err) {
+      setLocalError("No se pudo eliminar la dirección.");
     }
-    setAddresses(updatedAddresses);
-    setSelectedAddress(newSelectedAddress);
-    setShowAddressForm(false);
-    setEditingAddress(null);
-    setAddressSectionOpen(false);
   };
+
+  const handleAddressSubmit = async (formData) => {
+    try {
+      const result = await createAddressMutation.mutateAsync(formData);
+      setSelectedAddress(result);
+      setShowAddressForm(false);
+      setEditingAddress(null);
+      setAddressSectionOpen(false);
+    } catch (err) {
+      setLocalError("Error al guardar la dirección.");
+    }
+  };
+
   const handleCancelAddress = () => { setShowAddressForm(false); setEditingAddress(null); setAddressSectionOpen(false); };
 
+  // --- HANDLERS PAGO ---
   const handlePaymentToggle = () => { setShowPaymentForm(false); setEditingPayment(null); setPaymentSectionOpen((prev) => !prev); };
   const handleSelectPayment = (payment) => { setSelectedPayment(payment); setShowPaymentForm(false); setEditingPayment(null); setPaymentSectionOpen(false); };
   const handlePaymentNew = () => { setShowPaymentForm(true); setEditingPayment(null); setPaymentSectionOpen(true); };
   const handlePaymentEdit = (payment) => { setShowPaymentForm(true); setEditingPayment(payment); setPaymentSectionOpen(true); };
-  const handlePaymentDelete = (payment) => {
-    const updatedPayments = payments.filter((pay) => pay._id !== payment._id);
-    if (selectedPayment?._id === payment._id) setSelectedPayment(updatedPayments[0] || null);
-    setPayments(updatedPayments);
-  };
-  const handlePaymentSubmit = (formData) => {
-    let updatedPayments;
-    let newSelectedPayment = selectedPayment;
-    if (editingPayment) {
-      updatedPayments = payments.map((pay) => pay._id === editingPayment._id ? { ...pay, ...formData } : pay);
-      if (selectedPayment?._id === editingPayment._id) newSelectedPayment = updatedPayments.find((p) => p._id === editingPayment._id);
-    } else {
-      const newPayment = { _id: Date.now().toString(), ...formData };
-      updatedPayments = [...payments, newPayment];
-      newSelectedPayment = newPayment;
+  
+  const handlePaymentDelete = async (payment) => {
+    try {
+      await deletePaymentMutation.mutateAsync(payment._id);
+      if (selectedPayment?._id === payment._id) setSelectedPayment(null);
+    } catch (err) {
+      setLocalError("No se pudo eliminar el método de pago.");
     }
-    setPayments(updatedPayments);
-    setSelectedPayment(newSelectedPayment);
-    setShowPaymentForm(false);
-    setEditingPayment(null);
-    setPaymentSectionOpen(false);
   };
+
+  const handlePaymentSubmit = async (formData) => {
+    try {
+      const result = await createPaymentMutation.mutateAsync(formData);
+      setSelectedPayment(result);
+      setShowPaymentForm(false);
+      setEditingPayment(null);
+      setPaymentSectionOpen(false);
+    } catch (err) {
+      setLocalError("Error al guardar el método de pago.");
+    }
+  };
+
   const handleCancelPayment = () => { setShowPaymentForm(false); setEditingPayment(null); setPaymentSectionOpen(false); };
 
+  // --- FINALIZAR COMPRA ---
   const handleCreateOrder = async () => {
     if (!selectedAddress || !selectedPayment || !cartItems || cartItems.length === 0) return;
 
@@ -205,174 +231,178 @@ export default function Checkout() {
     }
   };
 
+  if (loadingData) {
+    return <CheckoutSkeleton />;
+  }
+
   return (
-    loadingLocal ? (
-      <Loading message="Iniciando sistema de checkout..." />
-    ) : localError ? (
-      <ErrorMessage message={localError} />
-    ) : (
-      <div className="checkout-wrapper">
-        <div className="checkout-header">
-          <div className="checkout-title">
-            <Icon name="shield" size={32} />
-            <h1>CONFIRMACIÓN DE ORDEN</h1>
+    <div className="checkout-wrapper">
+      {(dataError || localError) && (
+        <div style={{ marginBottom: '20px' }}>
+          <ErrorMessage message={dataError?.message || localError || "Ha ocurrido un error inesperado."} />
+        </div>
+      )}
+      
+      <div className="checkout-header">
+        <div className="checkout-title">
+          <Icon name="shield" size={32} />
+          <h1>CONFIRMACIÓN DE ORDEN</h1>
+        </div>
+        <div className="checkout-status">
+          <span className="status-dot"></span>
+          SISTEMA SEGURO: ONLINE
+        </div>
+      </div>
+
+      <div className="checkout-grid">
+        <div className="checkout-main">
+          {/* Módulo de Dirección */}
+          <div className={`checkout-module ${addressSectionOpen ? 'active' : ''}`}>
+            <div className="module-header" onClick={handleAddressToggle}>
+              <div className="module-title">
+                <span className="module-number">01</span>
+                <h3>COORDENADAS DE ENVÍO</h3>
+              </div>
+              <Icon name={addressSectionOpen ? "chevronUp" : "chevronDown"} size={20} />
+            </div>
+            
+            <div className="module-content">
+              {addressSectionOpen ? (
+                !showAddressForm && !editingAddress ? (
+                  <AddressList
+                    addresses={addresses}
+                    selectedAddress={selectedAddress}
+                    onSelect={handleSelectAddress}
+                    onEdit={handleAddressEdit}
+                    onAdd={handleAddressNew}
+                    onDelete={handleAddressDelete}
+                  />
+                ) : (
+                  <AddressForm
+                    onSubmit={handleAddressSubmit}
+                    onCancel={handleCancelAddress}
+                    initialValues={editingAddress || {}}
+                    isEdit={!!editingAddress}
+                  />
+                )
+              ) : (
+                selectedAddress && (
+                  <div className="selected-preview">
+                    <Icon name="mapPin" size={18} />
+                    <div>
+                      <strong>{selectedAddress.name}</strong>
+                      <p>{selectedAddress.address}, {selectedAddress.city}</p>
+                    </div>
+                  </div>
+                )
+              )}
+            </div>
           </div>
-          <div className="checkout-status">
-            <span className="status-dot"></span>
-            SISTEMA SEGURO: ONLINE
+
+          {/* Módulo de Pago */}
+          <div className={`checkout-module ${paymentSectionOpen ? 'active' : ''}`}>
+            <div className="module-header" onClick={handlePaymentToggle}>
+              <div className="module-title">
+                <span className="module-number">02</span>
+                <h3>MÉTODO DE PAGO</h3>
+              </div>
+              <Icon name={paymentSectionOpen ? "chevronUp" : "chevronDown"} size={20} />
+            </div>
+
+            <div className="module-content">
+              {paymentSectionOpen ? (
+                !showPaymentForm && !editingPayment ? (
+                  <PaymentList
+                    payments={payments}
+                    selectedPayment={selectedPayment}
+                    onSelect={handleSelectPayment}
+                    onEdit={handlePaymentEdit}
+                    onAdd={handlePaymentNew}
+                    onDelete={handlePaymentDelete}
+                  />
+                ) : (
+                  <PaymentForm
+                    onSubmit={handlePaymentSubmit}
+                    onCancel={handleCancelPayment}
+                    initialValues={editingPayment || {}}
+                    isEdit={!!editingPayment}
+                  />
+                )
+              ) : (
+                selectedPayment && (
+                  <div className="selected-preview">
+                    <Icon name="creditCard" size={18} />
+                    <div>
+                      <strong>{selectedPayment.alias}</strong>
+                      <p>**** {selectedPayment.cardNumber?.slice(-4)}</p>
+                    </div>
+                  </div>
+                )
+              )}
+            </div>
+          </div>
+
+          {/* Módulo de Items */}
+          <div className="checkout-module active">
+            <div className="module-header">
+              <div className="module-title">
+                <span className="module-number">03</span>
+                <h3>INVENTARIO SELECCIONADO</h3>
+              </div>
+            </div>
+            <div className="module-content">
+              <CartView />
+            </div>
           </div>
         </div>
 
-        <div className="checkout-grid">
-          <div className="checkout-main">
-            {/* Módulo de Dirección */}
-            <div className={`checkout-module ${addressSectionOpen ? 'active' : ''}`}>
-              <div className="module-header" onClick={handleAddressToggle}>
-                <div className="module-title">
-                  <span className="module-number">01</span>
-                  <h3>COORDENADAS DE ENVÍO</h3>
-                </div>
-                <Icon name={addressSectionOpen ? "chevronUp" : "chevronDown"} size={20} />
+        {/* Panel Lateral de Resumen */}
+        <div className="checkout-sidebar">
+          <div className="order-summary-card">
+            <div className="summary-header">
+              <h3>RESUMEN DE MISIÓN</h3>
+            </div>
+            
+            <div className="summary-rows">
+              <div className="summary-row">
+                <span>Subtotal</span>
+                <span>{formatMoney(subtotal)}</span>
               </div>
+              <div className="summary-row">
+                <span>Impuestos (16%)</span>
+                <span>{formatMoney(taxAmount)}</span>
+              </div>
+              <div className="summary-row">
+                <span>Envío</span>
+                <span className={shippingCost === 0 ? "free-text" : ""}>
+                  {shippingCost === 0 ? "GRATIS" : formatMoney(shippingCost)}
+                </span>
+              </div>
+              <div className="summary-divider"></div>
+              <div className="summary-row total">
+                <span>TOTAL</span>
+                <span>{formatMoney(grandTotal)}</span>
+              </div>
+            </div>
+
+            <div className="summary-footer">
+              <p className="delivery-estimate">
+                <Icon name="truck" size={16} />
+                Entrega estimada: {new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toLocaleDateString()}
+              </p>
               
-              <div className="module-content">
-                {addressSectionOpen ? (
-                  !showAddressForm && !editingAddress ? (
-                    <AddressList
-                      addresses={addresses}
-                      selectedAddress={selectedAddress}
-                      onSelect={handleSelectAddress}
-                      onEdit={handleAddressEdit}
-                      onAdd={handleAddressNew}
-                      onDelete={handleAddressDelete}
-                    />
-                  ) : (
-                    <AddressForm
-                      onSubmit={handleAddressSubmit}
-                      onCancel={handleCancelAddress}
-                      initialValues={editingAddress || {}}
-                      isEdit={!!editingAddress}
-                    />
-                  )
-                ) : (
-                  selectedAddress && (
-                    <div className="selected-preview">
-                      <Icon name="mapPin" size={18} />
-                      <div>
-                        <strong>{selectedAddress.name}</strong>
-                        <p>{selectedAddress.address1}, {selectedAddress.city}</p>
-                      </div>
-                    </div>
-                  )
-                )}
-              </div>
-            </div>
-
-            {/* Módulo de Pago */}
-            <div className={`checkout-module ${paymentSectionOpen ? 'active' : ''}`}>
-              <div className="module-header" onClick={handlePaymentToggle}>
-                <div className="module-title">
-                  <span className="module-number">02</span>
-                  <h3>MÉTODO DE PAGO</h3>
-                </div>
-                <Icon name={paymentSectionOpen ? "chevronUp" : "chevronDown"} size={20} />
-              </div>
-
-              <div className="module-content">
-                {paymentSectionOpen ? (
-                  !showPaymentForm && !editingPayment ? (
-                    <PaymentList
-                      payments={payments}
-                      selectedPayment={selectedPayment}
-                      onSelect={handleSelectPayment}
-                      onEdit={handlePaymentEdit}
-                      onAdd={handlePaymentNew}
-                      onDelete={handlePaymentDelete}
-                    />
-                  ) : (
-                    <PaymentForm
-                      onSubmit={handlePaymentSubmit}
-                      onCancel={handleCancelPayment}
-                      initialValues={editingPayment || {}}
-                      isEdit={!!editingPayment}
-                    />
-                  )
-                ) : (
-                  selectedPayment && (
-                    <div className="selected-preview">
-                      <Icon name="creditCard" size={18} />
-                      <div>
-                        <strong>{selectedPayment.alias}</strong>
-                        <p>**** {selectedPayment.cardNumber?.slice(-4)}</p>
-                      </div>
-                    </div>
-                  )
-                )}
-              </div>
-            </div>
-
-            {/* Módulo de Items */}
-            <div className="checkout-module active">
-              <div className="module-header">
-                <div className="module-title">
-                  <span className="module-number">03</span>
-                  <h3>INVENTARIO SELECCIONADO</h3>
-                </div>
-              </div>
-              <div className="module-content">
-                <CartView />
-              </div>
-            </div>
-          </div>
-
-          {/* Panel Lateral de Resumen */}
-          <div className="checkout-sidebar">
-            <div className="order-summary-card">
-              <div className="summary-header">
-                <h3>RESUMEN DE MISIÓN</h3>
-              </div>
-              
-              <div className="summary-rows">
-                <div className="summary-row">
-                  <span>Subtotal</span>
-                  <span>{formatMoney(subtotal)}</span>
-                </div>
-                <div className="summary-row">
-                  <span>Impuestos (16%)</span>
-                  <span>{formatMoney(taxAmount)}</span>
-                </div>
-                <div className="summary-row">
-                  <span>Envío</span>
-                  <span className={shippingCost === 0 ? "free-text" : ""}>
-                    {shippingCost === 0 ? "GRATIS" : formatMoney(shippingCost)}
-                  </span>
-                </div>
-                <div className="summary-divider"></div>
-                <div className="summary-row total">
-                  <span>TOTAL</span>
-                  <span>{formatMoney(grandTotal)}</span>
-                </div>
-              </div>
-
-              <div className="summary-footer">
-                <p className="delivery-estimate">
-                  <Icon name="truck" size={16} />
-                  Entrega estimada: {new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toLocaleDateString()}
-                </p>
-                
-                <Button
-                  className="checkout-btn"
-                  disabled={!selectedAddress || !selectedPayment || !cartItems?.length}
-                  onClick={handleCreateOrder}
-                  size="lg"
-                >
-                  CONFIRMAR ORDEN
-                </Button>
-              </div>
+              <Button
+                className="checkout-btn"
+                disabled={!selectedAddress || !selectedPayment || !cartItems?.length || createAddressMutation.isPending || createPaymentMutation.isPending}
+                onClick={handleCreateOrder}
+                size="lg"
+              >
+                {createAddressMutation.isPending || createPaymentMutation.isPending ? "GUARDANDO..." : "CONFIRMAR ORDEN"}
+              </Button>
             </div>
           </div>
         </div>
       </div>
-    )
+    </div>
   );
 }

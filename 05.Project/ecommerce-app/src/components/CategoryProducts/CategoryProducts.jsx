@@ -1,51 +1,29 @@
-import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Breadcrumb from "../../layout/Breadcrumb/Breadcrumb";
-import {
-  getCategoryById,
-  getProductsByCategoryAndChildren,
-} from "../../services/categoryService";
+import { useCategory, useCategoryProducts } from "../../hooks/useCategories";
 import ProductCard from "../ProductCard/ProductCard";
 import ErrorMessage from "../common/ErrorMessage/ErrorMessage";
 import Loading from "../common/Loading/Loading";
 import "./CategoryProducts.css";
 
 export default function CategoryProducts({ categoryId }) {
-  const [category, setCategory] = useState(null);
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  // Queries
+  const { 
+    data: category, 
+    isLoading: categoryLoading, 
+    error: categoryError 
+  } = useCategory(categoryId);
 
-  useEffect(() => {
-    setLoading(true);
-    setError(null);
+  const { 
+    data: products = [], 
+    isLoading: productsLoading, 
+    error: productsError 
+  } = useCategoryProducts(categoryId);
 
-    const loadCategoryAndProducts = async () => {
-      try {
-        // Cargar la categoría y sus productos
-        const [categoryData, productsData] = await Promise.all([
-          getCategoryById(categoryId),
-          getProductsByCategoryAndChildren(categoryId),
-        ]);
+  const isLoading = categoryLoading || productsLoading;
+  const error = categoryError || productsError;
 
-        if (!categoryData) {
-          setError("Categoría no encontrada");
-          return;
-        }
-
-        setCategory(categoryData);
-        setProducts(productsData);
-      } catch (err) {
-        setError("Error al cargar la categoría o productos");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadCategoryAndProducts();
-  }, [categoryId]);
-
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="category-products-root">
         <Loading message="Cargando categoría y productos..." />
@@ -56,7 +34,7 @@ export default function CategoryProducts({ categoryId }) {
   if (error || !category) {
     return (
       <div className="category-products-root">
-        <ErrorMessage message={error || "Categoría no encontrada"}>
+        <ErrorMessage message={error?.message || "Categoría no encontrada"}>
           <p className="category-products-muted">
             Vuelve al <Link to="/">inicio</Link> o explora nuestras categorías
             destacadas.

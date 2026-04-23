@@ -11,6 +11,9 @@ const paymentMethodSchema = new mongoose.Schema({
     required: true,
     enum: ['credit_card', 'debit_card', 'paypal', 'bank_transfer', 'cash_on_delivery'],
   },
+  alias: {
+    type: String,
+  },
   // Para tarjetas de crédito/débito
   // Primer dígito: Indica el esquema de la tarjeta (por ejemplo, 4 para Visa, 5 para Mastercard).
   // Dígitos 2-6: Identifican al emisor de la tarjeta (por ejemplo, el banco o la entidad financiera).

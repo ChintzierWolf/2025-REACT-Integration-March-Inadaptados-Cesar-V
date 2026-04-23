@@ -1,10 +1,9 @@
-import { useEffect, useMemo, useState } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Link } from "react-router-dom";
-import Button from "../components/common/Button";
-import Icon from "../components/common/Icon/Icon";
+import { useOrders } from "../hooks/useOrders";
 import Loading from "../components/common/Loading/Loading";
-import ErrorMessage from "../components/common/ErrorMessage/ErrorMessage";
-import { getOrders } from "../services/orderService";
+import Icon from "../components/common/Icon/Icon";
+import Button from "../components/common/Button";
 import "./Orders.css";
 
 const formatMoney = (value = 0) =>
@@ -39,32 +38,22 @@ const getStatusLabel = (status) => {
 };
 
 export default function Orders() {
-  const [orders, setOrders] = useState([]);
+  const { data, isLoading, error: queryError } = useOrders();
   const [selectedOrderId, setSelectedOrderId] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
 
+  const orders = useMemo(() => {
+    if (!data) return [];
+    return [...data].sort(
+      (a, b) => new Date(b.createdAt || b.date) - new Date(a.createdAt || a.date)
+    );
+  }, [data]);
+
+  // Sincronizar el primer pedido seleccionado
   useEffect(() => {
-    const loadOrders = async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        const data = await getOrders();
-        const sortedOrders = [...(data || [])].sort(
-          (a, b) => new Date(b.createdAt || b.date) - new Date(a.createdAt || a.date)
-        );
-        setOrders(sortedOrders);
-        setSelectedOrderId(sortedOrders[0]?._id || null);
-      } catch (err) {
-        setError("Error al cargar las órdenes. Intenta más tarde.");
-        console.error("Error loading orders:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadOrders();
-  }, []);
+    if (orders.length > 0 && !selectedOrderId) {
+      setSelectedOrderId(orders[0]._id);
+    }
+  }, [orders, selectedOrderId]);
 
   const selectedOrder = useMemo(
     () => orders.find((order) => order._id === selectedOrderId) || null,
@@ -76,7 +65,7 @@ export default function Orders() {
     : "pending";
   const detailStatusLabel = getStatusLabel(selectedOrder?.status);
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="orders-page">
         <Loading message="Cargando tus pedidos..." />
@@ -84,12 +73,12 @@ export default function Orders() {
     );
   }
 
-  if (error) {
+  if (queryError) {
     return (
       <div className="orders-page orders-empty">
         <Icon name="alertCircle" size={48} />
         <h1>Error al cargar pedidos</h1>
-        <p>{error}</p>
+        <p>{queryError.message || "No se pudieron cargar las órdenes"}</p>
         <Link to="/" className="orders-link">
           <Button>Volver al inicio</Button>
         </Link>
@@ -201,7 +190,7 @@ export default function Orders() {
                   <li>
                     <span>Impuestos</span>
                     <strong>
-                      {formatMoney(((selectedOrder.totalPrice - (selectedOrder.shippingCost || 0)) * 0.16 / 1.16 || 0)}
+                      {formatMoney(((selectedOrder.totalPrice - (selectedOrder.shippingCost || 0)) * 0.16 / 1.16) || 0)}
                     </strong>
                   </li>
                   <li>

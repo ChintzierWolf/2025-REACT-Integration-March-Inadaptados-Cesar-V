@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { login } from "../../utils/auth";
+import { useAuthStore } from "../../stores/authStore";
 import Button from "../common/Button";
 import ErrorMessage from "../common/ErrorMessage/ErrorMessage";
 import Input from "../common/Input";
@@ -11,6 +11,7 @@ export default function LoginForm() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const login = useAuthStore((state) => state.login);
   const navigate = useNavigate();
 
   const onSubmit = async (e) => {
@@ -18,17 +19,14 @@ export default function LoginForm() {
     setLoading(true);
     setError("");
 
-    await new Promise((resolve) => setTimeout(resolve, 800));
-    const result = await login(email, password);
-
-    if (result.success) {
+    try {
+      await login(email, password);
       navigate("/");
-      window.location.reload();
-    } else {
-      setError(result.error);
+    } catch (err) {
+      setError(err.message || "Fallo en la comunicación de Autenticación");
+    } finally {
+      setLoading(false);
     }
-
-    setLoading(false);
   };
 
   return (
@@ -36,12 +34,12 @@ export default function LoginForm() {
       <div className="login-card">
         <h2>Iniciar Sesión</h2>
         <div className="demo-users">
-          <h4>Usuarios de prueba:</h4>
+          <h4>Usuarios de prueba BD:</h4>
           <div className="user-demo">
-            <strong>Cliente:</strong> cliente@email.com / cliente123
+            <strong>Cliente:</strong> demo@test.com / password123
           </div>
           <div className="user-demo">
-            <strong>Admin:</strong> admin@email.com / admin123
+            <strong>Admin:</strong> admin@test.com / admin123
           </div>
         </div>
         <form className="login-form" onSubmit={onSubmit}>

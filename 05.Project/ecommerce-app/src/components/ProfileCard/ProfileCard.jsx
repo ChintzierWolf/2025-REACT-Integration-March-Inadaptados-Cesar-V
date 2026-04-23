@@ -1,4 +1,6 @@
-import { getCurrentUser } from "../../utils/auth";
+import { useNavigate } from "react-router-dom";
+import { useAuthStore } from "../../stores/authStore";
+import { deactivateAccount } from "../../services/userService";
 import Button from "../common/Button";
 import "./ProfileCard.css";
 
@@ -7,23 +9,42 @@ const ROLE_COLORS = {
   customer: "#22c55e",
 };
 
-const ROLE_ACTIONS = {
-  admin: [
-    { label: "Editar Perfil", action: () => {} },
-    { label: "Cambiar contraseña", action: () => {} },
-    { label: "Ver todos los pedidos", action: () => {} },
-    { label: "Panel de administración", action: () => {} },
-  ],
-  customer: [
-    { label: "Editar Perfil", action: () => {} },
-    { label: "Cambiar contraseña", action: () => {} },
-    { label: "Ver mis pedidos", action: () => {} },
-  ],
-};
-
 export default function ProfileCard({ user }) {
-  const currentUser = user || getCurrentUser();
+  const storeUser = useAuthStore((state) => state.user);
+  const logout = useAuthStore((state) => state.logout);
+  const navigate = useNavigate();
+  
+  const currentUser = user || storeUser;
   const role = currentUser.role || "guest";
+
+  const handleDeleteAccount = async () => {
+    if (window.confirm("¿Estás seguro de que deseas eliminar tu cuenta? Esta acción no se puede deshacer.")) {
+      try {
+        await deactivateAccount();
+        alert("Cuenta eliminada con éxito.");
+        logout();
+        navigate("/");
+      } catch (error) {
+        alert("Error al eliminar la cuenta.");
+      }
+    }
+  };
+
+  const ROLE_ACTIONS = {
+    admin: [
+      { label: "Editar Perfil", action: () => navigate("/settings") },
+      { label: "Cambiar contraseña", action: () => navigate("/settings") },
+      { label: "Ver todos los pedidos", action: () => navigate("/orders") },
+      { label: "Eliminar cuenta", action: handleDeleteAccount },
+    ],
+    customer: [
+      { label: "Editar Perfil", action: () => navigate("/settings") },
+      { label: "Cambiar contraseña", action: () => navigate("/settings") },
+      { label: "Ver mis pedidos", action: () => navigate("/orders") },
+      { label: "Eliminar cuenta", action: handleDeleteAccount },
+    ],
+  };
+
   const actions = ROLE_ACTIONS[role] || [];
 
   return (

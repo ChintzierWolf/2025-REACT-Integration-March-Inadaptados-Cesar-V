@@ -1,8 +1,7 @@
-import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
-import { useCart } from "../context/CartContext";
-import { getWishlist, toggleWishlistItem } from "../services/wishlistService";
+import { useAuthStore } from "../stores/authStore";
+import { useCartStore } from "../stores/cartStore";
+import { useWishlist, useToggleWishlist } from "../hooks/useWishlist";
 import Button from "../components/common/Button";
 import Icon from "../components/common/Icon/Icon";
 import Loading from "../components/common/Loading/Loading";
@@ -16,49 +15,48 @@ const formatMoney = (value = 0) =>
   }).format(value);
 
 export default function WishList() {
-  const { isAuthenticated } = useAuth();
-  const { addToCart } = useCart();
+  const { user, isAuthenticated } = useAuthStore();
+  const isAuth = isAuthenticated();
+  const addToCart = useCartStore((state) => state.addToCart);
   const navigate = useNavigate();
-  
-  const [wishlist, setWishlist] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
 
-  useEffect(() => {
-    if (!isAuthenticated()) {
-      setError("Inicia sesión para ver tu lista de deseos");
-      setLoading(false);
-      return;
-    }
+  const { data: response, isLoading, error: queryError } = useWishlist();
+  const { mutateAsync: toggleWishlist } = useToggleWishlist();
 
-    const loadWishlist = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-        const data = await getWishlist();
-        setWishlist(data?.products || []);
-      } catch (err) {
-        setError("Error al cargar tu lista de deseos");
-        console.error("Error loading wishlist:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
+  // El interceptor de axios ya aplanó la respuesta a { products: [...] }
+  // Aplanamos la lista para que cada objeto sea el producto directamente
+  const wishlist = response?.products?.map(item => ({
+    ...item.product,
+    wishlistItemId: item._id
+  })) || [];
 
-    loadWishlist();
-  }, [isAuthenticated]);
+  const loading = isAuth && isLoading;
 
   const handleRemoveFromWishlist = async (productId) => {
     try {
-      await toggleWishlistItem(productId);
-      setWishlist((prev) => prev.filter((p) => p._id !== productId));
+      await toggleWishlist(productId);
     } catch (err) {
       console.error("Error removing from wishlist:", err);
     }
   };
 
-  const handleAddToCart = (product) => {
-    addToCart(product, 1);
+  const handleAddToCart = async (product) => {
+    try {
+      await addToCart(product, 1);
+    } catch (err) {
+      console.error("Error adding to cart:", err);
+    }
+  };
+
+  const handleAddAllToCart = async () => {
+    const validProducts = wishlist.filter(p => p.stock > 0);
+    if (validProducts.length === 0) return;
+
+    try {
+      await Promise.all(validProducts.map(p => addToCart(p, 1)));
+    } catch (err) {
+      console.error("Error adding all to cart:", err);
+    }
   };
 
   if (loading) {
@@ -82,12 +80,10 @@ export default function WishList() {
     );
   }
 
-  if (error) {
+  if (queryError) {
     return (
       <div className="wishlist-page wishlist-empty">
-        <Icon name="alertCircle" size={64} />
-        <h1>Error</h1>
-        <p>{error}</p>
+        <p>{queryError.message || "No se pudo cargar la lista de deseos"}</p>
         <Button variant="secondary" onClick={() => window.location.reload()}>
           Reintentar
         </Button>
@@ -120,6 +116,16 @@ export default function WishList() {
               : `${wishlist.length} productos guardados`}
           </p>
         </div>
+        {wishlist.length > 0 && (
+          <Button
+            variant="secondary"
+            onClick={handleAddAllToCart}
+            disabled={wishlist.every(p => p.stock <= 0)}
+          >
+            <Icon name="shoppingCart" size={18} />
+            Añadir todo al carrito
+          </Button>
+        )}
       </div>
 
       <div className="wishlist-grid">

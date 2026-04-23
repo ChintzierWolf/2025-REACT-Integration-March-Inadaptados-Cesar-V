@@ -56,56 +56,22 @@ const profile = await http.get('/users/profile');
 
 ---
 
-## 🧠 Contextos Disponibles
+## 🧠 Gestión de Estado y Datos
 
-### AuthContext (`useAuth`)
+El proyecto está migrando de una arquitectura basada en **Contextos de React** a una solución más escalable basada en **Zustand** (Estado Global) y **TanStack Query** (Datos Asíncronos).
 
-Gestiona el estado de autenticación del usuario.
+### Zustand (Estado Global)
+Utilizado para estados persistentes como la sesión del usuario y el carrito.
+- **stores/authStore.js**: Maneja la autenticación y el usuario actual.
+- **stores/cartStore.js**: Maneja los productos en el carrito y cálculos.
 
-**Retorna:**
-- `user`: Objeto con datos del usuario `{ _id, email, displayName, role }`
-- `loading`: Booleano de carga
-- `login(email, password)`: Función de login
-- `register(userData)`: Función de registro
-- `logout()`: Cierra sesión
-- `isAuthenticated()`: Retorna boolean
+### TanStack Query (Estado Asíncrono)
+Utilizado para el consumo de la API, manejo de caché y estados de carga.
+- Se prefieren hooks personalizados (ej: `useProducts`) que encapsulen la lógica de `useQuery`.
 
-**localStorage:**
-- `token`: JWT del usuario
-- `user`: Datos del usuario serializados
-
----
-
-### CartContext (`useCart`)
-
-Gestiona el carrito de compras con sincronización a backend.
-
-**Retorna:**
-- `cartItems`: Array de objetos `{ _id, name, price, quantity, ... }`
-- `cartId`: ID del carrito en MongoDB (cuando está autenticado)
-- `total`: Valor numérico del costo total
-- `addToCart(product, quantity)`: Agrega o incrementa cantidad
-- `removeFromCart(productId)`: Elimina un item por ID
-- `updateQuantity(productId, newQuantity)`: Cambia la cantidad exacta
-- `clearCart()`: Vacía el carrito
-- `getTotalItems()`: Retorna la cuenta total de productos
-- `getTotalPrice()`: Retorna el costo total calculado
-
-**Persistencia:**
-- `localStorage`: Backup local del carrito
-- **Sincronización**: Cuando el usuario está autenticado, sincroniza con `POST /api/cart/add-product`
-
----
-
-### ThemeContext (`useTheme`)
-
-Gestiona el tema (claro/oscuro) de la aplicación.
-
-**Retorna:**
-- `theme`: `'light'` o `'dark'`
-- `isDarkMode`: Booleano descriptivo
-- `toggleTheme()`: Cambia entre temas
-- `setTheme(val)`: Establece el tema manualmente
+### Contextos (Mantenimiento)
+- `ThemeContext`: Se mantiene para el tema visual.
+- Otros contextos están siendo marcados como obsoletos en favor de Zustand.
 
 ---
 
@@ -228,7 +194,7 @@ Logout → clearUser + localStorage.removeItem(token, user)
 
 ## 🚫 Restricciones para Agentes
 
-1. **NO usar bibliotecas externas de estado**: Mantener la lógica en los Contextos existentes (AuthContext, CartContext, ThemeContext)
+1. **Prioridad de Estado**: Usar **Zustand** para estado global y **TanStack Query** para datos de API. EVITAR el uso de nuevos Contextos para estos propósitos.
 2. **NO usar `require()`**: Usar siempre ESM (`import/export`)
 3. **NO omitir el `alt` en imágenes**: Mantener accesibilidad básica
 4. **NO modificar rutas sin actualizar App.jsx**: Asegurar que las nuevas páginas estén dentro de BrowserRouter

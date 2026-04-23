@@ -1,32 +1,14 @@
-import { useEffect, useMemo, useState } from "react";
-import { Link, useSearchParams } from "react-router-dom";
-import { fetchProducts } from "../../services/productService";
+import { useState, useMemo } from "react";
+import { useSearchParams, Link } from "react-router-dom";
+import { useProducts } from "../../hooks/useProducts";
 import List from "../List/List";
 import "./SearchResultsList.css";
 
 export default function SearchResultsList() {
   const [searchParams, setSearchParams] = useSearchParams();
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const { data: products = [], isLoading: loading } = useProducts();
 
   const query = (searchParams.get("q") || "").trim();
-
-  useEffect(() => {
-    let isMounted = true;
-    const loadProducts = async () => {
-      try {
-        setLoading(true);
-        const data = await fetchProducts();
-        if (isMounted) setProducts(data);
-      } finally {
-        if (isMounted) setLoading(false);
-      }
-    };
-    loadProducts();
-    return () => {
-      isMounted = false;
-    };
-  }, []);
 
   const [sortBy, setSortBy] = useState("name");
   const [sortOrder, setSortOrder] = useState("asc");

@@ -1,18 +1,24 @@
 import { Navigate } from "react-router-dom";
-import { getCurrentUser, isAuthenticated } from "../utils/auth";
+import { useAuthStore } from "../stores/authStore";
 
 export default function ProtectedRoute({
   children,
   redirectTo = "/login",
   allowedRoles,
 }) {
-  if (!isAuthenticated()) {
+  const { user, isAuthenticated, loading } = useAuthStore();
+  const isAuth = isAuthenticated();
+
+  if (loading) {
+    return <div>Cargando...</div>;
+  }
+
+  if (!isAuth) {
     return <Navigate to={redirectTo} />;
   }
 
   if (allowedRoles) {
-    const user = getCurrentUser();
-    if (!allowedRoles.includes(user.role)) {
+    if (!allowedRoles.includes(user?.role)) {
       return (
         <div style={{ textAlign: "center", padding: "48px" }}>
           <h2>Acceso denegado</h2>

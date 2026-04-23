@@ -15,11 +15,13 @@ const PaymentItem = ({ payment, isSelected, onSelect, onEdit, onDelete }) => {
     >
       <div className="payment-content">
         <h4>{payment.alias}</h4>
-        <p>{maskCardNumber(payment.cardNumber)}</p>
-        <p>Vence: {payment.expiryDate}</p>
-        <p>Titular: {payment.placeHolder}</p>
+        <p className="payment-card-number">
+          **** **** **** {payment.cardNumber?.slice(-4)}
+        </p>
+        <p className="payment-holder">{payment.cardHolderName}</p>
+        <p className="payment-expiry">Exp: {payment.expiryDate}</p>
         {payment.isDefault && (
-          <span className="isDefault-badge">Predeterminada</span>
+          <span className="default-badge">Predeterminado</span>
         )}
       </div>
       <div className="payment-actions">

@@ -1,7 +1,8 @@
+import { useEffect } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { CartProvider } from "../../context/CartContext";
-import { AuthProvider } from "../../context/AuthContext";
 import Layout from "../../layout/Layout";
+import { useAuthStore } from "../../stores/authStore";
+import { useCartStore } from "../../stores/cartStore";
 import Cart from "../../pages/Cart";
 import CategoryPage from "../../pages/CategoryPage";
 import Checkout from "../../pages/Checkout";
@@ -14,15 +15,22 @@ import Product from "../../pages/Product";
 import Profile from "../../pages/Profile";
 import ProtectedRoute from "../../pages/ProtectedRoute";
 import SearchResults from "../../pages/SearchResults";
-import Settings from "../../pages/Setttings";
+import Settings from "../../pages/Settings";
 import WishList from "../../pages/WishList";
 
 function App() {
+  const { user } = useAuthStore();
+  const syncCart = useCartStore((state) => state.syncCartWithBackend);
+
+  useEffect(() => {
+    if (user?._id) {
+      syncCart();
+    }
+  }, [user?._id, syncCart]);
+
   return (
-    <AuthProvider>
-      <CartProvider>
-        <BrowserRouter>
-          <Layout>
+    <BrowserRouter>
+      <Layout>
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/cart" element={<Cart />} />
@@ -30,6 +38,7 @@ function App() {
               <Route path="/register" element={<Register />} />
               <Route path="/search" element={<SearchResults />} />
               <Route path="/product/:productId" element={<Product />} />
+              <Route path="/products" element={<Home />} />
               <Route path="/category/:categoryId" element={<CategoryPage />} />
               <Route
                 path="/profile"
@@ -79,8 +88,6 @@ function App() {
             </Routes>
           </Layout>
         </BrowserRouter>
-      </CartProvider>
-    </AuthProvider>
   );
 }
 
