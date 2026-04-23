@@ -19,10 +19,13 @@ describe('Cart Controller', () => {
       const { req, res, next } = createMockReqRes({ params: { id: 'u1' } });
       
       const mockQuery = {
-        populate: vi.fn().mockReturnThis()
+        populate: vi.fn().mockReturnThis(),
       };
+      
       Cart.findOne.mockReturnValue(mockQuery);
-      mockQuery.populate.mockResolvedValue(null);
+      mockQuery.populate
+        .mockReturnValueOnce(mockQuery)
+        .mockResolvedValueOnce(null);
 
       await getCartByUser(req, res, next);
       expect(res.status).toHaveBeenCalledWith(404);
@@ -36,8 +39,11 @@ describe('Cart Controller', () => {
       const mockQuery = {
         populate: vi.fn().mockReturnThis()
       };
+      
       Cart.findOne.mockReturnValue(mockQuery);
-      mockQuery.populate.mockResolvedValue(mockCart);
+      mockQuery.populate
+        .mockReturnValueOnce(mockQuery)
+        .mockResolvedValueOnce(mockCart);
 
       await getCartByUser(req, res, next);
       expect(res.json).toHaveBeenCalledWith(mockCart);
