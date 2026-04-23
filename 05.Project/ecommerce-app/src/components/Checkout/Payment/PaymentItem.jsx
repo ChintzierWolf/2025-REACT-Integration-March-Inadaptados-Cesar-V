@@ -2,11 +2,6 @@ import Button from "../../common/Button";
 import "./PaymentItem.css";
 
 const PaymentItem = ({ payment, isSelected, onSelect, onEdit, onDelete }) => {
-  const maskCardNumber = (number) => {
-    if (!number) return "**** **** **** ****";
-    return `**** **** **** ${number.slice(-4)}`;
-  };
-
   return (
     <div
       className={`payment-item ${isSelected ? "selected" : ""} ${

@@ -6,7 +6,6 @@ export default function CartView() {
   const cartItems = useCartStore((state) => state.cartItems);
   const removeFromCart = useCartStore((state) => state.removeFromCart);
   const updateQuantity = useCartStore((state) => state.updateQuantity);
-  const total = useCartStore((state) => state.total);
 
   return (
     <div className="cart-view">

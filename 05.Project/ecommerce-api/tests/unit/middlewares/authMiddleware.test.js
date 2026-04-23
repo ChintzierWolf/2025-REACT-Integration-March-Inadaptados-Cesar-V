@@ -34,20 +34,28 @@ describe('Auth Middleware', () => {
     const { req, res, next } = createMockReqRes({
       headers: { authorization: 'Bearer valid_token' }
     });
-    jwt.verify.mockReturnValue({ id: '123', role: 'customer' });
+    // La implementación real del middleware espera 'userId'
+    const payload = { userId: '123', role: 'customer' };
+    jwt.verify.mockReturnValue(payload);
 
     authMiddleware(req, res, next);
 
     expect(jwt.verify).toHaveBeenCalledWith('valid_token', process.env.JWT_SECRET);
-    expect(req.user).toEqual({ id: '123', role: 'customer' });
+    // El middleware normaliza los campos id y _id basados en userId
+    expect(req.user).toEqual(expect.objectContaining({ 
+      userId: '123', 
+      role: 'customer',
+      id: '123',
+      _id: '123'
+    }));
     expect(next).toHaveBeenCalled();
   });
 
-  it('should return 403 if token payload is missing id or role', () => {
+  it('should return 403 if token payload is missing userId or role', () => {
     const { req, res, next } = createMockReqRes({
       headers: { authorization: 'Bearer invalid_payload_token' }
     });
-    jwt.verify.mockReturnValue({ id: '123' }); // missing role
+    jwt.verify.mockReturnValue({ userId: '123' }); // missing role
 
     authMiddleware(req, res, next);
 

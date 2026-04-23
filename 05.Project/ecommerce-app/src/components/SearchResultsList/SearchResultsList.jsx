@@ -1,117 +1,125 @@
-import { useState, useMemo } from "react";
+import { useState, useEffect } from "react";
 import { useSearchParams, Link } from "react-router-dom";
 import { useProducts } from "../../hooks/useProducts";
 import List from "../List/List";
+import FiltersSidebar from "../FiltersSidebar/FiltersSidebar";
 import "./SearchResultsList.css";
 
 export default function SearchResultsList() {
   const [searchParams, setSearchParams] = useSearchParams();
-  const { data: products = [], isLoading: loading } = useProducts();
+  
+  // Extraer filtros de la URL
+  const query = searchParams.get("q") || "";
+  const minPrice = searchParams.get("minPrice") || "";
+  const maxPrice = searchParams.get("maxPrice") || "";
+  const inStock = searchParams.get("inStock") || "";
+  const sort = searchParams.get("sort") || "";
+  
+  // Estado local para los inputs (para evitar re-renders excesivos)
+  const [localFilters, setLocalFilters] = useState({
+    minPrice,
+    maxPrice
+  });
 
-  const query = (searchParams.get("q") || "").trim();
+  // Sincronizar estado local con la URL cuando esta cambie externamente
+  useEffect(() => {
+    setLocalFilters({ minPrice, maxPrice });
+  }, [minPrice, maxPrice]);
 
-  const [sortBy, setSortBy] = useState("name");
-  const [sortOrder, setSortOrder] = useState("asc");
+  // Hook useProducts ahora recibe los filtros para hacer la petición al BE
+  const { data: products = [], isLoading: loading } = useProducts({
+    q: query,
+    minPrice,
+    maxPrice,
+    inStock,
+    sort
+  });
 
-  const filteredProducts = useMemo(() => {
-    if (!query) return [];
-    const normalizedQuery = query.toLowerCase();
-    let result = products.filter((product) => {
-      const matchesName = product.name.toLowerCase().includes(normalizedQuery);
-      const matchesDescription = product.description
-        ?.toLowerCase()
-        .includes(normalizedQuery);
-      const matchesCategory = product.category?.name
-        ?.toLowerCase()
-        .includes(normalizedQuery);
-      return matchesName || matchesDescription || matchesCategory;
-    });
-    // Ordenar
-    result = result.sort((a, b) => {
-      let valA = sortBy === "price" ? a.price : a.name.toLowerCase();
-      let valB = sortBy === "price" ? b.price : b.name.toLowerCase();
-      if (valA < valB) return sortOrder === "asc" ? -1 : 1;
-      if (valA > valB) return sortOrder === "asc" ? 1 : -1;
-      return 0;
-    });
-    return result;
-  }, [products, query, sortBy, sortOrder]);
-
-  const hasQuery = query.length > 0;
-  const showNoResults = hasQuery && !loading && filteredProducts.length === 0;
-
-  const handleQueryChange = (event) => {
-    const value = event.target.value;
-    if (!value.trim()) {
-      setSearchParams({});
-      return;
+  const handleFilterChange = (name, value) => {
+    const newParams = new URLSearchParams(searchParams);
+    
+    if (value) {
+      newParams.set(name, value);
+    } else {
+      newParams.delete(name);
     }
-    setSearchParams({ q: value });
+    
+    // Si es un cambio de precio, actualizamos localmente primero
+    if (name === 'minPrice' || name === 'maxPrice') {
+      setLocalFilters(prev => ({ ...prev, [name]: value }));
+      
+      // Debounce manual para no saturar la URL/API mientras se escribe
+      const timeoutId = setTimeout(() => {
+        setSearchParams(newParams);
+      }, 500);
+      return () => clearTimeout(timeoutId);
+    }
+
+    setSearchParams(newParams);
   };
 
+  const handleClearFilters = () => {
+    setSearchParams(query ? { q: query } : {});
+    setLocalFilters({ minPrice: '', maxPrice: '' });
+  };
+
+  const hasQuery = query.length > 0;
+  const showNoResults = !loading && products.length === 0;
+
   return (
-    <div className="search-results-fullwidth">
-      <header className="search-results-header">
-        <div>
-          <h1 className="search-results-title">
-            {hasQuery
-              ? `Resultados para "${query}"`
-              : "Explora nuestro catálogo"}
-          </h1>
-          <p className="search-results-description">
-            {hasQuery
-              ? "Estos son los productos que encontramos basados en tu búsqueda."
-              : "Usa la barra de búsqueda para encontrar rápidamente lo que necesitas."}
-          </p>
-        </div>
-        {hasQuery && (
-          <div className="search-results-controls">
-            <label>Ordenar por:</label>
-            <select value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
-              <option value="name">Nombre</option>
-              <option value="price">Precio</option>
-            </select>
-            <button
-              type="button"
-              className="sort-btn"
-              onClick={() => setSortOrder(sortOrder === "asc" ? "desc" : "asc")}
-            >
-              {sortOrder === "asc" ? "Ascendente" : "Descendente"}
-            </button>
-          </div>
-        )}
-      </header>
-      {loading && (
-        <div className="search-results-message">
-          <h3>Buscando productos...</h3>
-          <p>Esto puede tomar unos segundos.</p>
-        </div>
-      )}
-      {!loading && showNoResults && (
-        <div className="search-results-message">
-          <h3>No encontramos coincidencias</h3>
-          <p>
-            Prueba con otros términos o recorre nuestras{" "}
-            <Link to="/offers">ofertas destacadas</Link>.
-          </p>
-        </div>
-      )}
-      {!loading && hasQuery && !showNoResults && (
-        <List
-          products={filteredProducts}
-          layout="vertical"
-          title={`Resultados para "${query}"`}
+    <div className="search-results-page-container">
+      <div className="search-results-layout">
+        <FiltersSidebar 
+          filters={{ 
+            minPrice: localFilters.minPrice, 
+            maxPrice: localFilters.maxPrice, 
+            inStock, 
+            sort 
+          }}
+          onFilterChange={handleFilterChange}
+          onClearFilters={handleClearFilters}
         />
-      )}
-      {!loading && !hasQuery && (
-        <div className="search-results-message">
-          <h3>¿Buscas algo en especial?</h3>
-          <p>
-            Comienza a escribir en la barra de búsqueda y te mostraremos los
-            resultados aquí mismo.
-          </p>
+
+        <div className="search-results-content">
+          <header className="search-results-header">
+            <div>
+              <h1 className="search-results-title">
+                {hasQuery
+                  ? `Resultados para "${query}"`
+                  : "Explora nuestro catálogo"}
+              </h1>
+              <p className="search-results-description">
+                {products.length} productos encontrados.
+              </p>
+            </div>
+          </header>
+
+          {loading && (
+            <div className="search-results-message">
+              <h3>Buscando productos...</h3>
+              <p>Esto puede tomar unos segundos.</p>
+            </div>
+          )}
+
+          {!loading && showNoResults && (
+            <div className="search-results-message">
+              <h3>No encontramos coincidencias</h3>
+              <p>
+                Prueba ajustando los filtros o recorre nuestras{" "}
+                <Link to="/">novedades</Link>.
+              </p>
+            </div>
+          )}
+
+          {!loading && !showNoResults && (
+            <List
+              products={products}
+              layout="grid"
+              title={hasQuery ? `Búsqueda: ${query}` : "Catálogo"}
+            />
+          )}
         </div>
-      )}
+      </div>
     </div>
   );
 }
