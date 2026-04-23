@@ -40,10 +40,32 @@ const profileValidations = [
     .isURL().withMessage('Avatar must be a valid URL')
 ];
 
-// Obtener perfil del usuario autenticado
+/**
+ * @swagger
+ * /api/users/profile:
+ *   get:
+ *     summary: Obtener perfil del usuario autenticado
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Datos del perfil del usuario
+ */
 router.get('/profile', authMiddleware, getUserProfile);
 
-// Obtener todos los usuarios (solo admin)
+/**
+ * @swagger
+ * /api/users:
+ *   get:
+ *     summary: Obtener todos los usuarios (Solo Admin)
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Lista de usuarios
+ */
 router.get('/', [
   query('page')
     .optional()
@@ -62,17 +84,56 @@ router.get('/', [
     .isBoolean().withMessage('isActive must be a boolean value')
 ], validate, authMiddleware, isAdmin, getAllUsers);
 
-// Obtener usuario por ID (solo admin)
+/**
+ * @swagger
+ * /api/users/{userId}:
+ *   get:
+ *     summary: Obtener usuario por ID (Solo Admin)
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: userId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Datos del usuario
+ */
 router.get('/:userId', [
   param('userId')
     .isMongoId().withMessage('User ID must be a valid MongoDB ObjectId')
 ], validate, authMiddleware, isAdmin, getUserById);
 
 
-// Actualizar perfil del usuario
+/**
+ * @swagger
+ * /api/users/profile:
+ *   put:
+ *     summary: Actualizar perfil del usuario
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Perfil actualizado
+ */
 router.put('/profile', profileValidations, validate, authMiddleware, updateUserProfile);
 
-// Cambiar contraseña
+/**
+ * @swagger
+ * /api/users/change-password:
+ *   put:
+ *     summary: Cambiar contraseña
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Contraseña cambiada exitosamente
+ */
 router.put('/change-password', [
   body('currentPassword')
     .notEmpty().withMessage('Current password is required'),
@@ -91,7 +152,24 @@ router.put('/change-password', [
     })
 ], validate, authMiddleware, changePassword);
 
-// Actualizar usuario (solo admin)
+/**
+ * @swagger
+ * /api/users/{userId}:
+ *   put:
+ *     summary: Actualizar usuario (Solo Admin)
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: userId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Usuario actualizado
+ */
 router.put('/:userId', [
   param('userId')
     .isMongoId().withMessage('User ID must be a valid MongoDB ObjectId'),
@@ -107,16 +185,61 @@ router.put('/:userId', [
     .isBoolean().withMessage('isActive must be a boolean value')
 ], validate, authMiddleware, isAdmin, updateUser);
 
-// Desactivar cuenta propia
+/**
+ * @swagger
+ * /api/users/deactivate:
+ *   patch:
+ *     summary: Desactivar cuenta propia
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Cuenta desactivada
+ */
 router.patch('/deactivate', authMiddleware, deactivateUser);
 
-// Activar/Desactivar usuario (solo admin)
+/**
+ * @swagger
+ * /api/users/{userId}/toggle-status:
+ *   patch:
+ *     summary: Activar/Desactivar usuario (Solo Admin)
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: userId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Estado del usuario actualizado
+ */
 router.patch('/:userId/toggle-status', [
   param('userId')
     .isMongoId().withMessage('User ID must be a valid MongoDB ObjectId')
 ], validate, authMiddleware, isAdmin, toggleUserStatus);
 
-// Eliminar usuario (solo admin)
+/**
+ * @swagger
+ * /api/users/{userId}:
+ *   delete:
+ *     summary: Eliminar usuario (Solo Admin)
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: userId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       204:
+ *         description: Usuario eliminado
+ */
 router.delete('/:userId', [
   param('userId')
     .isMongoId().withMessage('User ID must be a valid MongoDB ObjectId')

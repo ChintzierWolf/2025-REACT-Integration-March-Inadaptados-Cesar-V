@@ -33,7 +33,7 @@ export default function Home() {
         {isLoading ? (
           <Loading>Cargando productos...</Loading>
         ) : error ? (
-          <ErrorMessage>{error}</ErrorMessage>
+          <ErrorMessage>{error.message || "Error al cargar productos"}</ErrorMessage>
         ) : products.length > 0 ? (
           <List
             title="Novedades y Destacados"

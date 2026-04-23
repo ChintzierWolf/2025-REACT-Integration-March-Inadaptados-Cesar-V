@@ -1,202 +1,77 @@
-# Guía para Agentes - ecommerce-api
+# Guía para Agentes - Backend (ecommerce-api)
 
-Esta guía detalla la arquitectura, estándares y patrones del proyecto `ecommerce-api` para asegurar consistencia en el desarrollo.
+Esta guía establece la arquitectura, patrones y reglas para cualquier agente que trabaje en el backend.
 
-## 📂 Estructura de Directorios (src/)
+## Estructura de Directorios (src/)
+- `src/config/`: Configuraciones de DB, Swagger, etc.
+- `src/controllers/`: Lógica de control de las rutas.
+- `src/middlewares/`: Funciones intermedias (auth, validación, errores).
+- `src/models/`: Definiciones de esquemas Mongoose.
+- `src/routes/`: Definición de endpoints y asociación con controllers.
+- `src/schemas/`: Esquemas de validación con Zod/Joi.
+- `src/services/`: (Opcional) Lógica de negocio pesada.
+- `app.js`: Punto de entrada y configuración de Express.
 
-```text
-src/
-├── config/             # Configuración (DB, variables de entorno)
-├── controllers/        # Lógica de negocio de los endpoints
-├── middlewares/        # Middlewares (Auth, Validaciones, Errores)
-├── models/             # Modelos de Mongoose (Esquemas)
-└── routes/             # Definición de rutas y aplicación de validaciones
-```
+## Mapa de Rutas API
 
-## 🗺️ Mapa de Rutas API
+| Método | Path | Auth Requerido | Admin Requerido |
+| :--- | :--- | :---: | :---: |
+| POST | `/api/auth/register` | No | No |
+| POST | `/api/auth/login` | No | No |
+| GET | `/api/users/profile` | Sí | No |
+| GET | `/api/products` | No | No |
+| POST | `/api/products` | Sí | Sí |
+| GET | `/api/products/:id` | No | No |
+| GET | `/api/cart/user/:id` | Sí | No |
+| POST | `/api/cart/add-product` | Sí | No |
+| GET | `/api/orders/user/:userId` | Sí | No |
+| POST | `/api/orders` | Sí | No |
 
-Todas las rutas están prefijadas por `/api`.
-
-| Recurso        | Método | Path                             | Auth | Admin |
-| :------------- | :----- | :------------------------------- | :--: | :---: |
-| **Auth**       | POST   | `/auth/register`                 |  ❌  |  ❌   |
-|                | POST   | `/auth/login`                    |  ❌  |  ❌   |
-| **Users**      | GET    | `/users/profile`                 |  ✅  |  ❌   |
-|                | GET    | `/users/`                        |  ✅  |  ✅   |
-|                | GET    | `/users/:userId`                 |  ✅  |  ✅   |
-|                | PUT    | `/users/profile`                 |  ✅  |  ❌   |
-|                | PUT    | `/users/change-password`         |  ✅  |  ❌   |
-|                | PUT    | `/users/:userId`                 |  ✅  |  ✅   |
-|                | PATCH  | `/users/deactivate`              |  ✅  |  ❌   |
-|                | PATCH  | `/users/:userId/toggle-status`   |  ✅  |  ✅   |
-|                | DELETE | `/users/:userId`                 |  ✅  |  ✅   |
-| **Products**   | GET    | `/products/`                     |  ❌  |  ❌   |
-|                | GET    | `/products/category/:idCategory` |  ❌  |  ❌   |
-|                | POST   | `/products/`                     |  ❌  |  ❌   |
-|                | PUT    | `/products/:id`                  |  ❌  |  ❌   |
-|                | DELETE | `/products/:id`                  |  ❌  |  ❌   |
-| **Orders**     | GET    | `/orders/`                       |  ✅  |  ✅   |
-|                | GET    | `/orders/:id`                    |  ✅  |  ❌   |
-|                | GET    | `/orders/user/:userId`           |  ✅  |  ❌   |
-|                | POST   | `/orders/`                       |  ✅  |  ❌   |
-|                | PATCH  | `/orders/:id/cancel`             |  ✅  |  ❌   |
-|                | DELETE | `/orders/:id`                    |  ✅  |  ✅   |
-| **Cart**       | GET    | `/cart/`                         |  ✅  |  ❌   |
-|                | POST   | `/cart/`                         |  ✅  |  ❌   |
-| **Categories** | GET    | `/categories/`                   |  ❌  |  ❌   |
-|                | POST   | `/categories/`                   |  ✅  |  ✅   |
-| **Notifs**     | GET    | `/notifications/`                |  ✅  |  ❌   |
-| **Payments**   | GET    | `/payment-methods/`              |  ✅  |  ❌   |
-|                | POST   | `/payment-methods/`              |  ✅  |  ❌   |
-|                | PUT    | `/payment-methods/:id`           |  ✅  |  ❌   |
-|                | PATCH  | `/payment-methods/:id/set-default` |  ✅  |  ❌   |
-|                | DELETE | `/payment-methods/:id`           |  ✅  |  ❌   |
-| **Shipping**   | GET    | `/shipping-address/`              |  ✅  |  ❌   |
-|                | POST   | `/shipping-address/`             |  ✅  |  ❌   |
-|                | DELETE | `/shipping-address/:id`          |  ✅  |  ❌   |
-| **Wishlist**   | GET    | `/wishlist/`                     |  ✅  |  ❌   |
-|                | POST   | `/wishlist/toggle`               |  ✅  |  ❌   |
-| **Reviews**    | GET    | `/reviews/product/:productId`    |  ❌  |  ❌   |
-|                | POST   | `/reviews/`                      |  ✅  |  ❌   |
-|                | DELETE | `/reviews/:id`                   |  ✅  |  ❌   |
-
-## 🏗️ Modelos Mongoose (Completos)
+## Modelos Mongoose Principales
 
 ### User
-
-- `displayName` (String, Required)
-- `email` (String, Required, Unique)
-- `hashPassword` (String, Required)
-- `role` (String, enum: ['admin', 'customer', 'guest'])
-- `phone` (String, 10 digits)
-- `avatar` (String, default placeholder)
-- `isActive` (Boolean, default: true)
+- `displayName`: String (requerido)
+- `email`: String (requerido, único)
+- `password`: String (requerido, hash)
+- `role`: Enum ['user', 'admin']
 
 ### Product
+- `name`: String (requerido)
+- `description`: String
+- `price`: Number (requerido)
+- `stock`: Number (requerido)
+- `imagesUrl`: Array de Strings
+- `category`: ObjectId ref 'Category'
 
-- `name` (String, Required)
-- `price` (Number, Required)
-- `stock` (Number, Required)
-- `image` (String, Default placeholder)
-- `category` (ObjectId -> Category)
-- `isFeatured` (Boolean, default: false)
-- `platform` (enum: ['PC', 'PlayStation', 'Xbox', 'Nintendo', 'Mobile'], Optional)
-- `genre` (enum: ['Action', 'Adventure', 'RPG', ...], Optional)
-- `releaseDate` (Date, Optional)
+## Validadores Disponibles
+Ubicados en `src/middlewares/validate.middleware.js` y `src/schemas/`:
+- `validate`: Middleware genérico para ejecutar esquemas.
+- `loginSchema`: Validación de credenciales.
+- `registerSchema`: Registro de usuario.
+- `addProductToCartSchema`: Validación de item para carrito.
+- `createOrderSchema`: Estructura de orden de compra.
 
-### Order
+## Patrones de Código
 
-- `user` (ObjectId -> User)
-- `products` (Array of {productId, quantity, price})
-- `shippingAddress` (ObjectId -> ShippingAddress)
-- `paymentMethod` (ObjectId -> PaymentMethod)
-- `shippingCost` (Number)
-- `totalPrice` (Number)
-- `status` (enum: ['pending', 'processing', 'shipped', 'delivered', 'cancelled'])
-- `paymentStatus` (enum: ['pending', 'paid', 'failed', 'refunded'])
-
-### Cart
-
-- `user` (ObjectId -> User)
-- `products` (Array of {product: ObjectId, quantity: Number})
-
-### Category
-
-- `name` (String, Required)
-- `description` (String)
-- `imageURL` (String)
-- `parentCategory` (ObjectId -> Category, optional)
-
-### ShippingAddress
-
-- `user` (ObjectId -> User)
-- `name` (String, Required)
-- `street` (String, Required)
-- `city` (String)
-- `postalCode` (String)
-- `country` (String)
-- `isDefault` (Boolean, default: false)
-
-### PaymentMethod
-
-- `user` (ObjectId -> User)
-- `type` (String: 'credit', 'debit')
-- `last4` (String, last 4 digits)
-- `alias` (String, friendly name)
-- `isDefault` (Boolean, default: false)
-
-### Wishlist
-
-- `user` (ObjectId -> User)
-- `products` (Array of ObjectId -> Product)
-
-### Review
-
-- `user` (ObjectId -> User)
-- `product` (ObjectId -> Product)
-- `rating` (Number, 1 to 5)
-- `comment` (String)
-
-## ✅ Validaciones
-
-El proyecto utiliza `express-validator`. Las validaciones se definen generalmente en el mismo archivo de rutas.
-
-**Validadores comunes utilizados:**
-
-- `body('field').isEmail()`
-- `body('field').isLength({ min: X })`
-- `body('field').isMongoId()`
-- `body('field').isNumeric()`
-
-## 📝 Patrones de Código
-
-### Patrón de Controller (Standard)
-
-Debe usar siempre `try/catch` y pasar el error a `next(error)`.
-
+### Controller (try/catch/next)
 ```javascript
-const myController = async (req, res, next) => {
+async function getItems(req, res, next) {
   try {
-    const data = await MyModel.find();
-    res.status(200).json({
-      success: true,
-      data,
-    });
+    const items = await Model.find();
+    res.status(200).json(items);
   } catch (error) {
     next(error);
   }
-};
+}
 ```
 
-### Patrón de Ruta (con Auth y Validation)
-
-Las validaciones se pasan como un array de middlewares antes del middleware `validate`.
-
+### Ruta (auth + validate)
 ```javascript
-import { body } from "express-validator";
-import validate from "../middlewares/validation.js";
-import authMiddleware from "../middlewares/auth.js";
-
-router.put(
-  "/profile",
-  [
-    body("email").isEmail().withMessage("Email inválido"),
-    body("displayName").notEmpty().withMessage("Nombre requerido"),
-  ],
-  validate,
-  authMiddleware,
-  myController,
-);
+router.post('/', authMiddleware, validate(createItemSchema), controller.createItem);
 ```
 
-## 🚫 Restricciones para Agentes
-
-1.  **NO usar `require`**: El proyecto usa Módulos de ES (`import/export`).
-2.  **NO crear nuevos contextos globales**: Mantener la lógica en controllers y servicios.
-3.  **NO manejar errores con `res.send` en el catch**: Usar siempre `next(error)` para que el `errorHandler` global procese la respuesta.
-4.  **NO modificar esquemas sin actualizar la documentación**: Si se agrega un campo a un modelo, debe reflejarse en este `AGENTS.md`.
-
-## 🧪 Testing
-
-Para detalles sobre cómo crear o modificar pruebas (Unitarias e Integración) usando **Vitest** y **Supertest**, revisa la guía específica:
-[AGENTS.testing.md](./AGENTS.testing.md)
+## Restricciones para Agentes
+- **NO usar `require`**: El proyecto usa Módulos ES (`import/export`).
+- **NO crear contextos nuevos**: Usar la estructura de carpetas establecida.
+- **NO omitir `next(error)`**: Siempre propagar errores al middleware global.
+- **NO hardcodear secretos**: Usar `process.env`.
