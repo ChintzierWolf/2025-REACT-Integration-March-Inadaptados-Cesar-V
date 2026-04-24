@@ -1,5 +1,4 @@
 import { Link } from "react-router-dom";
-import { useState } from "react";
 import { useCartStore } from "../../stores/cartStore";
 import { useAuthStore } from "../../stores/authStore";
 import Badge from "../common/Badge";
@@ -79,6 +78,7 @@ export default function ProductCard({ product, orientation = "vertical" }) {
           <Link
             to={productLink}
             style={{ color: "inherit", textDecoration: "none" }}
+            data-testid={`product-link-${product._id}`}
           >
             {name}
           </Link>
@@ -107,6 +107,7 @@ export default function ProductCard({ product, orientation = "vertical" }) {
           size="sm"
           disabled={stock === 0}
           onClick={handleAddToCart}
+          data-testid={`add-to-cart-${product._id}`}
         >
           Agregar al carrito
         </Button>

@@ -51,11 +51,6 @@ async function getProductByCategory(req, res, next) {
 async function createProduct(req, res, next) {
   try {
     const { name, description, price, stock, imagesUrl, category } = req.body;
-
-    if (!name || !description || !price || !stock || !imagesUrl || !category) {
-      return res.status(400).json({ error: 'All fields are required' });
-    }
-
     const newProduct = await Product.create({ name, description, price, stock, imagesUrl, category });
     res.status(201).json(newProduct);
   } catch (error) {
@@ -65,14 +60,8 @@ async function createProduct(req, res, next) {
 async function updateProduct(req, res, next) {
   try {
     const id = req.params.id;
-    const { name, description, price, stock, imagesUrl, category } = req.body;
-
-    if (!name || !description || !price || !stock || !imagesUrl || !category) {
-      return res.status(400).json({ error: 'All fields are required' });
-    }
-
     const updatedProduct = await Product.findByIdAndUpdate(id,
-      { name, description, price, stock, imagesUrl, category },
+      req.body,
       { new: true },
     );
 

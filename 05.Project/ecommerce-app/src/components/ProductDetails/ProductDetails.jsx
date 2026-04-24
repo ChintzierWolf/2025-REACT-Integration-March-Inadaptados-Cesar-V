@@ -8,7 +8,7 @@ import { useReviews, useCreateReview } from "../../hooks/useReviews";
 import Badge from "../common/Badge";
 import Button from "../common/Button";
 import ErrorMessage from "../common/ErrorMessage/ErrorMessage";
-import Loading from "../common/Loading/Loading";
+import { ProductDetailsSkeleton } from "../common/Skeleton/ProductSkeletons";
 import Icon from "../common/Icon/Icon";
 import "./ProductDetails.css";
 
@@ -67,7 +67,7 @@ export default function ProductDetails({ productId }) {
   if (productLoading) {
     return (
       <div className="product-details-container">
-        <Loading message="Cargando producto..." />
+        <ProductDetailsSkeleton />
       </div>
     );
   }
