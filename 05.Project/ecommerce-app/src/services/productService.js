@@ -8,7 +8,11 @@ export const fetchProducts = async (params = {}) => {
     }
   });
   const queryString = queryParams.toString();
-  return await http.get(`/products${queryString ? `?${queryString}` : ''}`);
+  const response = await http.get(`/products${queryString ? `?${queryString}` : ''}`);
+  
+  // Normalización: Si el backend devuelve { products, pagination }, extraemos products.
+  // Si devuelve el array directo, lo usamos tal cual.
+  return response.products || response;
 };
 
 export const searchProducts = async (params = {}) => {
