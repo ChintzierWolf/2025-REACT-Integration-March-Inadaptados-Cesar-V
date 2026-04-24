@@ -151,7 +151,8 @@ package-lock.json
 /coverage
 
 # production
-/build
+build/
+ecommerce-app/build/
 
 # misc
 .DS_Store
