@@ -16,7 +16,7 @@ import {
   markAllAsReadByUser,
   getUnreadNotificationsByUser,
 } from '../controllers/notificationController.js';
-import authMiddleware from '../middlewares/auth.js';
+import authMiddleware from '../middlewares/authMiddleware.js';
 import isAdmin from '../middlewares/isAdminMiddleware.js';
 
 const router = express.Router();
