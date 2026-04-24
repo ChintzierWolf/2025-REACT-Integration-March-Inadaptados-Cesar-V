@@ -3,6 +3,8 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Layout from "../../layout/Layout";
 import { useAuthStore } from "../../stores/authStore";
 import { useCartStore } from "../../stores/cartStore";
+import ErrorBoundary from "../common/ErrorBoundary/ErrorBoundary";
+import RouteErrorBoundary from "../common/ErrorBoundary/RouteErrorBoundary";
 import Icon from "../common/Icon/Icon";
 
 // Lazy loading de páginas
@@ -62,65 +64,67 @@ function App() {
 
   return (
     <BrowserRouter>
-      <Layout>
-        <Suspense fallback={<PageLoader />}>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/cart" element={<Cart />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/search" element={<SearchResults />} />
-            <Route path="/product/:productId" element={<Product />} />
-            <Route path="/products" element={<Home />} />
-            <Route path="/category/:categoryId" element={<CategoryPage />} />
-            <Route
-              path="/profile"
-              element={
-                <ProtectedRoute
-                  redirectTo="/login"
-                  allowedRoles={["admin", "customer", "cliente"]}
-                >
-                  <Profile />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/checkout"
-              element={
-                <ProtectedRoute>
-                  <Checkout />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/wishlist"
-              element={
-                <ProtectedRoute>
-                  <WishList />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/orders"
-              element={
-                <ProtectedRoute>
-                  <Orders />
-                </ProtectedRoute>
-              }
-            />
-            <Route path="/order-confirmation" element={<OrderConfirmation />} />
-            <Route
-              path="/settings"
-              element={
-                <ProtectedRoute>
-                  <Settings />
-                </ProtectedRoute>
-              }
-            />
-            <Route path="*" element={<div>Ruta no encontrada</div>} />
-          </Routes>
-        </Suspense>
-      </Layout>
+      <ErrorBoundary>
+        <Layout>
+          <Suspense fallback={<PageLoader />}>
+            <Routes>
+              <Route path="/" element={<RouteErrorBoundary><Home /></RouteErrorBoundary>} />
+              <Route path="/cart" element={<RouteErrorBoundary><Cart /></RouteErrorBoundary>} />
+              <Route path="/login" element={<RouteErrorBoundary><Login /></RouteErrorBoundary>} />
+              <Route path="/register" element={<RouteErrorBoundary><Register /></RouteErrorBoundary>} />
+              <Route path="/search" element={<RouteErrorBoundary><SearchResults /></RouteErrorBoundary>} />
+              <Route path="/product/:productId" element={<RouteErrorBoundary><Product /></RouteErrorBoundary>} />
+              <Route path="/products" element={<RouteErrorBoundary><Home /></RouteErrorBoundary>} />
+              <Route path="/category/:categoryId" element={<RouteErrorBoundary><CategoryPage /></RouteErrorBoundary>} />
+              <Route
+                path="/profile"
+                element={
+                  <ProtectedRoute
+                    redirectTo="/login"
+                    allowedRoles={["admin", "customer", "cliente"]}
+                  >
+                    <RouteErrorBoundary><Profile /></RouteErrorBoundary>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/checkout"
+                element={
+                  <ProtectedRoute>
+                    <RouteErrorBoundary><Checkout /></RouteErrorBoundary>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/wishlist"
+                element={
+                  <ProtectedRoute>
+                    <RouteErrorBoundary><WishList /></RouteErrorBoundary>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/orders"
+                element={
+                  <ProtectedRoute>
+                    <RouteErrorBoundary><Orders /></RouteErrorBoundary>
+                  </ProtectedRoute>
+                }
+              />
+              <Route path="/order-confirmation" element={<RouteErrorBoundary><OrderConfirmation /></RouteErrorBoundary>} />
+              <Route
+                path="/settings"
+                element={
+                  <ProtectedRoute>
+                    <RouteErrorBoundary><Settings /></RouteErrorBoundary>
+                  </ProtectedRoute>
+                }
+              />
+              <Route path="*" element={<div>Ruta no encontrada</div>} />
+            </Routes>
+          </Suspense>
+        </Layout>
+      </ErrorBoundary>
     </BrowserRouter>
   );
 }
