@@ -9,12 +9,14 @@ import paymentMethodRoutes from './paymentMethodRoutes.js';
 import productRoutes from './productRoutes.js';
 import reviewRoutes from './reviewRoutes.js';
 import shippingAddressRoutes from './shippingAddressRoutes.js';
+import userRoutes from './userRoutes.js';
 import wishListRoutes from './wishListRoutes.js';
 
 const router = express.Router();
 
 // 🧑‍💻 Autenticación y sesión
 router.use('/auth', authRoutes);
+router.use('/users', userRoutes);
 
 // 🛒 Carrito de compras
 router.use('/cart', cartRoutes);

@@ -33,8 +33,12 @@ http.interceptors.response.use(
   (error) => {
     if (error.response && error.response.status === 401) {
       console.warn('⚠️ Sesión expirada o no autorizada.');
+      // Importación dinámica para evitar dependencias circulares
+      import('../stores/authStore').then((module) => {
+        module.useAuthStore.getState().logout();
+      });
+      // Fallback inmediato para el token
       localStorage.removeItem('token');
-      localStorage.removeItem('user');
     }
 
     const customError = error.response?.data?.message || error.response?.data?.error || error.message || 'Error de conexión con el servidor';

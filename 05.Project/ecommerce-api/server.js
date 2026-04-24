@@ -6,10 +6,10 @@ import app from './app.js';
 import fs from 'fs';
 
 // Cargamos variables de entorno predeterminadas, intentando primero .env.production si existe localmente
-if (fs.existsSync('./.env.production')) {
+if (fs.existsSync('./.env.production') && process.env.NODE_ENV !== 'production') {
   dotenv.config({ path: './.env.production' });
 } else {
-  dotenv.config(); // Fallback a .env estándar si existe
+  dotenv.config(); // Carga .env estándar o usa variables del entorno (Render)
 }
 
 dbConnection(); // Conecta a la base de datos MongoDB
