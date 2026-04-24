@@ -1,0 +1,70 @@
+.error-boundary-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 80vh;
+  padding: 2rem;
+  background-color: var(--bg-color, #f8f9fa);
+}
+
+.error-card {
+  background: white;
+  padding: 3rem;
+  border-radius: 16px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+  text-align: center;
+  max-width: 450px;
+  width: 100%;
+}
+
+.error-icon {
+  font-size: 4rem;
+  margin-bottom: 1.5rem;
+}
+
+.error-card h2 {
+  color: var(--text-color, #333);
+  margin-bottom: 1rem;
+  font-size: 1.8rem;
+}
+
+.error-card p {
+  color: #666;
+  margin-bottom: 2rem;
+  line-height: 1.6;
+}
+
+.retry-button {
+  background-color: var(--primary-color, #007bff);
+  color: white;
+  border: none;
+  padding: 0.8rem 2rem;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.retry-button:hover {
+  filter: brightness(1.1);
+  transform: translateY(-2px);
+}
+
+/* Route Specific Errors */
+.route-error-container {
+  padding: 2rem;
+  margin: 2rem auto;
+  max-width: 600px;
+  border: 1px dashed #ccc;
+  border-radius: 12px;
+  background-color: rgba(255, 0, 0, 0.02);
+}
+
+.route-error-content {
+  text-align: center;
+}
+
+.retry-button.small {
+  padding: 0.5rem 1.5rem;
+  font-size: 0.9rem;
+}

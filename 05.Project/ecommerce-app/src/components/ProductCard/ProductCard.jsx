@@ -1,5 +1,5 @@
+import React, { memo } from "react";
 import { Link } from "react-router-dom";
-import { useState } from "react";
 import { useCartStore } from "../../stores/cartStore";
 import { useAuthStore } from "../../stores/authStore";
 import Badge from "../common/Badge";
@@ -8,7 +8,7 @@ import Icon from "../common/Icon/Icon";
 import { useToggleWishlist } from "../../hooks/useWishlist";
 import "./ProductCard.css";
 
-export default function ProductCard({ product, orientation = "vertical" }) {
+const ProductCard = memo(({ product, orientation = "vertical" }) => {
   const addToCart = useCartStore((state) => state.addToCart);
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   const { mutateAsync: toggleWishlist, isLoading: isToggling } = useToggleWishlist();
@@ -57,6 +57,8 @@ export default function ProductCard({ product, orientation = "vertical" }) {
           src={image || "/img/products/placeholder.svg"}
           alt={name}
           className="product-card-image"
+          loading="lazy"
+          decoding="async"
           onError={(event) => {
             event.target.src = "/img/products/placeholder.svg";
           }}
@@ -79,6 +81,7 @@ export default function ProductCard({ product, orientation = "vertical" }) {
           <Link
             to={productLink}
             style={{ color: "inherit", textDecoration: "none" }}
+            data-testid={`product-link-${product._id}`}
           >
             {name}
           </Link>
@@ -107,10 +110,13 @@ export default function ProductCard({ product, orientation = "vertical" }) {
           size="sm"
           disabled={stock === 0}
           onClick={handleAddToCart}
+          data-testid={`add-to-cart-${product._id}`}
         >
           Agregar al carrito
         </Button>
       </div>
     </div>
   );
-}
+});
+
+export default ProductCard;

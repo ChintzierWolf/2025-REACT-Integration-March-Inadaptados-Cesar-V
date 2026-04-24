@@ -1,6 +1,7 @@
+import React, { memo } from "react";
 import PropTypes from "prop-types";
 
-const Icon = ({ name, size = 20, className = "" }) => {
+const Icon = memo(({ name, size = 20, className = "" }) => {
   const icons = {
     checkCircle: (
       <svg
@@ -810,7 +811,7 @@ const Icon = ({ name, size = 20, className = "" }) => {
   return (
     <span className={`icon ${className}`}>{icons[name] || icons.user}</span>
   );
-};
+});
 
 Icon.propTypes = {
   name: PropTypes.string.isRequired,

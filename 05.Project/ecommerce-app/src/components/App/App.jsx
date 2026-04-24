@@ -1,22 +1,58 @@
-import { useEffect } from "react";
+import { useEffect, lazy, Suspense } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Layout from "../../layout/Layout";
 import { useAuthStore } from "../../stores/authStore";
 import { useCartStore } from "../../stores/cartStore";
-import Cart from "../../pages/Cart";
-import CategoryPage from "../../pages/CategoryPage";
-import Checkout from "../../pages/Checkout";
+import ErrorBoundary from "../common/ErrorBoundary/ErrorBoundary";
+import RouteErrorBoundary from "../common/ErrorBoundary/RouteErrorBoundary";
+import Icon from "../common/Icon/Icon";
+
+// Lazy loading de páginas
 import Home from "../../pages/Home";
+import Cart from "../../pages/Cart";
 import Login from "../../pages/Login";
 import Register from "../../pages/Register";
-import OrderConfirmation from "../../pages/OrderConfirmation";
-import Orders from "../../pages/Orders";
 import Product from "../../pages/Product";
-import Profile from "../../pages/Profile";
-import ProtectedRoute from "../../pages/ProtectedRoute";
 import SearchResults from "../../pages/SearchResults";
-import Settings from "../../pages/Settings";
-import WishList from "../../pages/WishList";
+import CategoryPage from "../../pages/CategoryPage";
+import Profile from "../../pages/Profile";
+
+// Lazy loading solo para rutas pesadas o menos frecuentes
+const Checkout = lazy(() => import("../../pages/Checkout"));
+const OrderConfirmation = lazy(() => import("../../pages/OrderConfirmation"));
+const Orders = lazy(() => import("../../pages/Orders"));
+const ProtectedRoute = lazy(() => import("../../pages/ProtectedRoute"));
+const Settings = lazy(() => import("../../pages/Settings"));
+const WishList = lazy(() => import("../../pages/WishList"));
+
+// Componente de carga simple
+const PageLoader = () => (
+  <div style={{ 
+    display: "flex", 
+    justifyContent: "center", 
+    alignItems: "center", 
+    height: "50vh",
+    flexDirection: "column",
+    gap: "16px",
+    color: "var(--primary-color)"
+  }}>
+    <div className="spinner" style={{
+      width: "40px",
+      height: "40px",
+      border: "4px solid rgba(0,0,0,0.1)",
+      borderTop: "4px solid var(--primary-color)",
+      borderRadius: "50%",
+      animation: "spin 1s linear infinite"
+    }} />
+    <style>{`
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+    `}</style>
+    <p>Cargando...</p>
+  </div>
+);
 
 function App() {
   const { user } = useAuthStore();
@@ -30,16 +66,18 @@ function App() {
 
   return (
     <BrowserRouter>
-      <Layout>
+      <ErrorBoundary>
+        <Layout>
+          <Suspense fallback={<PageLoader />}>
             <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/cart" element={<Cart />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />} />
-              <Route path="/search" element={<SearchResults />} />
-              <Route path="/product/:productId" element={<Product />} />
-              <Route path="/products" element={<Home />} />
-              <Route path="/category/:categoryId" element={<CategoryPage />} />
+              <Route path="/" element={<RouteErrorBoundary><Home /></RouteErrorBoundary>} />
+              <Route path="/cart" element={<RouteErrorBoundary><Cart /></RouteErrorBoundary>} />
+              <Route path="/login" element={<RouteErrorBoundary><Login /></RouteErrorBoundary>} />
+              <Route path="/register" element={<RouteErrorBoundary><Register /></RouteErrorBoundary>} />
+              <Route path="/search" element={<RouteErrorBoundary><SearchResults /></RouteErrorBoundary>} />
+              <Route path="/product/:productId" element={<RouteErrorBoundary><Product /></RouteErrorBoundary>} />
+              <Route path="/products" element={<RouteErrorBoundary><Home /></RouteErrorBoundary>} />
+              <Route path="/category/:categoryId" element={<RouteErrorBoundary><CategoryPage /></RouteErrorBoundary>} />
               <Route
                 path="/profile"
                 element={
@@ -47,7 +85,7 @@ function App() {
                     redirectTo="/login"
                     allowedRoles={["admin", "customer", "cliente"]}
                   >
-                    <Profile />
+                    <RouteErrorBoundary><Profile /></RouteErrorBoundary>
                   </ProtectedRoute>
                 }
               />
@@ -55,7 +93,7 @@ function App() {
                 path="/checkout"
                 element={
                   <ProtectedRoute>
-                    <Checkout />
+                    <RouteErrorBoundary><Checkout /></RouteErrorBoundary>
                   </ProtectedRoute>
                 }
               />
@@ -63,7 +101,7 @@ function App() {
                 path="/wishlist"
                 element={
                   <ProtectedRoute>
-                    <WishList />
+                    <RouteErrorBoundary><WishList /></RouteErrorBoundary>
                   </ProtectedRoute>
                 }
               />
@@ -71,23 +109,25 @@ function App() {
                 path="/orders"
                 element={
                   <ProtectedRoute>
-                    <Orders />
+                    <RouteErrorBoundary><Orders /></RouteErrorBoundary>
                   </ProtectedRoute>
                 }
               />
-              <Route path="/order-confirmation" element={<OrderConfirmation />} />
+              <Route path="/order-confirmation" element={<RouteErrorBoundary><OrderConfirmation /></RouteErrorBoundary>} />
               <Route
                 path="/settings"
                 element={
                   <ProtectedRoute>
-                    <Settings />
+                    <RouteErrorBoundary><Settings /></RouteErrorBoundary>
                   </ProtectedRoute>
                 }
               />
               <Route path="*" element={<div>Ruta no encontrada</div>} />
             </Routes>
-          </Layout>
-        </BrowserRouter>
+          </Suspense>
+        </Layout>
+      </ErrorBoundary>
+    </BrowserRouter>
   );
 }
 

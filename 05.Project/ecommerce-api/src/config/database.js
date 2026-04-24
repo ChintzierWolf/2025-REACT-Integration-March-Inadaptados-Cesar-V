@@ -22,10 +22,7 @@ const dbConnection = async () => {
     }
 
     // Opciones de configuración
-    const options = {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    };
+    const options = {};
 
     // Si MONGODB_DB fue provisto explícitamente, lo inyectamos aquí (ideal para Mongoose > 6)
     // Esto evita concatenar strings que rompen URLs de MongoDB Atlas (mongodb+srv://...)
@@ -35,7 +32,9 @@ const dbConnection = async () => {
 
     await mongoose.connect(dbURI, options);
 
-    console.log(`✅ MongoDB conectado a la base de datos "${dbName}"`);
+    if (process.env.NODE_ENV !== 'production') {
+      console.log(`✅ MongoDB conectado a la base de datos "${dbName || 'default'}"`);
+    }
 
     // 🔌 Eventos de conexión para monitoreo y debugging
     mongoose.connection.on('connected', () => {
