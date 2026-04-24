@@ -30,10 +30,5 @@ export const getProductsByCategory = async (categoryId) => {
 };
 
 export async function getProductById(id) {
-  // Dependiendo de si tenemos GET /products/:id, llamamos,
-  // si el backend no lo tuviera implementado, extraemos así temporalmente:
-  const products = await fetchProducts();
-  const target = products.find((p) => p._id === id);
-  if(!target) throw new Error('Producto no encontrado');
-  return target;
+  return await http.get(`/products/${id}`);
 }

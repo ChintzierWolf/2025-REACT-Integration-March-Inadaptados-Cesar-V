@@ -2,7 +2,7 @@ import { useProducts } from "../hooks/useProducts";
 import BannerCarousel from "../components/BannerCarousel/BannerCarousel";
 import List from "../components/List/List";
 import ErrorMessage from "../components/common/ErrorMessage/ErrorMessage";
-import Loading from "../components/common/Loading/Loading";
+import { ProductCardSkeleton } from "../components/common/Skeleton/ProductSkeletons";
 import homeImagesTop from "../data/homeImagesTop.json";
 import homeImagesBottom from "../data/homeImagesBottom.json";
 
@@ -31,10 +31,17 @@ export default function Home() {
       
       <div className="container">
         {isLoading ? (
-          <Loading>Cargando productos...</Loading>
+          <div style={{ 
+            display: "grid", 
+            gridTemplateColumns: "repeat(auto-fill, minmax(250px, 1fr))", 
+            gap: "20px",
+            marginBottom: "40px"
+          }}>
+            {[...Array(8)].map((_, i) => <ProductCardSkeleton key={i} />)}
+          </div>
         ) : error ? (
           <ErrorMessage>{error.message || "Error al cargar productos"}</ErrorMessage>
-        ) : products.length > 0 ? (
+        ) : products?.length > 0 ? (
           <List
             title="Novedades y Destacados"
             products={products}
