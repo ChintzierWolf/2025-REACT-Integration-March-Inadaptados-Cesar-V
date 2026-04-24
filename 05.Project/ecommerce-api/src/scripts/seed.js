@@ -19,11 +19,10 @@ if (fs.existsSync('./.env.production')) {
   dotenv.config();
 }
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-const categoriesPath = path.join(__dirname, '../../../ecommerce-app/src/data/categories.json');
-const productsPath = path.join(__dirname, '../../../ecommerce-app/src/data/products.json');
+const categoriesPath = path.resolve(__dirname, '../../../ecommerce-app/src/data/categories.json');
+const productsPath = path.resolve(__dirname, '../../../ecommerce-app/src/data/products.json');
 
 const testUsersData = [
   {
