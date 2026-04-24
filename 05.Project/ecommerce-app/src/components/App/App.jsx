@@ -8,18 +8,20 @@ import RouteErrorBoundary from "../common/ErrorBoundary/RouteErrorBoundary";
 import Icon from "../common/Icon/Icon";
 
 // Lazy loading de páginas
-const Cart = lazy(() => import("../../pages/Cart"));
-const CategoryPage = lazy(() => import("../../pages/CategoryPage"));
+import Home from "../../pages/Home";
+import Cart from "../../pages/Cart";
+import Login from "../../pages/Login";
+import Register from "../../pages/Register";
+import Product from "../../pages/Product";
+import SearchResults from "../../pages/SearchResults";
+import CategoryPage from "../../pages/CategoryPage";
+import Profile from "../../pages/Profile";
+
+// Lazy loading solo para rutas pesadas o menos frecuentes
 const Checkout = lazy(() => import("../../pages/Checkout"));
-const Home = lazy(() => import("../../pages/Home"));
-const Login = lazy(() => import("../../pages/Login"));
-const Register = lazy(() => import("../../pages/Register"));
 const OrderConfirmation = lazy(() => import("../../pages/OrderConfirmation"));
 const Orders = lazy(() => import("../../pages/Orders"));
-const Product = lazy(() => import("../../pages/Product"));
-const Profile = lazy(() => import("../../pages/Profile"));
 const ProtectedRoute = lazy(() => import("../../pages/ProtectedRoute"));
-const SearchResults = lazy(() => import("../../pages/SearchResults"));
 const Settings = lazy(() => import("../../pages/Settings"));
 const WishList = lazy(() => import("../../pages/WishList"));
 

@@ -76,11 +76,17 @@ export default function BannerCarousel({ banners = [] }) {
                     : ""
                 }`}
                 style={{
-                  backgroundImage: `url(${banner.image})`,
                   backgroundColor: banner.backgroundColor,
                 }}
                 aria-hidden={index !== currentIndex}
               >
+                <img
+                  src={banner.image}
+                  alt=""
+                  className="banner-image-background"
+                  loading={index === 0 ? "eager" : "lazy"}
+                  decoding={index === 0 ? "sync" : "async"}
+                />
                 <div className="banner-overlay"></div>
                 <div className="banner-content">
                   <div className="content-wrapper">
