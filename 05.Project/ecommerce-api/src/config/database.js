@@ -32,7 +32,9 @@ const dbConnection = async () => {
 
     await mongoose.connect(dbURI, options);
 
-    console.log(`✅ MongoDB conectado a la base de datos "${dbName}"`);
+    if (process.env.NODE_ENV !== 'production') {
+      console.log(`✅ MongoDB conectado a la base de datos "${dbName || 'default'}"`);
+    }
 
     // 🔌 Eventos de conexión para monitoreo y debugging
     mongoose.connection.on('connected', () => {
