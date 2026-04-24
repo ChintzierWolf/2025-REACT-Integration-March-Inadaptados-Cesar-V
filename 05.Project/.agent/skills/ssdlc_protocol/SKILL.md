@@ -130,12 +130,37 @@ Crear el documento de especificación en:
 ## Riesgos y Deuda Técnica
 [Qué puede salir mal. Qué queda pendiente conscientemente]
 
+## Pendientes Abiertos y Gaps Detectados
+- **Funcionalidades faltantes:** [lista]
+- **Comportamientos inconsistentes detectados:** [lista]
+- **Gaps entre frontend y backend:** [lista]
+- **Persistencia pendiente de migrar:** [lista]
+- **Decisiones aplazadas:** [lista]
+- **Trabajo fuera de alcance en esta iteración:** [lista]
+- **Riesgos que requieren seguimiento:** [lista]
+- **Items que deben convertirse en backlog:** [lista]
+
 ## Resultados (se completa al cerrar)
-- Fecha de cierre:
-- CAs cumplidos:
-- CAs no cumplidos:
-- Deuda técnica generada:
-- Lecciones aprendidas:
+- **Fecha de cierre:** YYYY-MM-DD
+- **CAs cumplidos:** [lista]
+- **CAs no cumplidos:** [lista]
+- **Deuda técnica generada:** [descripción]
+- **Lecciones aprendidas:** [descripción]
+- **Pendientes abiertos confirmados:** [lista]
+- **Gaps no resueltos:** [lista]
+- **Trabajo fuera de alcance confirmado:** [lista]
+- **Backlog derivado creado:** sí | no
+- **Referencias a historias/tareas creadas:** [links o IDs]
+
+## Matriz de cierre
+
+| Item detectado | Estado | Acción |
+|---|---|---|
+| Implementado | Confirmado | Cerrar |
+| Parcial | Requiere seguimiento | Crear backlog |
+| Inconsistente | Riesgo | Crear backlog |
+| Fuera de alcance | Aplazado | Crear backlog o archivar |
+| Obsoleto | No aplica | Archivar o eliminar |
 ```
 
 Hacer commit del spec **antes de crear la rama de trabajo:**
@@ -348,22 +373,36 @@ El PR siempre va dirigido a `develop`, excepto hotfixes que van a `main`.
 
 ---
 
-## FASE 10 — CIERRE DE SPEC Y DOCUMENTACIÓN
+## FASE 10 — CIERRE DOCUMENTAL ESTRICTO
 
-Actualizar el archivo de spec en `/docs/specs/`:
+El cierre del spec deja de ser un trámite para convertirse en una fase de auditoría final.
 
-1. Cambiar estado a `DONE` o `REJECTED`
-2. Completar la sección `## Resultados`:
-   - Fecha de cierre
-   - CAs cumplidos y no cumplidos
-   - Deuda técnica generada (si aplica)
-   - Lecciones aprendidas (si aplica)
+**Obligaciones de cierre:**
+1. Cambiar el estado a `DONE` o `REJECTED`.
+2. Completar exhaustivamente la sección `## Resultados`.
+3. Actualizar la sección `## Pendientes Abiertos y Gaps Detectados` con cualquier hallazgo surgido durante la implementación.
+4. Registrar explícitamente todo lo que **NO** se resolvió o se dejó fuera de alcance.
+5. Convertir cada pendiente accionable en un ítem de backlog formal (creando nuevas tareas/specs si es necesario).
+6. Completar la **Matriz de Cierre** para cada componente afectado.
+
+**Regla de Cierre:**
+"La fase documental no se considera cerrada hasta que los pendientes abiertos, gaps detectados y trabajo fuera de alcance hayan quedado explícitamente documentados y convertidos en backlog accionable cuando corresponda."
 
 Hacer commit de cierre:
 ```bash
 git add docs/specs/
-git commit -m "docs: close spec [nombre-corto] — [DONE|REJECTED]"
+git commit -m "docs: close spec [nombre-corto] — [DONE|REJECTED] with backlog items"
 ```
+
+---
+
+## GESTIÓN DE CONTINUIDAD (SUBAGENTES)
+
+Una vez cerrada la documentación/spec y consolidado el backlog derivado, los pendientes posteriores podrán trabajarse en modo subagente bajo las siguientes premisas:
+
+1. **Backlog Formal:** Los subagentes trabajarán únicamente sobre pendientes formalmente registrados en la sección de "Pendientes Abiertos" o en tareas derivadas del cierre. No operarán sobre "ideas sueltas".
+2. **Alcance Estricto:** Un subagente no puede inventar alcance nuevo ni modificar decisiones de diseño tomadas en el spec original; su función es escalar hallazgos y ejecutar el backlog existente.
+3. **Escalación Obligatoria:** "Cualquier nuevo hallazgo deberá escalarse como propuesta, no ejecutarse como alcance implícito."
 
 ---
 
@@ -385,7 +424,7 @@ git commit -m "docs: close spec [nombre-corto] — [DONE|REJECTED]"
 - El spec, sin importar qué tan pequeño sea el cambio
 - Los tests para código nuevo
 - La revisión de diff antes del PR
-- El cierre del spec con resultados documentados
+- El cierre del spec con resultados y backlog documentados
 
 ### Política sobre atajos
 No existen atajos en este protocolo. Un bugfix de una línea sigue el mismo proceso que una feature grande. La disciplina es consistente porque los problemas de seguridad no avisan con anticipación.
