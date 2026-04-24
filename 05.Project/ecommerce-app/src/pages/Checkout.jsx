@@ -396,6 +396,7 @@ export default function Checkout() {
                 disabled={!selectedAddress || !selectedPayment || !cartItems?.length || createAddressMutation.isPending || createPaymentMutation.isPending}
                 onClick={handleCreateOrder}
                 size="lg"
+                data-testid="confirm-checkout"
               >
                 {createAddressMutation.isPending || createPaymentMutation.isPending ? "GUARDANDO..." : "CONFIRMAR ORDEN"}
               </Button>

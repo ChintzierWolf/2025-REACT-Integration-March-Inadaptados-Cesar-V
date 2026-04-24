@@ -51,6 +51,7 @@ export default function LoginForm() {
               value={email}
               onChange={(event) => setEmail(event.target.value)}
               placeholder="Ingresa tu email"
+              data-testid="login-email"
               required
             />
           </div>
@@ -62,13 +63,14 @@ export default function LoginForm() {
               value={password}
               onChange={(event) => setPassword(event.target.value)}
               placeholder="Ingresa tu contraseña"
+              data-testid="login-password"
               required
             />
           </div>
 
           {error && <ErrorMessage>{error}</ErrorMessage>}
 
-          <Button disabled={loading} type="submit" variant="primary">
+          <Button disabled={loading} type="submit" variant="primary" data-testid="login-submit">
             {loading ? "Iniciando sesión..." : "Iniciar Sesión"}
           </Button>
         </form>

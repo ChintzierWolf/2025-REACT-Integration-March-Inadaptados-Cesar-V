@@ -1,31 +1,30 @@
-import React from 'react';
-import './Skeleton.css';
+import React from "react";
+import "./Skeleton.css";
 
 /**
- * Componente Skeleton para estados de carga visual (Shimmer effect).
+ * Skeleton Component
+ * Proporciona un marcador de posición animado para contenido en carga.
  * 
- * @param {string} width - Ancho del skeleton (ej: '100%', '200px')
- * @param {string} height - Alto del skeleton
- * @param {string} variant - 'text', 'circular', 'rectangular'
+ * @param {string} width - Ancho del esqueleto (ej: '100%', '200px')
+ * @param {string} height - Alto del esqueleto
+ * @param {string} variant - 'text', 'rect', 'circle'
  * @param {string} className - Clases adicionales
  */
 const Skeleton = ({ 
-  width, 
-  height, 
-  variant = 'rectangular', 
-  className = '',
-  style = {} 
+  width = "100%", 
+  height = "20px", 
+  variant = "text", 
+  className = "" 
 }) => {
-  const skeletonStyles = {
+  const styles = {
     width,
     height,
-    ...style
   };
 
   return (
     <div 
       className={`skeleton skeleton-${variant} ${className}`} 
-      style={skeletonStyles}
+      style={styles}
     />
   );
 };
