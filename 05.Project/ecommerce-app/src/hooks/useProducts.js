@@ -2,12 +2,12 @@ import { useQuery } from '@tanstack/react-query';
 import { fetchProducts, getProductById } from '../services/productService';
 
 /**
- * Hook para obtener todos los productos con caché automático.
+ * Hook para obtener todos los productos con caché automático y soporte para filtros.
  */
-export function useProducts() {
+export function useProducts(params = {}) {
   return useQuery({
-    queryKey: ['products'],
-    queryFn: fetchProducts,
+    queryKey: ['products', params],
+    queryFn: () => fetchProducts(params),
   });
 }
 
