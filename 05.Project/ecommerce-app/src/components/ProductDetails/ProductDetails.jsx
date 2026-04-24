@@ -10,6 +10,7 @@ import Button from "../common/Button";
 import ErrorMessage from "../common/ErrorMessage/ErrorMessage";
 import { ProductDetailsSkeleton } from "../common/Skeleton/ProductSkeletons";
 import Icon from "../common/Icon/Icon";
+import Loading from "../common/Loading/Loading";
 import "./ProductDetails.css";
 
 export default function ProductDetails({ productId }) {
