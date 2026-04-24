@@ -22,7 +22,10 @@ const dbConnection = async () => {
     }
 
     // Opciones de configuración
-    const options = {};
+    const options = {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    };
 
     // Si MONGODB_DB fue provisto explícitamente, lo inyectamos aquí (ideal para Mongoose > 6)
     // Esto evita concatenar strings que rompen URLs de MongoDB Atlas (mongodb+srv://...)
